@@ -1,0 +1,62 @@
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+
+:root {
+  --colado-bg: #e4e0f0;
+  --colado-bg-warm: #ddd6e8;
+  --colado-surface: #d5cfe5;
+  --colado-card: rgba(255, 255, 255, 0.72);
+  --colado-ink: #14121f;
+  --colado-muted: #4d4860;
+  --colado-primary: #4f4d8c;
+  --colado-accent: #7c69c8;
+  --colado-deep: #221e36;
+  --background: var(--colado-bg);
+  --foreground: var(--colado-ink);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-display);
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  background-color: var(--colado-bg);
+  background-image:
+    radial-gradient(ellipse 120% 80% at 100% -20%, rgba(124, 105, 200, 0.35), transparent 55%),
+    radial-gradient(ellipse 90% 70% at 0% 100%, rgba(79, 77, 140, 0.28), transparent 50%),
+    linear-gradient(180deg, var(--colado-bg) 0%, var(--colado-bg-warm) 100%);
+  /* scroll — not fixed: fixed + Lenis forces full-viewport repaints every frame */
+  color: var(--colado-ink);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-display), var(--font-geist-sans), system-ui, serif;
+}
+
+/* Light texture — avoid SVG feTurbulence (very expensive during scroll / compositing) */
+.colado-grain {
+  position: relative;
+  contain: layout style paint;
+}
+.colado-grain::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(20, 18, 31, 0.07) 1px,
+    transparent 0
+  );
+  background-size: 20px 20px;
+}
