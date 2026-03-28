@@ -23,7 +23,7 @@ export function SiteHeader() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-[color-mix(in_srgb,var(--surface-container-lowest)_80%,transparent)] shadow-ambient backdrop-blur-[20px]">
+    <header className="bg-[color-mix(in_srgb,var(--surface-container-lowest)_80%,transparent)] shadow-ambient backdrop-blur-[20px]">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-8 lg:px-16 xl:px-20">
         <button
           type="button"
