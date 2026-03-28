@@ -19,6 +19,10 @@ export const metadata: Metadata = {
   title: "Colado — Clarity on what to do next",
   description:
     "Colado cuts through the noise and shows you the single best action to take—so you spend less time planning and more time doing.",
+  icons: {
+    icon: [{ url: "/screen.png", type: "image/png" }],
+    apple: [{ url: "/screen.png", type: "image/png" }],
+  },
 };
 
 export default function RootLayout({
