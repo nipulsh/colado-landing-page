@@ -31,7 +31,7 @@ export function EmailForm({ className, formClassName }: EmailFormProps) {
         body: JSON.stringify({
           name: name.trim(),
           email: email.trim(),
-          phone: phone.trim(),
+          number: phone.trim(),
         }),
       });
 
@@ -55,7 +55,7 @@ export function EmailForm({ className, formClassName }: EmailFormProps) {
   if (done) {
     return (
       <div className={cn("mx-auto w-full max-w-lg", className)}>
-        <p className="text-center font-display text-xl text-[var(--colado-ink)] md:text-2xl">
+        <p className="font-display text-center text-xl font-semibold text-[var(--on-surface)] md:text-2xl">
           You&apos;re in.
         </p>
       </div>
@@ -72,7 +72,7 @@ export function EmailForm({ className, formClassName }: EmailFormProps) {
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="early-access-name"
-              className="text-left text-xs font-medium text-[var(--colado-muted)]"
+              className="text-left text-xs font-medium text-[var(--on-surface-variant)]"
             >
               Name
             </label>
@@ -90,7 +90,7 @@ export function EmailForm({ className, formClassName }: EmailFormProps) {
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="early-access-email"
-              className="text-left text-xs font-medium text-[var(--colado-muted)]"
+              className="text-left text-xs font-medium text-[var(--on-surface-variant)]"
             >
               Email
             </label>
@@ -108,7 +108,7 @@ export function EmailForm({ className, formClassName }: EmailFormProps) {
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="early-access-phone"
-              className="text-left text-xs font-medium text-[var(--colado-muted)]"
+              className="text-left text-xs font-medium text-[var(--on-surface-variant)]"
             >
               Phone number
             </label>

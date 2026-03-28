@@ -1,10 +1,10 @@
 /**
  * Paste into Google Apps Script (Extensions → Apps Script) bound to your Sheet.
- * Row 1 headers: Name | Email | Phone | Submitted at
+ * Row 1 headers: Name | Email | Phone (or Number) | Submitted at
  *
  * Deploy → New deployment → Web app
  * - Execute as: Me
- * - Who has access: Anyone
+ * - Who has access: Anyone  (required — “Only myself” causes 401 HTML for server POSTs)
  *
  * Set in landing-page/.env.local (no spaces around =):
  *   GOOGLE_SHEETS_WEB_APP_URL=https://script.google.com/macros/s/.../exec
@@ -20,7 +20,13 @@ function doPost(e) {
   var name = (data.name || "").toString().trim();
   var email = (data.email || "").toString().trim();
   var phone = (
-    data.phone != null ? data.phone : data.mobile != null ? data.mobile : ""
+    data.number != null
+      ? data.number
+      : data.phone != null
+        ? data.phone
+        : data.mobile != null
+          ? data.mobile
+          : ""
   )
     .toString()
     .trim();
@@ -38,7 +44,7 @@ function doPost(e) {
 function doGet() {
   return jsonResponse({
     ok: true,
-    message: "POST JSON { name, email, phone }",
+    message: "POST JSON { name, email, number }",
   });
 }
 

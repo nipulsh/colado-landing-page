@@ -13,7 +13,7 @@ export function useScrollToSection() {
       if (lenis) {
         lenis.scrollTo(el, {
           programmatic: true,
-          duration: 1.35,
+          duration: 0.85,
           easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         });
       } else {

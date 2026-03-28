@@ -1,27 +1,24 @@
 import type { Metadata } from "next";
-import { Fraunces, Geist, Geist_Mono } from "next/font/google";
+import { Inter, Manrope } from "next/font/google";
 import { LenisRoot } from "@/components/LenisRoot";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-sans-colado",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const display = Fraunces({
+const manrope = Manrope({
   variable: "--font-display",
   subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
-  title: "Colado — What should I do right now?",
+  title: "Colado — Clarity on what to do next",
   description:
-    "Colado tells you exactly what to do next. Stop planning. Start doing.",
+    "Colado cuts through the noise and shows you the single best action to take—so you spend less time planning and more time doing.",
 };
 
 export default function RootLayout({
@@ -32,9 +29,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${display.variable} h-full antialiased`}
+      className={`${inter.variable} ${manrope.variable} h-full antialiased`}
     >
-      <body className="min-h-full">
+      <body className="min-h-full font-sans">
         <LenisRoot>{children}</LenisRoot>
       </body>
     </html>

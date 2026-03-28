@@ -11,7 +11,7 @@ export function LenisRoot({ children }: { children: ReactNode }) {
         autoRaf: true,
         anchors: true,
         smoothWheel: true,
-        lerp: 0.072,
+        lerp: 0.1,
         wheelMultiplier: 1,
       }}
     >

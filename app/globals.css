@@ -1,26 +1,57 @@
 @import "tailwindcss";
 @import "lenis/dist/lenis.css";
 
+/**
+ * Tokens from DESIGN.md — The Focused Curator
+ * Section boundaries: tonal shifts only (no 1px solid dividers between page sections).
+ */
 :root {
-  --colado-bg: #e4e0f0;
-  --colado-bg-warm: #ddd6e8;
-  --colado-surface: #d5cfe5;
-  --colado-card: rgba(255, 255, 255, 0.72);
-  --colado-ink: #14121f;
-  --colado-muted: #4d4860;
-  --colado-primary: #4f4d8c;
-  --colado-accent: #7c69c8;
-  --colado-deep: #221e36;
-  --background: var(--colado-bg);
-  --foreground: var(--colado-ink);
+  --surface: #f8f9fa;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f1f4f6;
+  --surface-container: #eaeff1;
+  --surface-container-high: #e2e9ec;
+  --primary: #575d76;
+  --primary-dim: #4b516a;
+  --primary-container: #dce1ff;
+  --on-surface: #2b3437;
+  --on-surface-variant: #586064;
+  --secondary-text: #55616a;
+  --on-primary: #ffffff;
+  --outline-variant: #abb3b7;
+
+  --background: var(--surface);
+  --foreground: var(--on-surface);
+  --muted: var(--on-surface-variant);
+  --muted-light: var(--secondary-text);
+
+  /* Ghost border: outline_variant @ 15% — use for focus rings / rare dividers */
+  --ghost-border: color-mix(in srgb, var(--outline-variant) 15%, transparent);
+  --ghost-border-primary: color-mix(in srgb, var(--primary) 22%, transparent);
+
+  /* Ambient shadow: ~4% on_surface tint, soft blur (floating elements only) */
+  --shadow-ambient: 0 12px 40px rgba(43, 52, 55, 0.04);
+
+  /* Legacy aliases */
+  --border: var(--ghost-border);
+  --surface-alt: var(--surface-container-low);
+  --cta: var(--primary);
+  --cta-hover: var(--primary-dim);
+  --cta-foreground: var(--on-primary);
+  --colado-bg: var(--surface);
+  --colado-ink: var(--on-surface);
+  --colado-muted: var(--on-surface-variant);
+  --colado-primary: var(--primary);
+  --colado-accent: var(--primary-dim);
+  --colado-deep: var(--primary-dim);
+  --colado-card: var(--surface-container-lowest);
+  --colado-surface: var(--surface-container-low);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-display);
+  --font-sans: var(--font-sans-colado), ui-sans-serif, system-ui, sans-serif;
 }
 
 html {
@@ -28,35 +59,24 @@ html {
 }
 
 body {
-  background-color: var(--colado-bg);
-  background-image:
-    radial-gradient(ellipse 120% 80% at 100% -20%, rgba(124, 105, 200, 0.35), transparent 55%),
-    radial-gradient(ellipse 90% 70% at 0% 100%, rgba(79, 77, 140, 0.28), transparent 50%),
-    linear-gradient(180deg, var(--colado-bg) 0%, var(--colado-bg-warm) 100%);
-  /* scroll — not fixed: fixed + Lenis forces full-viewport repaints every frame */
-  color: var(--colado-ink);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  background-color: var(--surface);
+  color: var(--on-surface);
+  font-family: var(--font-sans-colado), ui-sans-serif, system-ui, sans-serif;
 }
 
+/* Display & headlines — Manrope (set on html via next/font variable) */
 .font-display {
-  font-family: var(--font-display), var(--font-geist-sans), system-ui, serif;
+  font-family: var(--font-display), var(--font-sans-colado), system-ui, sans-serif;
 }
 
-/* Light texture — avoid SVG feTurbulence (very expensive during scroll / compositing) */
-.colado-grain {
-  position: relative;
-  contain: layout style paint;
+/* Category / label — wide tracking per design system */
+.label-caps {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
-.colado-grain::before {
-  content: "";
-  pointer-events: none;
-  position: absolute;
-  inset: 0;
-  opacity: 0.35;
-  background-image: radial-gradient(
-    circle at 1px 1px,
-    rgba(20, 18, 31, 0.07) 1px,
-    transparent 0
-  );
-  background-size: 20px 20px;
+
+.shadow-ambient {
+  box-shadow: var(--shadow-ambient);
 }
