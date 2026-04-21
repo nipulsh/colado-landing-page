@@ -1,0 +1,3 @@
+# ASSET SLOT: Drop your 3D model at /public/models/sculpture.glb
+# Low-poly, under 500KB, matte material.
+# If absent, ThreeScene falls back to a procedural icosahedron.

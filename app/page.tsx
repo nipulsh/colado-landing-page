@@ -1,29 +1,25 @@
-import { FeatureStack } from "@/components/marketing/FeatureStack";
-import { FinalCtaSection } from "@/components/marketing/FinalCtaSection";
-import { HeroSection } from "@/components/marketing/HeroSection";
-import { HowItWorksBand } from "@/components/marketing/HowItWorksBand";
-import { MarketingFooter } from "@/components/marketing/MarketingFooter";
-import { QuotesSection } from "@/components/marketing/QuotesSection";
-import { BetaStrip } from "@/components/marketing/BetaStrip";
-import { SiteHeader } from "@/components/marketing/SiteHeader";
-import { TrustBand } from "@/components/marketing/TrustBand";
+import { Audiences } from "@/components/Audiences";
+import { EarlyAccess } from "@/components/EarlyAccess";
+import { Footer } from "@/components/Footer";
+import { Hero } from "@/components/Hero";
+import { Nav } from "@/components/Nav";
+import { Pillars } from "@/components/Pillars";
+import { Proof } from "@/components/Proof";
+import { ScrollDemo } from "@/components/ScrollDemo";
 
 export default function Home() {
   return (
-    <div className="min-h-dvh bg-[var(--surface)] text-[var(--on-surface)]">
-      <div className="sticky top-0 z-50">
-        <BetaStrip />
-        <SiteHeader />
-      </div>
+    <>
+      <Nav />
       <main>
-        <HeroSection />
-        <QuotesSection />
-        <HowItWorksBand />
-        <FeatureStack />
-        <TrustBand />
-        <FinalCtaSection />
+        <Hero />
+        <ScrollDemo />
+        <Pillars />
+        <Audiences />
+        <Proof />
+        <EarlyAccess />
       </main>
-      <MarketingFooter />
-    </div>
+      <Footer />
+    </>
   );
 }

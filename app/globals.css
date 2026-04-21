@@ -1,82 +1,303 @@
 @import "tailwindcss";
-@import "lenis/dist/lenis.css";
 
 /**
- * Tokens from DESIGN.md — The Focused Curator
- * Section boundaries: tonal shifts only (no 1px solid dividers between page sections).
+ * Colado — "Quiet Instruments" design tokens.
+ *
+ * Swiss laboratory notebook × private almanac.
+ * Bone-paper white, fountain-pen ink, forest-green punctuation.
+ * Colour is earned, never ambient.
  */
 :root {
-  --surface: #f8f9fa;
-  --surface-container-lowest: #ffffff;
-  --surface-container-low: #f1f4f6;
-  --surface-container: #eaeff1;
-  --surface-container-high: #e2e9ec;
-  --primary: #575d76;
-  --primary-dim: #4b516a;
-  --primary-container: #dce1ff;
-  --on-surface: #2b3437;
-  --on-surface-variant: #586064;
-  --secondary-text: #55616a;
-  --on-primary: #ffffff;
-  --outline-variant: #abb3b7;
+  /* Surfaces — warm paper, never clinical white */
+  --paper: #f4f0e6;
+  --paper-soft: #ede8db;
+  --bg: #f4f0e6;
+  --bg-elevated: #fbf8f1;
+  --ink: #14140f;
+  --ink-soft: #2d2e28;
+  --muted: #6b6c66;
+  --mute-soft: #8f8f86;
+  --hairline: #d9d3c2;
+  --hairline-soft: #e5e0d1;
 
-  --background: var(--surface);
-  --foreground: var(--on-surface);
-  --muted: var(--on-surface-variant);
-  --muted-light: var(--secondary-text);
+  /* Punctuation colours — used sparingly */
+  --accent: #2a4d33;
+  --accent-soft: #e8eee7;
+  --signal-priority: #b24a28;
+  --signal-priority-soft: #f1dfd5;
+  --signal-done: #6b8e5a;
 
-  /* Ghost border: outline_variant @ 15% — use for focus rings / rare dividers */
-  --ghost-border: color-mix(in srgb, var(--outline-variant) 15%, transparent);
-  --ghost-border-primary: color-mix(in srgb, var(--primary) 22%, transparent);
+  /* Type scale */
+  --display: "Instrument Serif", ui-serif, Georgia, serif;
+  --body: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, "JetBrains Mono", monospace;
+}
 
-  /* Ambient shadow: ~4% on_surface tint, soft blur (floating elements only) */
-  --shadow-ambient: 0 12px 40px rgba(43, 52, 55, 0.04);
-
-  /* Legacy aliases */
-  --border: var(--ghost-border);
-  --surface-alt: var(--surface-container-low);
-  --cta: var(--primary);
-  --cta-hover: var(--primary-dim);
-  --cta-foreground: var(--on-primary);
-  --colado-bg: var(--surface);
-  --colado-ink: var(--on-surface);
-  --colado-muted: var(--on-surface-variant);
-  --colado-primary: var(--primary);
-  --colado-accent: var(--primary-dim);
-  --colado-deep: var(--primary-dim);
-  --colado-card: var(--surface-container-lowest);
-  --colado-surface: var(--surface-container-low);
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #0f100c;
+    --paper-soft: #14140f;
+    --bg: #0f100c;
+    --bg-elevated: #16170f;
+    --ink: #f4f0e6;
+    --ink-soft: #d8d6ce;
+    --muted: #8a8b84;
+    --mute-soft: #6f7068;
+    --hairline: #2a2b24;
+    --hairline-soft: #1c1d17;
+    --accent: #8bb294;
+    --accent-soft: #1b2a21;
+    --signal-priority: #d47e5c;
+    --signal-priority-soft: #2a1e17;
+  }
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans-colado), ui-sans-serif, system-ui, sans-serif;
+  --color-bg: var(--bg);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-paper: var(--paper);
+  --color-paper-soft: var(--paper-soft);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-muted: var(--muted);
+  --color-hairline: var(--hairline);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-signal-priority: var(--signal-priority);
+  --color-signal-done: var(--signal-done);
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
 }
 
 html {
+  position: relative;
+  background: var(--bg);
+  color: var(--ink);
   scroll-behavior: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background-color: var(--surface);
-  color: var(--on-surface);
-  font-family: var(--font-sans-colado), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--body);
+  background: var(--bg);
+  color: var(--ink);
+  font-feature-settings: "ss01", "cv11";
+  overflow-x: clip;
+  min-width: 320px;
 }
 
-/* Display & headlines — Manrope (set on html via next/font variable) */
-.font-display {
-  font-family: var(--font-display), var(--font-sans-colado), system-ui, sans-serif;
+:target,
+section[id] {
+  scroll-margin-top: 80px;
 }
 
-/* Category / label — wide tracking per design system */
-.label-caps {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
+h1,
+h2,
+h3,
+h4,
+p,
+li {
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+/* Display — Instrument Serif, editorial pull-quote feel */
+.display {
+  font-family: var(--display);
+  letter-spacing: -0.018em;
+  line-height: 0.98;
+  font-weight: 400;
+}
+
+.display em,
+.display i {
+  font-style: italic;
+}
+
+.mono {
+  font-family: var(--mono);
+}
+
+/* Letter-spaced small caps — the "instrument" annotations */
+.inst {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.inst-sm {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.inst-md {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.inst-ink {
+  color: var(--ink-soft);
+}
+
+/* Editorial section-number badge — used for § 01, § 02, etc. */
+.section-mark {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* Page-index folio coordinates (e.g. 01 / 06) */
+.folio {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  color: var(--mute-soft);
+  font-variant-numeric: tabular-nums;
   text-transform: uppercase;
 }
 
-.shadow-ambient {
-  box-shadow: var(--shadow-ambient);
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[role="tab"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Quiet radial fog behind the hero */
+.hero-fog {
+  background:
+    radial-gradient(
+      72% 58% at 82% 16%,
+      color-mix(in srgb, var(--accent) 8%, transparent) 0%,
+      transparent 62%
+    ),
+    radial-gradient(
+      58% 44% at 12% 88%,
+      color-mix(in srgb, var(--signal-priority) 6%, transparent) 0%,
+      transparent 58%
+    );
+}
+
+/* Hairline utility */
+.hairline {
+  border-color: var(--hairline);
+}
+
+/* Blurred sticky nav */
+.nav-surface {
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: saturate(170%) blur(14px);
+  -webkit-backdrop-filter: saturate(170%) blur(14px);
+}
+
+/* Demo-card shadow — only shadow allowed on the page */
+.demo-shadow {
+  box-shadow:
+    0 1px 1px color-mix(in srgb, var(--ink) 4%, transparent),
+    0 22px 60px -24px color-mix(in srgb, var(--ink) 18%, transparent);
+}
+
+/* Specimen card — for the hero / demo cards */
+.specimen-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+}
+
+/* Cross-bar spacer used inside mastheads: " · " in mono */
+.dot-bar::before {
+  content: "·";
+  margin: 0 0.6em;
+  color: var(--mute-soft);
+}
+
+/* Custom cursor — only on fine pointers */
+@media (pointer: fine) {
+  html.colado-cursor,
+  html.colado-cursor * {
+    cursor: none !important;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+  color: var(--ink);
+}
+
+/* Tabular numerals for numbered indices & coords */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Subtle paper grain — adds warmth without noise */
+.paper-grain {
+  background-image:
+    radial-gradient(
+      circle at 1px 1px,
+      color-mix(in srgb, var(--ink) 4%, transparent) 0.5px,
+      transparent 1.4px
+    );
+  background-size: 6px 6px;
+  opacity: 0.4;
+}
+
+/* Slim divider between specimen lines */
+.rule-thin {
+  border-top: 1px solid var(--hairline);
+}
+
+/* Priority-label pill (NOW / NEXT / THEN / LATER / ADMIN) */
+.pill-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 600;
 }

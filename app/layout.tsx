@@ -1,42 +1,82 @@
-import type { Metadata } from "next";
-import { Inter, Manrope } from "next/font/google";
-import { LenisRoot } from "@/components/LenisRoot";
+import type { Metadata, Viewport } from "next";
+import { Geist, Instrument_Serif } from "next/font/google";
+import { Cursor } from "@/components/Cursor";
+import { ScrollProgress } from "@/components/ScrollProgress";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-sans-colado",
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  display: "swap",
 });
 
-const manrope = Manrope({
-  variable: "--font-display",
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
+  weight: "400",
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
+  style: ["normal", "italic"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Colado — Clarity on what to do next",
-  description:
-    "Colado cuts through the noise and shows you the single best action to take—so you spend less time planning and more time doing.",
-  icons: {
-    icon: [{ url: "/screen.png", type: "image/png" }],
-    apple: [{ url: "/screen.png", type: "image/png" }],
+  metadataBase: new URL("https://colado.in"),
+  title: {
+    default: "Colado — Stop planning. Start doing.",
+    template: "%s · Colado",
   },
+  description:
+    "Colado is the quiet AI assistant for founders and students. Dump everything on your mind; get one clear next move.",
+  keywords: [
+    "AI assistant",
+    "task prioritization",
+    "founders",
+    "students",
+    "focus",
+    "productivity",
+  ],
+  openGraph: {
+    title: "Colado — Stop planning. Start doing.",
+    description:
+      "Dump everything on your mind. Colado decides what matters right now.",
+    url: "https://colado.in",
+    siteName: "Colado",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    locale: "en_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Colado — Stop planning. Start doing.",
+    description:
+      "Dump everything on your mind. Colado decides what matters right now.",
+    images: ["/og-image.png"],
+  },
+  icons: {
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F7F5F0" },
+    { media: "(prefers-color-scheme: dark)", color: "#0E0F0C" },
+  ],
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${manrope.variable} h-full antialiased`}
+      className={`${geist.variable} ${instrumentSerif.variable}`}
     >
-      <body className="min-h-full font-sans">
-        <LenisRoot>{children}</LenisRoot>
+      <body className="min-h-dvh bg-[var(--bg)] text-[var(--ink)] antialiased">
+        <ScrollProgress />
+        {children}
+        <Cursor />
       </body>
     </html>
   );

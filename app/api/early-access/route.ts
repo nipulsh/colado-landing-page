@@ -31,6 +31,12 @@ function isPhone(s: string) {
   return digits.length >= 8 && digits.length <= 15;
 }
 
+const ALLOWED_ROLES = ["founder", "student", "other"] as const;
+type Role = (typeof ALLOWED_ROLES)[number];
+function isRole(s: unknown): s is Role {
+  return typeof s === "string" && (ALLOWED_ROLES as readonly string[]).includes(s);
+}
+
 export async function POST(request: Request) {
   let body: unknown;
   try {
@@ -54,6 +60,8 @@ export async function POST(request: Request) {
         : typeof raw.mobile === "string"
           ? raw.mobile
           : "";
+  const role = isRole(raw.role) ? raw.role : undefined;
+  const note = typeof raw.note === "string" ? raw.note.trim() : "";
 
   if (!isNonEmpty(name)) {
     return NextResponse.json({ error: "Name is required" }, { status: 400 });
@@ -72,7 +80,12 @@ export async function POST(request: Request) {
     name: name.trim(),
     email: email.trim().toLowerCase(),
     number: phone.trim(),
+    role: role ?? "",
+    note,
   };
+
+  // TODO: connect to database/email — for now we proxy to the Google Sheets
+  // Apps Script web app (set GOOGLE_SHEETS_WEB_APP_URL in env).
 
   /** Local UI testing without a working Web App (never use in production). */
   if (
@@ -82,6 +95,7 @@ export async function POST(request: Request) {
     console.warn(
       "[early-access] EARLY_ACCESS_BYPASS_SHEETS=1 — skipping Google; not saved"
     );
+    console.log("[early-access] payload (dev bypass):", payload);
     return NextResponse.json(
       { ok: true, warning: "Sheet sync bypassed (development only)" },
       { status: 200 }
@@ -92,6 +106,7 @@ export async function POST(request: Request) {
     console.warn(
       "[early-access] GOOGLE_SHEETS_WEB_APP_URL is not set; submission not sent to Sheets"
     );
+    console.log("[early-access] payload (sheet not configured):", payload);
     return NextResponse.json(
       {
         ok: true,
