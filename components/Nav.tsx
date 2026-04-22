@@ -6,10 +6,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
 const LINKS = [
-  { href: "#live", label: "Try it", section: "§ 02" },
-  { href: "#method", label: "Method", section: "§ 03" },
-  { href: "#audience", label: "Audience", section: "§ 04" },
-  { href: "#voices", label: "Voices", section: "§ 05" },
+  { href: "#hero", label: "Experience", section: "§ 01" },
+  { href: "#audience", label: "Audience", section: "§ 02" },
+  { href: "#voices", label: "Voices", section: "§ 03" },
 ];
 
 export function Nav() {

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Colado — Quiet Instruments (60s)</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: #0a0a0a; overflow: hidden; }
+  body { font-family: 'Geist', ui-sans-serif, system-ui, sans-serif; }
+  #root { position: fixed; inset: 0; }
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root" data-screen-label="00:00"></div>
+
+<script type="text/babel" src="animations.jsx"></script>
+<script type="text/babel" src="scenes/shared.jsx"></script>
+<script type="text/babel" src="scenes/00-intro.jsx"></script>
+<script type="text/babel" src="scenes/01-collapse.jsx"></script>
+<script type="text/babel" src="scenes/02-instrument.jsx"></script>
+<script type="text/babel" src="scenes/03-movements.jsx"></script>
+<script type="text/babel" src="scenes/04-onemove.jsx"></script>
+<script type="text/babel" src="scenes/05-signoff.jsx"></script>
+
+<script type="text/babel">
+  // Timestamp label updater — surface current second to the screen-label attr
+  function TimestampTagger() {
+    const { time } = useTimeline();
+    React.useEffect(() => {
+      const root = document.getElementById('root');
+      if (!root) return;
+      const s = Math.floor(time);
+      const mm = String(Math.floor(s / 60)).padStart(2, '0');
+      const ss = String(s % 60).padStart(2, '0');
+      root.setAttribute('data-screen-label', `${mm}:${ss}`);
+    }, [Math.floor(time)]);
+    return null;
+  }
+
+  function App() {
+    return (
+      <Stage width={1920} height={1080} duration={60} background="#f4f0e6" persistKey="colado-video">
+        <TimestampTagger />
+        <SceneIntro       start={0}   end={7.5} />
+        <SceneCollapse    start={7.5} end={14} />
+        <SceneInstrument  start={14}  end={25} />
+        <SceneMovements   start={25}  end={42} />
+        <SceneOneMove     start={42}  end={54} />
+        <SceneSignoff     start={54}  end={60} />
+      </Stage>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
