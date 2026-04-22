@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Colado — One clear next action</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+/* ─── TOKENS ──────────────────────────────────── */
+:root {
+  --dk: #06060a;
+  --dk2: #0c0c14;
+  --dk3: #12121e;
+  --lt: #f4f3f0;
+  --lt2: #eeece8;
+  --lt3: #e5e2dc;
+  --text-dk: #eae6dc;
+  --text-lt: #111118;
+  --muted-dk: rgba(234,230,220,0.42);
+  --muted-lt: rgba(17,17,24,0.45);
+  --accent: oklch(66% 0.24 286);
+  --accent-h: 286;
+  --warm: oklch(71% 0.17 54);
+  --green: oklch(68% 0.18 150);
+  --border-dk: rgba(255,255,255,0.07);
+  --border-lt: rgba(0,0,0,0.08);
+  --font-d: 'Sora', sans-serif;
+  --font-b: 'DM Sans', sans-serif;
+  --font-m: 'DM Mono', monospace;
+  --radius: 20px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--dk); color: var(--text-dk); font-family: var(--font-b); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+/* noise */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.028; pointer-events: none; z-index: 9000;
+}
+
+/* scroll progress */
+#scroll-bar {
+  position: fixed; top: 0; left: 0; height: 2px; width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--warm));
+  z-index: 9999; transition: width 0.05s linear;
+}
+
+/* ─── NAV ─────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 28px 52px;
+  transition: background 0.5s, backdrop-filter 0.5s, padding 0.3s, border-color 0.5s;
+  border-bottom: 1px solid transparent;
+}
+nav.scrolled {
+  background: rgba(6,6,10,0.82); backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-color: var(--border-dk); padding: 18px 52px;
+}
+.nav-logo { font-family: var(--font-d); font-size: 20px; font-weight: 700; color: var(--text-dk); text-decoration: none; letter-spacing: -0.04em; }
+.nav-logo-dot { color: var(--accent); }
+.nav-links { display: flex; align-items: center; gap: 36px; }
+.nav-link { font-size: 13px; font-weight: 500; color: var(--muted-dk); text-decoration: none; transition: color 0.2s; letter-spacing: 0.01em; }
+.nav-link:hover { color: var(--text-dk); }
+.nav-badge { background: rgba(108,63,230,0.15); border: 1px solid rgba(108,63,230,0.3); border-radius: 100px; padding: 3px 10px; font-family: var(--font-m); font-size: 10px; color: var(--accent); letter-spacing: 0.08em; }
+.nav-cta { background: var(--text-dk); color: var(--dk); border: none; border-radius: 100px; padding: 10px 22px; font-family: var(--font-d); font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity 0.2s, transform 0.2s; }
+.nav-cta:hover { opacity: 0.85; transform: scale(1.03); }
+
+/* ─── HERO ────────────────────────────────────── */
+#hero {
+  min-height: 100vh; position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 140px 52px 80px; text-align: center; overflow: hidden;
+}
+.hero-mesh {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 55% 55% at 20% 30%, rgba(108,63,230,0.13) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 45% at 80% 65%, rgba(220,140,40,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 70% at 50% 50%, rgba(108,63,230,0.04) 0%, transparent 70%);
+}
+.hero-grid {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, black 30%, transparent 80%);
+}
+.hero-scan {
+  position: absolute; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+  opacity: 0; animation: heroScan 4s ease-in-out 1.2s 1 forwards;
+}
+@keyframes heroScan {
+  0% { top: 15%; opacity: 0; }
+  20% { opacity: 0.6; }
+  100% { top: 85%; opacity: 0; }
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(108,63,230,0.1); border: 1px solid rgba(108,63,230,0.22);
+  border-radius: 100px; padding: 7px 16px;
+  font-family: var(--font-m); font-size: 11px; color: var(--accent);
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 32px;
+  opacity: 0; animation: fadeUp 0.7s 0.3s forwards;
+}
+.eyebrow-pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: ep 2s infinite; }
+@keyframes ep { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+.hero-h1 {
+  font-family: var(--font-d); font-weight: 800;
+  font-size: clamp(52px, 7.5vw, 108px);
+  line-height: 1.0; letter-spacing: -0.04em;
+  color: var(--text-dk); margin-bottom: 28px;
+  max-width: 900px;
+}
+.word { display: inline-block; overflow: hidden; }
+.word-inner { display: inline-block; opacity: 0; transform: translateY(105%); animation: wordUp 0.7s cubic-bezier(0.16,1,0.3,1) forwards; }
+.hero-h1 .accent-word { color: var(--accent); }
+.hero-sub {
+  font-size: clamp(16px, 1.8vw, 20px); color: var(--muted-dk);
+  max-width: 520px; line-height: 1.65; margin-bottom: 44px;
+  opacity: 0; animation: fadeUp 0.7s 1s forwards; font-weight: 400;
+}
+.hero-actions {
+  display: flex; align-items: center; gap: 16px; margin-bottom: 80px;
+  opacity: 0; animation: fadeUp 0.7s 1.15s forwards;
+}
+.btn-hero-primary {
+  background: var(--accent); color: #fff; border: none;
+  border-radius: 100px; padding: 16px 36px;
+  font-family: var(--font-d); font-size: 15px; font-weight: 600; cursor: pointer;
+  box-shadow: 0 0 40px rgba(108,63,230,0.38);
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+.btn-hero-primary:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 0 60px rgba(108,63,230,0.55); }
+.btn-hero-ghost {
+  background: transparent; border: 1px solid var(--border-dk);
+  border-radius: 100px; padding: 16px 32px;
+  font-family: var(--font-d); font-size: 15px; font-weight: 500;
+  color: var(--muted-dk); cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-hero-ghost:hover { border-color: rgba(255,255,255,0.2); color: var(--text-dk); }
+
+/* phone hero */
+.hero-phone-wrap {
+  position: relative; display: inline-block;
+  opacity: 0; animation: phoneUp 1.1s cubic-bezier(0.16,1,0.3,1) 1.3s forwards;
+}
+@keyframes phoneUp { from { opacity:0; transform: translateY(60px) scale(0.95); } to { opacity:1; transform: translateY(0) scale(1); } }
+.hero-phone-glow {
+  position: absolute; inset: -40px; border-radius: 80px;
+  background: radial-gradient(circle, rgba(108,63,230,0.22) 0%, transparent 65%);
+  animation: phoneGlow 4s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes phoneGlow { 0%,100%{transform:scale(1);opacity:0.8} 50%{transform:scale(1.08);opacity:1} }
+.phone { width: 280px; height: 560px; border-radius: 44px; background: var(--dk2); border: 1.5px solid rgba(255,255,255,0.14); position: relative; overflow: hidden; box-shadow: 0 60px 120px rgba(0,0,0,0.7), 0 0 0 6px rgba(255,255,255,0.04); }
+.phone-notch { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 88px; height: 26px; background: var(--dk); border-radius: 100px; z-index: 10; }
+.phone-screen { position: absolute; inset: 0; display: flex; flex-direction: column; }
+.phone-statusbar { height: 52px; flex-shrink: 0; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 22px 8px; font-family: var(--font-m); font-size: 10px; color: var(--muted-dk); }
+
+/* ─── PLACEHOLDER SCREEN ──────────────────────── */
+.ph-screen {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 20px;
+  background: repeating-linear-gradient(135deg, rgba(255,255,255,0.018) 0px, rgba(255,255,255,0.018) 1px, transparent 1px, transparent 18px);
+  position: relative;
+}
+.ph-label {
+  position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-m); font-size: 9px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--muted-dk); white-space: nowrap; opacity: 0.6;
+}
+/* Focus screen UI sketch */
+.fs-time { font-family: var(--font-m); font-size: 11px; color: var(--muted-dk); margin-bottom: 20px; letter-spacing: 0.06em; }
+.fs-card {
+  width: 100%; background: var(--dk3); border: 1px solid rgba(108,63,230,0.25);
+  border-radius: 16px; padding: 20px; text-align: left;
+}
+.fs-tag { font-family: var(--font-m); font-size: 9px; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
+.fs-task { font-family: var(--font-d); font-size: 15px; font-weight: 700; color: var(--text-dk); margin-bottom: 6px; line-height: 1.3; }
+.fs-meta { font-size: 11px; color: var(--muted-dk); margin-bottom: 16px; font-family: var(--font-m); }
+.fs-btns { display: flex; gap: 8px; }
+.fs-btn-start { background: var(--accent); border: none; border-radius: 8px; color: #fff; font-family: var(--font-d); font-size: 12px; font-weight: 600; padding: 8px 16px; flex: 1; cursor: default; }
+.fs-btn-snooze { background: rgba(255,255,255,0.06); border: 1px solid var(--border-dk); border-radius: 8px; color: var(--muted-dk); font-family: var(--font-d); font-size: 12px; padding: 8px 14px; cursor: default; }
+/* Plan screen UI sketch */
+.ps-label { font-family: var(--font-m); font-size: 10px; color: var(--muted-dk); letter-spacing: 0.08em; margin-bottom: 12px; align-self: flex-start; }
+.ps-week { display: flex; gap: 6px; width: 100%; margin-bottom: 14px; }
+.ps-day { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.ps-day-label { font-family: var(--font-m); font-size: 8px; color: var(--muted-dk); }
+.ps-day-num { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-d); font-size: 11px; font-weight: 600; color: var(--text-dk); }
+.ps-day-num.today { background: var(--accent); color: #fff; }
+.ps-tasks { width: 100%; display: flex; flex-direction: column; gap: 6px; }
+.ps-task-row { background: rgba(255,255,255,0.04); border-radius: 8px; padding: 8px 10px; display: flex; align-items: center; gap: 8px; }
+.ps-task-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.ps-task-text { font-size: 11px; color: var(--text-dk); font-family: var(--font-b); }
+.ps-task-chip { margin-left: auto; font-family: var(--font-m); font-size: 9px; border-radius: 6px; padding: 2px 6px; }
+/* Rhythm screen UI sketch */
+.rs-blocks { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+.rs-block { border-radius: 10px; padding: 10px 14px; }
+.rs-block-label { font-family: var(--font-m); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 3px; }
+.rs-block-desc { font-family: var(--font-d); font-size: 13px; font-weight: 600; color: var(--text-dk); }
+.rs-adapt { font-family: var(--font-m); font-size: 10px; color: var(--accent); margin-top: 16px; text-align: center; letter-spacing: 0.06em; }
+
+/* ─── SCROLL REVEALS ──────────────────────────── */
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1); }
+.reveal.up { opacity: 1; transform: translateY(0); }
+.reveal-scale { opacity: 0; transform: scale(0.94); transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+.reveal-scale.up { opacity: 1; transform: scale(1); }
+.reveal-left { opacity: 0; transform: translateX(-32px); transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1); }
+.reveal-left.up { opacity: 1; transform: translateX(0); }
+.reveal-right { opacity: 0; transform: translateX(32px); transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1); }
+.reveal-right.up { opacity: 1; transform: translateX(0); }
+
+/* ─── SECTION SHELL ───────────────────────────── */
+.sec { padding: 130px 52px; }
+.sec-lt { background: var(--lt); color: var(--text-lt); }
+.sec-dk { background: var(--dk); color: var(--text-dk); }
+.sec-dk2 { background: var(--dk2); color: var(--text-dk); }
+.sec-center { text-align: center; }
+.eyebrow {
+  display: inline-block; font-family: var(--font-m); font-size: 11px;
+  letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 16px;
+}
+.eyebrow-dk { color: var(--accent); }
+.eyebrow-lt { color: oklch(50% 0.18 286); }
+.h2 {
+  font-family: var(--font-d); font-weight: 800;
+  font-size: clamp(34px, 4.5vw, 68px);
+  line-height: 1.05; letter-spacing: -0.04em; max-width: 780px;
+}
+.h2-lt { color: var(--text-lt); }
+.h2-dk { color: var(--text-dk); }
+.h2 em { font-style: italic; color: var(--accent); }
+.body-lg { font-size: clamp(16px, 1.6vw, 19px); line-height: 1.65; font-weight: 400; max-width: 580px; }
+.body-lg-dk { color: var(--muted-dk); }
+.body-lg-lt { color: var(--muted-lt); }
+
+/* ─── TICKER ──────────────────────────────────── */
+#ticker {
+  background: var(--dk2); border-top: 1px solid var(--border-dk); border-bottom: 1px solid var(--border-dk);
+  overflow: hidden; padding: 0;
+}
+.ticker-track { display: flex; width: max-content; animation: tickerMove 28s linear infinite; padding: 16px 0; }
+.ticker-item {
+  display: flex; align-items: center; gap: 24px; padding: 0 28px;
+  white-space: nowrap; font-size: 13px; color: var(--muted-dk); font-family: var(--font-b); font-weight: 400; font-style: italic;
+}
+.ticker-sep { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); flex-shrink: 0; opacity: 0.6; }
+@keyframes tickerMove { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* ─── PROBLEM SECTION ─────────────────────────── */
+#problem { border-top: 1px solid var(--border-lt); }
+.problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; max-width: 1200px; margin: 0 auto; }
+.problem-before { position: relative; }
+.problem-title { font-family: var(--font-d); font-size: clamp(30px, 3.5vw, 52px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; color: var(--text-lt); margin-bottom: 20px; }
+.problem-sub { font-size: 16px; color: var(--muted-lt); line-height: 1.65; max-width: 400px; }
+.chaos-tasks { display: flex; flex-direction: column; gap: 8px; margin-top: 36px; }
+.chaos-chip {
+  display: flex; align-items: center; gap: 10px;
+  border-radius: 10px; padding: 11px 14px;
+  font-size: 13px; font-family: var(--font-b); font-weight: 500;
+  border: 1px solid var(--border-lt); color: var(--text-lt);
+  background: rgba(0,0,0,0.04);
+  transition: opacity 0.3s, transform 0.3s;
+}
+.chaos-chip-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.chaos-chip-priority { margin-left: auto; font-family: var(--font-m); font-size: 10px; border-radius: 6px; padding: 2px 7px; }
+.problem-after {}
+.clarity-label { font-family: var(--font-m); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: oklch(50% 0.18 286); margin-bottom: 20px; }
+.clarity-card {
+  background: var(--text-lt); border-radius: 24px; padding: 36px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+}
+.clarity-now { font-family: var(--font-m); font-size: 11px; color: rgba(17,17,24,0.45); letter-spacing: 0.06em; margin-bottom: 10px; }
+.clarity-task { font-family: var(--font-d); font-size: 24px; font-weight: 800; letter-spacing: -0.03em; color: var(--text-lt); margin-bottom: 6px; }
+.clarity-meta { font-size: 13px; color: rgba(17,17,24,0.5); margin-bottom: 24px; font-family: var(--font-m); }
+.clarity-btns { display: flex; gap: 10px; }
+.clarity-start { background: oklch(66% 0.24 286); color: #fff; border: none; border-radius: 12px; padding: 13px 28px; font-family: var(--font-d); font-size: 14px; font-weight: 600; cursor: default; flex: 1; }
+.clarity-snooze { background: transparent; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 13px 20px; font-family: var(--font-d); font-size: 14px; color: rgba(17,17,24,0.5); cursor: default; }
+
+/* ─── STATS ───────────────────────────────────── */
+#stats { border-top: 1px solid var(--border-dk); }
+.stats-inner { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; }
+.stat-block { padding: 60px 48px; border-right: 1px solid var(--border-dk); }
+.stat-block:last-child { border-right: none; }
+.stat-num {
+  font-family: var(--font-d); font-size: clamp(56px, 7vw, 88px); font-weight: 800;
+  letter-spacing: -0.05em; line-height: 1;
+  background: linear-gradient(135deg, var(--text-dk), var(--accent));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 12px; display: block;
+}
+.stat-label { font-size: 15px; color: var(--muted-dk); line-height: 1.5; max-width: 200px; }
+
+/* ─── HOW IT WORKS ────────────────────────────── */
+#how { border-top: 1px solid var(--border-lt); }
+.how-inner { max-width: 1200px; margin: 0 auto; }
+.how-header { text-align: center; margin-bottom: 80px; }
+.how-steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 60px; align-items: start; }
+.how-step {}
+.how-step-num { font-family: var(--font-m); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted-lt); margin-bottom: 28px; display: flex; align-items: center; gap: 12px; }
+.how-step-num::after { content: ''; flex: 1; height: 1px; background: var(--border-lt); }
+.how-phone-wrap { margin-bottom: 28px; position: relative; }
+.how-phone { width: 100%; max-width: 240px; height: 420px; border-radius: 36px; background: var(--text-lt); border: 1.5px solid rgba(0,0,0,0.08); position: relative; overflow: hidden; box-shadow: 0 30px 70px rgba(0,0,0,0.12); margin: 0 auto; }
+.how-phone-notch { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 72px; height: 22px; background: var(--lt); border-radius: 100px; z-index: 10; }
+.how-phone-screen { position: absolute; inset: 0; padding: 44px 16px 20px; display: flex; flex-direction: column; background: var(--lt2); }
+.how-step-title { font-family: var(--font-d); font-size: 22px; font-weight: 700; letter-spacing: -0.03em; color: var(--text-lt); margin-bottom: 10px; }
+.how-step-desc { font-size: 14px; color: var(--muted-lt); line-height: 1.65; }
+
+/* how-phone content light theme */
+.how-input-row { background: #fff; border-radius: 12px; padding: 12px 14px; border: 1px solid rgba(0,0,0,0.08); font-size: 12px; color: rgba(17,17,24,0.4); font-family: var(--font-b); margin-bottom: 10px; }
+.how-chip { background: #fff; border-radius: 10px; padding: 10px 12px; border: 1px solid rgba(0,0,0,0.06); font-size: 12px; color: var(--text-lt); font-family: var(--font-b); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+.how-chip-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; background: rgba(108,63,230,0.5); }
+.how-score-row { display: flex; align-items: center; gap: 8px; background: #fff; border-radius: 10px; padding: 10px 12px; margin-bottom: 6px; border: 1px solid rgba(0,0,0,0.06); }
+.how-score-bar-wrap { flex: 1; height: 4px; background: rgba(0,0,0,0.06); border-radius: 2px; overflow: hidden; }
+.how-score-bar { height: 100%; border-radius: 2px; background: oklch(66% 0.24 286); }
+.how-score-label { font-family: var(--font-m); font-size: 10px; color: rgba(17,17,24,0.5); width: 24px; text-align: right; }
+.how-focus-card { background: oklch(66% 0.24 286); border-radius: 16px; padding: 20px 16px; margin-top: 8px; }
+.how-focus-label { font-family: var(--font-m); font-size: 9px; color: rgba(255,255,255,0.7); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+.how-focus-task { font-family: var(--font-d); font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+.how-focus-meta { font-size: 11px; color: rgba(255,255,255,0.7); font-family: var(--font-m); }
+
+/* ─── FEATURE SECTIONS (sticky Apple-style) ───── */
+.feat-sticky-outer { position: relative; height: 300vh; }
+.feat-sticky {
+  position: sticky; top: 0; height: 100vh;
+  display: grid; grid-template-columns: 1fr 1fr; overflow: hidden;
+}
+.feat-text-col {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 80px 64px; position: relative;
+}
+.feat-phone-col {
+  display: flex; align-items: center; justify-content: center;
+  position: relative; padding: 60px;
+}
+.feat-item { position: absolute; opacity: 0; transform: translateY(24px); transition: opacity 0.6s, transform 0.6s; pointer-events: none; }
+.feat-item.active { opacity: 1; transform: translateY(0); pointer-events: auto; position: relative; }
+.feat-step-tag { font-family: var(--font-m); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 20px; }
+.feat-h3 { font-family: var(--font-d); font-size: clamp(28px, 3vw, 48px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.08; margin-bottom: 18px; }
+.feat-desc { font-size: 16px; line-height: 1.7; font-weight: 400; max-width: 400px; }
+.feat-phone { width: 260px; height: 520px; border-radius: 42px; position: relative; overflow: hidden; box-shadow: 0 60px 120px rgba(0,0,0,0.65), 0 0 0 6px rgba(255,255,255,0.04); transition: transform 0.8s cubic-bezier(0.16,1,0.3,1); }
+.feat-phone-notch { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: 84px; height: 24px; border-radius: 100px; z-index: 10; }
+.feat-phone-screen-wrap { position: absolute; inset: 0; }
+.feat-screen { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 48px 18px 24px; transition: opacity 0.5s; opacity: 0; }
+.feat-screen.active { opacity: 1; }
+.feat-progress { display: flex; flex-direction: column; gap: 12px; margin-left: 64px; margin-top: 40px; }
+.feat-prog-item { display: flex; align-items: center; gap: 14px; cursor: pointer; }
+.feat-prog-line { width: 2px; height: 32px; background: rgba(255,255,255,0.08); border-radius: 1px; transition: background 0.3s; }
+.feat-prog-item.active .feat-prog-line { background: var(--accent); }
+.feat-prog-label { font-family: var(--font-m); font-size: 11px; letter-spacing: 0.06em; color: rgba(255,255,255,0.3); transition: color 0.3s; }
+.feat-prog-item.active .feat-prog-label { color: var(--text-dk); }
+
+/* ─── DEMO SECTION ────────────────────────────── */
+#demo { border-top: 1px solid var(--border-dk); }
+.demo-inner { max-width: 1100px; margin: 0 auto; }
+.demo-header { margin-bottom: 52px; }
+.demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.demo-panel { background: var(--dk2); border: 1px solid var(--border-dk); border-radius: 24px; padding: 32px; }
+.demo-panel-label { font-family: var(--font-m); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted-dk); margin-bottom: 20px; }
+.task-list { display: flex; flex-direction: column; gap: 8px; min-height: 60px; margin-bottom: 20px; }
+.task-chip { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.04); border: 1px solid var(--border-dk); border-radius: 12px; padding: 12px 14px; font-size: 13px; color: var(--text-dk); opacity: 0; transform: translateX(-10px); animation: chipSlide 0.35s cubic-bezier(0.16,1,0.3,1) forwards; cursor: default; }
+.task-chip-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted-dk); flex-shrink: 0; }
+.task-chip-del { margin-left: auto; color: var(--muted-dk); opacity: 0; cursor: pointer; font-size: 16px; line-height: 1; padding: 0 2px; transition: opacity 0.2s; }
+.task-chip:hover .task-chip-del { opacity: 1; }
+@keyframes chipSlide { to { opacity:1; transform:translateX(0); } }
+.demo-input-row { display: flex; gap: 8px; }
+.demo-input { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid var(--border-dk); border-radius: 12px; padding: 12px 16px; font-family: var(--font-b); font-size: 13px; color: var(--text-dk); outline: none; transition: border-color 0.2s, background 0.2s; }
+.demo-input:focus { border-color: rgba(108,63,230,0.45); background: rgba(108,63,230,0.05); }
+.demo-input::placeholder { color: var(--muted-dk); }
+.demo-add { width: 44px; height: 44px; background: rgba(108,63,230,0.15); border: 1px solid rgba(108,63,230,0.28); border-radius: 12px; color: var(--accent); font-size: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; flex-shrink: 0; }
+.demo-add:hover { background: rgba(108,63,230,0.28); }
+.demo-plan-btn { width: 100%; margin-top: 16px; padding: 15px; background: linear-gradient(135deg, var(--accent), oklch(60% 0.23 310)); border: none; border-radius: 14px; color: #fff; font-family: var(--font-d); font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s; box-shadow: 0 6px 28px rgba(108,63,230,0.32); }
+.demo-plan-btn:hover { opacity:0.9; transform:translateY(-1px); }
+.demo-plan-btn:disabled { opacity:0.35; cursor:not-allowed; transform:none; }
+.demo-spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; display:none; }
+.demo-plan-btn.loading .demo-spinner { display:block; }
+.demo-plan-btn.loading .demo-plan-label { opacity:0.6; }
+@keyframes spin { to{transform:rotate(360deg)} }
+/* output */
+.demo-output { min-height: 340px; position: relative; }
+.out-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+.out-empty-icon { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--border-dk); display: flex; align-items: center; justify-content: center; }
+.out-empty-text { font-size: 13px; color: var(--muted-dk); font-family: var(--font-m); letter-spacing: 0.04em; }
+.out-list { display: flex; flex-direction: column; gap: 8px; opacity: 0; transition: opacity 0.4s; }
+.out-list.visible { opacity: 1; }
+.out-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border-dk); border-radius: 14px; padding: 16px 18px; display: flex; align-items: flex-start; gap: 14px; opacity: 0; transform: translateY(10px); }
+.out-card.in { animation: cardIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+@keyframes cardIn { to { opacity:1; transform:translateY(0); } }
+.out-rank { width: 30px; height: 30px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-family: var(--font-m); font-size: 12px; flex-shrink: 0; margin-top: 1px; }
+.r1 { background: rgba(220,140,40,0.15); color: var(--warm); border: 1px solid rgba(220,140,40,0.28); }
+.r2 { background: rgba(108,63,230,0.12); color: var(--accent); border: 1px solid rgba(108,63,230,0.22); }
+.r3,.r4,.r5 { background: rgba(255,255,255,0.05); color: var(--muted-dk); border: 1px solid var(--border-dk); }
+.out-body { flex: 1; min-width: 0; }
+.out-name { font-size: 13px; font-weight: 600; color: var(--text-dk); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.out-insight { font-size: 12px; color: var(--muted-dk); line-height: 1.5; }
+.out-meta { flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.out-score { font-family: var(--font-m); font-size: 10px; border-radius: 100px; padding: 3px 8px; }
+.s-hi { background: rgba(220,140,40,0.14); color: var(--warm); }
+.s-md { background: rgba(108,63,230,0.14); color: var(--accent); }
+.s-lo { background: rgba(255,255,255,0.06); color: var(--muted-dk); }
+.out-time { font-family: var(--font-m); font-size: 10px; color: var(--muted-dk); }
+
+/* ─── TESTIMONIALS ────────────────────────────── */
+#testimonials { border-top: 1px solid var(--border-lt); }
+.testi-inner { max-width: 1100px; margin: 0 auto; }
+.testi-header { text-align: center; margin-bottom: 64px; }
+.testi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+.testi-card { background: #fff; border-radius: 20px; padding: 32px 28px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); border: 1px solid var(--border-lt); position: relative; overflow: hidden; }
+.testi-quote { font-family: var(--font-d); font-size: 44px; color: oklch(66% 0.24 286); line-height: 1; position: absolute; top: 20px; right: 24px; opacity: 0.15; font-weight: 800; }
+.testi-text { font-size: 16px; line-height: 1.7; color: var(--text-lt); margin-bottom: 24px; font-style: italic; font-family: var(--font-b); font-weight: 400; }
+.testi-author { display: flex; align-items: center; gap: 12px; }
+.testi-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-d); font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0; }
+.testi-name { font-family: var(--font-d); font-size: 13px; font-weight: 700; color: var(--text-lt); }
+.testi-role { font-size: 12px; color: var(--muted-lt); font-family: var(--font-m); }
+.testi-stars { color: var(--warm); font-size: 13px; letter-spacing: 1px; margin-bottom: 16px; }
+
+/* ─── CTA ─────────────────────────────────────── */
+#cta { border-top: 1px solid var(--border-dk); text-align: center; position: relative; overflow: hidden; }
+.cta-mesh {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 60% 70% at 50% 50%, rgba(108,63,230,0.1) 0%, transparent 65%);
+}
+.cta-inner { position: relative; max-width: 680px; margin: 0 auto; }
+.cta-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(108,63,230,0.12); border: 1px solid rgba(108,63,230,0.25); border-radius: 100px; padding: 7px 16px; font-family: var(--font-m); font-size: 11px; color: var(--accent); letter-spacing: 0.08em; margin-bottom: 32px; }
+.cta-h2 { font-family: var(--font-d); font-size: clamp(38px, 5vw, 72px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.04; color: var(--text-dk); margin-bottom: 18px; }
+.cta-sub { font-size: 17px; color: var(--muted-dk); max-width: 420px; margin: 0 auto 44px; line-height: 1.6; }
+.cta-form { display: flex; flex-direction: column; gap: 12px; max-width: 420px; margin: 0 auto; }
+.cta-row { display: flex; gap: 10px; }
+.cta-input {
+  flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border-dk);
+  border-radius: 14px; padding: 15px 20px; font-family: var(--font-b); font-size: 14px;
+  color: var(--text-dk); outline: none; transition: border-color 0.2s, background 0.2s;
+}
+.cta-input:focus { border-color: rgba(108,63,230,0.45); background: rgba(108,63,230,0.06); }
+.cta-input::placeholder { color: var(--muted-dk); }
+.cta-submit { width: 100%; padding: 16px; background: var(--text-dk); color: var(--dk); border: none; border-radius: 14px; font-family: var(--font-d); font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity 0.2s, transform 0.2s; }
+.cta-submit:hover { opacity:0.88; transform:scale(1.02); }
+.cta-privacy { font-family: var(--font-m); font-size: 11px; color: var(--muted-dk); opacity: 0.6; margin-top: 8px; letter-spacing: 0.04em; }
+.cta-success { display: none; text-align: center; padding: 20px; }
+.cta-success-icon { font-size: 36px; margin-bottom: 12px; }
+.cta-success-text { font-family: var(--font-d); font-size: 20px; font-weight: 700; color: var(--text-dk); }
+.cta-success-sub { font-size: 14px; color: var(--muted-dk); margin-top: 6px; }
+
+/* ─── FOOTER ──────────────────────────────────── */
+footer {
+  background: var(--dk2); border-top: 1px solid var(--border-dk);
+  padding: 52px; display: grid; grid-template-columns: 1fr auto auto auto; gap: 48px; align-items: start;
+}
+.footer-brand .footer-logo { font-family: var(--font-d); font-size: 20px; font-weight: 700; color: var(--text-dk); letter-spacing: -0.04em; margin-bottom: 10px; }
+.footer-brand .footer-logo span { color: var(--accent); }
+.footer-brand p { font-size: 13px; color: var(--muted-dk); line-height: 1.6; max-width: 240px; }
+.footer-col-title { font-family: var(--font-m); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted-dk); margin-bottom: 16px; opacity: 0.6; }
+.footer-links { display: flex; flex-direction: column; gap: 10px; }
+.footer-link { font-size: 13px; color: var(--muted-dk); text-decoration: none; transition: color 0.2s; }
+.footer-link:hover { color: var(--text-dk); }
+.footer-bottom { grid-column: 1/-1; border-top: 1px solid var(--border-dk); padding-top: 28px; display: flex; justify-content: space-between; align-items: center; }
+.footer-copy { font-family: var(--font-m); font-size: 11px; color: var(--muted-dk); opacity: 0.5; letter-spacing: 0.04em; }
+
+/* ─── TWEAKS ──────────────────────────────────── */
+.tweaks-panel { position: fixed; bottom: 24px; right: 24px; background: var(--dk3); border: 1px solid var(--border-dk); border-radius: 18px; padding: 22px; width: 230px; z-index: 600; display: none; backdrop-filter: blur(16px); box-shadow: 0 12px 48px rgba(0,0,0,0.5); }
+.tweaks-panel.on { display: block; }
+.tweaks-title { font-family: var(--font-m); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+.tweak-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.tweak-label { font-size: 12px; color: var(--muted-dk); }
+.tweak-toggle { width: 36px; height: 20px; border-radius: 100px; background: rgba(255,255,255,0.1); cursor: pointer; position: relative; transition: background 0.2s; }
+.tweak-toggle.on { background: var(--accent); }
+.tweak-toggle::after { content:''; position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:50%; background:#fff; transition:transform 0.2s; }
+.tweak-toggle.on::after { transform:translateX(16px); }
+.tweak-sel { background: rgba(255,255,255,0.07); border: 1px solid var(--border-dk); border-radius: 8px; color: var(--text-dk); font-family: var(--font-b); font-size: 12px; padding: 4px 8px; outline: none; cursor: pointer; }
+
+/* ─── ANIMS ───────────────────────────────────── */
+@keyframes fadeUp { to{opacity:1;transform:translateY(0)} }
+@keyframes wordUp { to{opacity:1;transform:translateY(0)} }
+
+/* ─── RESPONSIVE ──────────────────────────────── */
+@media(max-width:900px){
+  nav{padding:20px 24px}
+  nav.scrolled{padding:14px 24px}
+  .nav-links .nav-link:nth-child(1),.nav-links .nav-link:nth-child(2){display:none}
+  .sec{padding:80px 24px}
+  .problem-grid,.demo-grid,.testi-grid,.how-steps{grid-template-columns:1fr}
+  .feat-sticky{grid-template-columns:1fr;overflow:auto}
+  .feat-phone-col{display:none}
+  .stats-inner{grid-template-columns:1fr}
+  .stat-block{border-right:none;border-bottom:1px solid var(--border-dk);padding:40px 24px}
+  footer{grid-template-columns:1fr 1fr;gap:32px;padding:36px 24px}
+  .footer-bottom{flex-direction:column;gap:12px;text-align:center}
+  .cta-row{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<div id="scroll-bar"></div>
+
+<!-- ─── NAV ──────────────────────────────── -->
+<nav id="nav">
+  <a href="#" class="nav-logo">Colado<span class="nav-logo-dot">.</span></a>
+  <div class="nav-links">
+    <span class="nav-badge">Beta</span>
+    <a href="#how" class="nav-link">How it works</a>
+    <a href="#features" class="nav-link">Features</a>
+    <a href="#demo" class="nav-link">Try it</a>
+  </div>
+  <button class="nav-cta" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">Get early access</button>
+</nav>
+
+<!-- ─── HERO ──────────────────────────────── -->
+<section id="hero">
+  <div class="hero-mesh"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-scan"></div>
+
+  <div class="hero-eyebrow">
+    <span class="eyebrow-pulse"></span>
+    Now in Beta
+  </div>
+
+  <h1 class="hero-h1" id="hero-h1">
+    <!-- filled by JS -->
+  </h1>
+
+  <p class="hero-sub">
+    Colado tells you the single best action to take right now — so you spend less time planning and more time doing.
+  </p>
+
+  <div class="hero-actions">
+    <button class="btn-hero-primary" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">Get early access</button>
+    <button class="btn-hero-ghost" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">See how it works →</button>
+  </div>
+
+  <!-- Hero phone -->
+  <div class="hero-phone-wrap">
+    <div class="hero-phone-glow"></div>
+    <div class="phone">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="phone-statusbar">
+          <span>9:41</span><span>●●●</span>
+        </div>
+        <div class="ph-screen">
+          <div class="fs-time">Right now · Wednesday</div>
+          <div class="fs-card">
+            <div class="fs-tag">Top priority</div>
+            <div class="fs-task">Finish the outline</div>
+            <div class="fs-meta">~25 min · High impact</div>
+            <div class="fs-btns">
+              <button class="fs-btn-start">Start</button>
+              <button class="fs-btn-snooze">Snooze</button>
+            </div>
+          </div>
+          <div class="ph-label">app screen placeholder</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TICKER ─────────────────────────────── -->
+<div id="ticker">
+  <div class="ticker-track" id="ticker-track"></div>
+</div>
+
+<!-- ─── PROBLEM ────────────────────────────── -->
+<section id="problem" class="sec sec-lt">
+  <div class="problem-grid">
+    <div class="problem-before reveal-left">
+      <p class="problem-title">When everything feels urgent, nothing gets done.</p>
+      <p class="problem-sub">Tabs, tools, lists, notifications — the average founder context-switches 50+ times a day. None of it moves the needle.</p>
+      <div class="chaos-tasks" id="chaos-tasks">
+        <div class="chaos-chip"><span class="chaos-chip-dot" style="background:oklch(65% 0.2 20)"></span>Reply to investor email<span class="chaos-chip-priority" style="background:rgba(200,60,60,0.1);color:oklch(55% 0.2 20)">Urgent</span></div>
+        <div class="chaos-chip"><span class="chaos-chip-dot" style="background:oklch(65% 0.18 54)"></span>Fix the onboarding bug<span class="chaos-chip-priority" style="background:rgba(200,140,40,0.1);color:oklch(55% 0.17 54)">High</span></div>
+        <div class="chaos-chip"><span class="chaos-chip-dot" style="background:oklch(55% 0.15 220)"></span>Update the deck<span class="chaos-chip-priority" style="background:rgba(40,120,200,0.1);color:oklch(50% 0.18 220)">Medium</span></div>
+        <div class="chaos-chip"><span class="chaos-chip-dot" style="background:oklch(60% 0.14 150)"></span>Schedule team sync<span class="chaos-chip-priority" style="background:rgba(40,180,100,0.1);color:oklch(50% 0.16 150)">Low</span></div>
+        <div class="chaos-chip"><span class="chaos-chip-dot" style="background:oklch(65% 0.2 20)"></span>Review contracts<span class="chaos-chip-priority" style="background:rgba(200,60,60,0.1);color:oklch(55% 0.2 20)">Urgent</span></div>
+      </div>
+    </div>
+    <div class="problem-after reveal-right">
+      <p class="clarity-label">Colado gives you one.</p>
+      <div class="clarity-card">
+        <p class="clarity-now">Right now · 2:47 PM</p>
+        <p class="clarity-task">Reply to investor email</p>
+        <p class="clarity-meta">~15 min · Highest impact</p>
+        <div class="clarity-btns">
+          <button class="clarity-start">Start now</button>
+          <button class="clarity-snooze">Snooze 1h</button>
+        </div>
+      </div>
+      <p style="font-size:13px;color:var(--muted-lt);margin-top:20px;font-family:var(--font-m);letter-spacing:0.04em;">Everything else waits. You focus.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── STATS ───────────────────────────────── -->
+<section id="stats" class="sec sec-dk" style="padding-top:0;padding-bottom:0">
+  <div class="stats-inner">
+    <div class="stat-block reveal">
+      <span class="stat-num" data-count="1" data-suffix="">1</span>
+      <p class="stat-label">Next action, always. Not ten options — one clear move.</p>
+    </div>
+    <div class="stat-block reveal" style="transition-delay:0.12s">
+      <span class="stat-num" data-count="5" data-suffix="min">5min</span>
+      <p class="stat-label">To set up your full week. Talk, type, or paste your backlog.</p>
+    </div>
+    <div class="stat-block reveal" style="transition-delay:0.24s">
+      <span class="stat-num" data-count="0" data-suffix="%">0%</span>
+      <p class="stat-label">Guilt. When plans break, Colado adapts. Not another overdue list.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── HOW IT WORKS ───────────────────────── -->
+<section id="how" class="sec sec-lt">
+  <div class="how-inner">
+    <div class="how-header">
+      <p class="eyebrow eyebrow-lt reveal">How it works</p>
+      <h2 class="h2 h2-lt reveal" style="margin:0 auto;transition-delay:0.1s">Three steps from chaos<br>to <em style="color:oklch(50% 0.22 286)">one obvious action.</em></h2>
+    </div>
+    <div class="how-steps">
+
+      <div class="how-step reveal" style="transition-delay:0s">
+        <div class="how-step-num">01 &nbsp; Capture</div>
+        <div class="how-phone-wrap">
+          <div class="how-phone">
+            <div class="how-phone-notch"></div>
+            <div class="how-phone-screen">
+              <div class="how-input-row">Add anything…</div>
+              <div class="how-chip"><span class="how-chip-dot"></span>Ship the deck</div>
+              <div class="how-chip"><span class="how-chip-dot"></span>Reply to Alex</div>
+              <div class="how-chip"><span class="how-chip-dot"></span>Book flights</div>
+              <div class="how-chip"><span class="how-chip-dot"></span>Review contracts</div>
+              <div style="position:absolute;bottom:24px;left:50%;transform:translateX(-50%);font-family:var(--font-m);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted-lt);opacity:0.6;white-space:nowrap">app screen placeholder</div>
+            </div>
+          </div>
+        </div>
+        <h3 class="how-step-title">Add anything, any way</h3>
+        <p class="how-step-desc">Type, speak, or paste. Colado holds the noise so you don't have to carry it in your head.</p>
+      </div>
+
+      <div class="how-step reveal" style="transition-delay:0.14s">
+        <div class="how-step-num">02 &nbsp; Prioritize</div>
+        <div class="how-phone-wrap">
+          <div class="how-phone">
+            <div class="how-phone-notch"></div>
+            <div class="how-phone-screen">
+              <div style="font-family:var(--font-m);font-size:10px;color:var(--muted-lt);letter-spacing:0.06em;margin-bottom:12px">Scoring your tasks…</div>
+              <div class="how-score-row"><span style="font-size:11px;color:var(--text-lt);font-family:var(--font-b);min-width:90px">Reply to Alex</span><div class="how-score-bar-wrap"><div class="how-score-bar" style="width:92%"></div></div><span class="how-score-label">92</span></div>
+              <div class="how-score-row"><span style="font-size:11px;color:var(--text-lt);font-family:var(--font-b);min-width:90px">Ship the deck</span><div class="how-score-bar-wrap"><div class="how-score-bar" style="width:78%"></div></div><span class="how-score-label">78</span></div>
+              <div class="how-score-row"><span style="font-size:11px;color:var(--text-lt);font-family:var(--font-b);min-width:90px">Book flights</span><div class="how-score-bar-wrap"><div class="how-score-bar" style="width:44%"></div></div><span class="how-score-label">44</span></div>
+              <div class="how-score-row"><span style="font-size:11px;color:var(--text-lt);font-family:var(--font-b);min-width:90px">Review contracts</span><div class="how-score-bar-wrap"><div class="how-score-bar" style="width:61%"></div></div><span class="how-score-label">61</span></div>
+              <div style="position:absolute;bottom:24px;left:50%;transform:translateX(-50%);font-family:var(--font-m);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted-lt);opacity:0.6;white-space:nowrap">app screen placeholder</div>
+            </div>
+          </div>
+        </div>
+        <h3 class="how-step-title">Context shapes priority</h3>
+        <p class="how-step-desc">Deadlines, energy, and your calendar shape what matters — no manual sorting, no second-guessing.</p>
+      </div>
+
+      <div class="how-step reveal" style="transition-delay:0.28s">
+        <div class="how-step-num">03 &nbsp; Act</div>
+        <div class="how-phone-wrap">
+          <div class="how-phone">
+            <div class="how-phone-notch"></div>
+            <div class="how-phone-screen" style="display:flex;flex-direction:column;justify-content:center;padding:44px 16px">
+              <div class="how-focus-card">
+                <div class="how-focus-label">Right now</div>
+                <div class="how-focus-task">Reply to Alex</div>
+                <div class="how-focus-meta">~15 min · Highest impact</div>
+              </div>
+              <div style="position:absolute;bottom:24px;left:50%;transform:translateX(-50%);font-family:var(--font-m);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted-lt);opacity:0.6;white-space:nowrap">app screen placeholder</div>
+            </div>
+          </div>
+        </div>
+        <h3 class="how-step-title">One clear move, always</h3>
+        <p class="how-step-desc">You always get one next step — not ten competing options. Execute, then Colado surfaces the next one.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── STICKY FEATURES ─────────────────────── -->
+<div id="features">
+  <div class="feat-sticky-outer" id="feat-outer">
+    <div class="feat-sticky" id="feat-sticky">
+
+      <!-- LEFT: text -->
+      <div class="feat-text-col" style="background:var(--dk)">
+        <div style="position:relative;min-height:320px;">
+
+          <div class="feat-item active" id="fi-0">
+            <p class="feat-step-tag eyebrow-dk">Focus</p>
+            <h3 class="feat-h3" style="color:var(--text-dk)">See only what<br>matters <em>now.</em></h3>
+            <p class="feat-desc" style="color:var(--muted-dk)">Mental clarity comes from hiding everything that isn't the next step. Colado surfaces one action at a time so you can execute — not endlessly re-plan.</p>
+          </div>
+
+          <div class="feat-item" id="fi-1">
+            <p class="feat-step-tag eyebrow-dk">Plan</p>
+            <h3 class="feat-h3" style="color:var(--text-dk)">Your week, without<br>the <em>spreadsheet.</em></h3>
+            <p class="feat-desc" style="color:var(--muted-dk)">Due dates and a lightweight calendar view help you trust the plan. Recurring work and upcoming commitments stay visible without drowning you in tabs.</p>
+          </div>
+
+          <div class="feat-item" id="fi-2">
+            <p class="feat-step-tag eyebrow-dk">Rhythm</p>
+            <h3 class="feat-h3" style="color:var(--text-dk)">Built around how<br>you <em>actually</em> work.</h3>
+            <p class="feat-desc" style="color:var(--muted-dk)">Morning deep work, afternoon meetings, evening admin — Colado respects the shape of your day when it suggests what to tackle next.</p>
+          </div>
+
+        </div>
+        <div class="feat-progress" id="feat-progress">
+          <div class="feat-prog-item active" data-f="0"><div class="feat-prog-line"></div><span class="feat-prog-label">Focus</span></div>
+          <div class="feat-prog-item" data-f="1"><div class="feat-prog-line"></div><span class="feat-prog-label">Plan</span></div>
+          <div class="feat-prog-item" data-f="2"><div class="feat-prog-line"></div><span class="feat-prog-label">Rhythm</span></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: phone -->
+      <div class="feat-phone-col" style="background:var(--dk2)">
+        <div style="position:relative;">
+          <div style="position:absolute;inset:-60px;background:radial-gradient(circle,rgba(108,63,230,0.14) 0%,transparent 65%);pointer-events:none;border-radius:50%;animation:phoneGlow 4s ease-in-out infinite"></div>
+          <div class="feat-phone" style="background:var(--dk3);border:1.5px solid rgba(255,255,255,0.1)">
+            <div class="feat-phone-notch" style="background:var(--dk)"></div>
+            <div class="feat-phone-screen-wrap">
+
+              <!-- Screen 0: Focus -->
+              <div class="feat-screen active" id="fs-0" style="background:var(--dk3)">
+                <div style="font-family:var(--font-m);font-size:10px;color:var(--muted-dk);letter-spacing:0.06em;margin-bottom:16px">Right now · 2:47 PM</div>
+                <div style="background:var(--dk2);border:1px solid rgba(108,63,230,0.25);border-radius:16px;padding:20px">
+                  <div style="font-family:var(--font-m);font-size:9px;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">Top priority</div>
+                  <div style="font-family:var(--font-d);font-size:17px;font-weight:700;color:var(--text-dk);margin-bottom:6px;line-height:1.3">Finish the outline</div>
+                  <div style="font-family:var(--font-m);font-size:11px;color:var(--muted-dk);margin-bottom:18px">~25 min · High impact</div>
+                  <div style="display:flex;gap:8px">
+                    <button style="flex:1;background:var(--accent);border:none;border-radius:10px;color:#fff;font-family:var(--font-d);font-size:13px;font-weight:600;padding:10px;cursor:default">Start</button>
+                    <button style="background:rgba(255,255,255,0.06);border:1px solid var(--border-dk);border-radius:10px;color:var(--muted-dk);font-size:13px;padding:10px 14px;cursor:default;font-family:var(--font-d)">Later</button>
+                  </div>
+                </div>
+                <div style="margin-top:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border-dk);border-radius:12px;padding:14px">
+                  <div style="font-family:var(--font-m);font-size:10px;color:var(--muted-dk);margin-bottom:8px">Up next</div>
+                  <div style="font-size:13px;color:var(--muted-dk);font-family:var(--font-b)">Reply to investor email</div>
+                </div>
+                <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);font-family:var(--font-m);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted-dk);opacity:0.4;white-space:nowrap">app screen placeholder</div>
+              </div>
+
+              <!-- Screen 1: Plan -->
+              <div class="feat-screen" id="fs-1" style="background:var(--dk3)">
+                <div style="font-family:var(--font-m);font-size:10px;color:var(--muted-dk);letter-spacing:0.06em;margin-bottom:14px">This week</div>
+                <div style="display:flex;gap:6px;margin-bottom:16px">
+                  <div style="flex:1;text-align:center">
+                    <div style="font-family:var(--font-m);font-size:8px;color:var(--muted-dk)">M</div>
+                    <div style="width:26px;height:26px;margin:4px auto;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:11px;font-weight:600;color:var(--muted-dk)">4</div>
+                  </div>
+                  <div style="flex:1;text-align:center">
+                    <div style="font-family:var(--font-m);font-size:8px;color:var(--muted-dk)">T</div>
+                    <div style="width:26px;height:26px;margin:4px auto;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:11px;font-weight:600;color:var(--muted-dk)">5</div>
+                  </div>
+                  <div style="flex:1;text-align:center">
+                    <div style="font-family:var(--font-m);font-size:8px;color:var(--accent)">W</div>
+                    <div style="width:26px;height:26px;margin:4px auto;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:11px;font-weight:600;color:#fff">6</div>
+                  </div>
+                  <div style="flex:1;text-align:center">
+                    <div style="font-family:var(--font-m);font-size:8px;color:var(--muted-dk)">T</div>
+                    <div style="width:26px;height:26px;margin:4px auto;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:11px;font-weight:600;color:var(--muted-dk)">7</div>
+                  </div>
+                  <div style="flex:1;text-align:center">
+                    <div style="font-family:var(--font-m);font-size:8px;color:var(--muted-dk)">F</div>
+                    <div style="width:26px;height:26px;margin:4px auto;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:11px;font-weight:600;color:var(--muted-dk)">8</div>
+                  </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:7px">
+                  <div style="background:rgba(108,63,230,0.12);border:1px solid rgba(108,63,230,0.2);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px"><span style="font-size:11px;color:var(--text-dk);font-family:var(--font-b)">Design review · 2pm</span><span style="margin-left:auto;font-family:var(--font-m);font-size:9px;color:var(--accent)">Today</span></div>
+                  <div style="background:rgba(255,255,255,0.04);border:1px solid var(--border-dk);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px"><span style="font-size:11px;color:var(--muted-dk);font-family:var(--font-b)">Weekly plan · Fri</span><span style="margin-left:auto;font-family:var(--font-m);font-size:9px;color:var(--muted-dk)">Fri</span></div>
+                  <div style="background:rgba(255,255,255,0.04);border:1px solid var(--border-dk);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px"><span style="font-size:11px;color:var(--muted-dk);font-family:var(--font-b)">Investor call · Mon</span><span style="margin-left:auto;font-family:var(--font-m);font-size:9px;color:var(--warm)">Soon</span></div>
+                </div>
+                <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);font-family:var(--font-m);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted-dk);opacity:0.4;white-space:nowrap">app screen placeholder</div>
+              </div>
+
+              <!-- Screen 2: Rhythm -->
+              <div class="feat-screen" id="fs-2" style="background:var(--dk3)">
+                <div style="font-family:var(--font-m);font-size:10px;color:var(--muted-dk);letter-spacing:0.06em;margin-bottom:14px">Your rhythm</div>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <div style="background:rgba(108,63,230,0.12);border:1px solid rgba(108,63,230,0.2);border-radius:12px;padding:14px">
+                    <div style="font-family:var(--font-m);font-size:9px;color:var(--accent);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px">Morning</div>
+                    <div style="font-family:var(--font-d);font-size:15px;font-weight:700;color:var(--text-dk)">Deep work</div>
+                  </div>
+                  <div style="background:rgba(220,140,40,0.1);border:1px solid rgba(220,140,40,0.18);border-radius:12px;padding:14px">
+                    <div style="font-family:var(--font-m);font-size:9px;color:var(--warm);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px">Afternoon</div>
+                    <div style="font-family:var(--font-d);font-size:15px;font-weight:700;color:var(--text-dk)">Meetings</div>
+                  </div>
+                  <div style="background:rgba(255,255,255,0.04);border:1px solid var(--border-dk);border-radius:12px;padding:14px">
+                    <div style="font-family:var(--font-m);font-size:9px;color:var(--muted-dk);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px">Evening</div>
+                    <div style="font-family:var(--font-d);font-size:15px;font-weight:700;color:var(--text-dk)">Light tasks</div>
+                  </div>
+                </div>
+                <div style="font-family:var(--font-m);font-size:10px;color:var(--accent);margin-top:14px;text-align:center;letter-spacing:0.06em">Colado adapts to your day</div>
+                <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);font-family:var(--font-m);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted-dk);opacity:0.4;white-space:nowrap">app screen placeholder</div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ─── DEMO ────────────────────────────────── -->
+<section id="demo" class="sec sec-dk">
+  <div class="demo-inner">
+    <div class="demo-header reveal">
+      <p class="eyebrow eyebrow-dk">Live experience</p>
+      <h2 class="h2 h2-dk">Try Colado <em>right now</em></h2>
+      <p style="color:var(--muted-dk);font-size:16px;margin-top:14px;max-width:480px;line-height:1.65">Type in your real tasks. Colado will score, prioritize, and hand you one clear execution plan.</p>
+    </div>
+    <div class="demo-grid reveal" style="transition-delay:0.1s">
+      <div class="demo-panel">
+        <p class="demo-panel-label">Your tasks</p>
+        <div class="task-list" id="task-list"></div>
+        <div class="demo-input-row">
+          <input class="demo-input" id="d-input" placeholder="Add a task… e.g. reply to investor" maxlength="80">
+          <button class="demo-add" id="d-add">+</button>
+        </div>
+        <button class="demo-plan-btn" id="d-plan" disabled>
+          <div class="demo-spinner"></div>
+          <span class="demo-plan-label">Let Colado plan this</span>
+        </button>
+      </div>
+      <div class="demo-panel demo-output">
+        <div class="out-empty" id="d-empty">
+          <div class="out-empty-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.2" opacity="0.4"/><path d="M7 10h6M10 7v6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/></svg></div>
+          <p class="out-empty-text">Add tasks to see the plan</p>
+        </div>
+        <div class="out-list" id="d-results">
+          <p class="demo-panel-label" style="margin-bottom:14px">Colado's execution plan</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TESTIMONIALS ───────────────────────── -->
+<section id="testimonials" class="sec sec-lt">
+  <div class="testi-inner">
+    <div class="testi-header reveal">
+      <p class="eyebrow eyebrow-lt">Early supporters</p>
+      <h2 class="h2 h2-lt" style="margin:0 auto">What beta users say.</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Finally, one thing to focus on. I used to spend 20 minutes every morning just deciding what to work on. Colado killed that habit completely."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:oklch(66% 0.24 286)">S</div>
+          <div>
+            <p class="testi-name">Sarah K.</p>
+            <p class="testi-role">Founder, SaaS</p>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal" style="transition-delay:0.12s">
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"I stop opening five apps to figure out what's next. Colado just tells me. It sounds simple but it's genuinely changed how I work."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:oklch(68% 0.18 150)">M</div>
+          <div>
+            <p class="testi-name">Marcus T.</p>
+            <p class="testi-role">Design lead</p>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal" style="transition-delay:0.24s">
+        <div class="testi-quote">"</div>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"The opposite of another cluttered task list. It's the first productivity tool that actually made me more productive, not more organised."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:oklch(71% 0.17 54)">R</div>
+          <div>
+            <p class="testi-name">Riya P.</p>
+            <p class="testi-role">Operator & Founder</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ─────────────────────────────────── -->
+<section id="cta" class="sec sec-dk sec-center">
+  <div class="cta-mesh"></div>
+  <div class="cta-inner">
+    <div class="cta-badge reveal"><span class="eyebrow-pulse"></span>Limited beta spots</div>
+    <h2 class="cta-h2 reveal" style="transition-delay:0.05s">Get calm,<br>focused productivity.</h2>
+    <p class="cta-sub reveal" style="transition-delay:0.1s">Request early access. We'll reach out when your spot opens. No spam — ever.</p>
+    <div id="cta-form-wrap" class="reveal" style="transition-delay:0.15s">
+      <div class="cta-form">
+        <div class="cta-row">
+          <input class="cta-input" id="cta-name" placeholder="Your name">
+          <input class="cta-input" id="cta-phone" placeholder="Phone (optional)">
+        </div>
+        <input class="cta-input" id="cta-email" type="email" placeholder="your@email.com">
+        <button class="cta-submit" id="cta-submit">Get Early Access →</button>
+        <p class="cta-privacy">No card required. We respect your privacy.</p>
+      </div>
+    </div>
+    <div class="cta-success" id="cta-success">
+      <div class="cta-success-icon">✦</div>
+      <p class="cta-success-text">You're on the list.</p>
+      <p class="cta-success-sub">We'll be in touch when your spot opens. In the meantime, share Colado with a founder friend.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ──────────────────────────────── -->
+<footer>
+  <div class="footer-brand">
+    <p class="footer-logo">Colado<span>.</span></p>
+    <p>One clear next action — so you stop juggling and start finishing what matters.</p>
+  </div>
+  <div>
+    <p class="footer-col-title">Product</p>
+    <div class="footer-links">
+      <a href="#how" class="footer-link">How it works</a>
+      <a href="#features" class="footer-link">Features</a>
+      <a href="#demo" class="footer-link">Try it</a>
+    </div>
+  </div>
+  <div>
+    <p class="footer-col-title">Company</p>
+    <div class="footer-links">
+      <a href="#" class="footer-link">About</a>
+      <a href="#cta" class="footer-link">Contact</a>
+    </div>
+  </div>
+  <div>
+    <p class="footer-col-title">Legal</p>
+    <div class="footer-links">
+      <a href="#" class="footer-link">Privacy</a>
+      <a href="#" class="footer-link">Terms</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 Colado · colado.in · All rights reserved</span>
+    <span class="footer-copy">Made with care for founders who ship.</span>
+  </div>
+</footer>
+
+<!-- ─── TWEAKS ──────────────────────────────── -->
+<div class="tweaks-panel" id="tweaks-panel">
+  <p class="tweaks-title">Tweaks</p>
+  <div class="tweak-row">
+    <span class="tweak-label">Accent color</span>
+    <select class="tweak-sel" onchange="setAccent(this.value)">
+      <option value="286">Violet</option>
+      <option value="220">Blue</option>
+      <option value="160">Teal</option>
+      <option value="350">Rose</option>
+    </select>
+  </div>
+  <div class="tweak-row">
+    <span class="tweak-label">Reduced motion</span>
+    <div class="tweak-toggle" id="t-motion" onclick="toggleMotion(this)"></div>
+  </div>
+  <div class="tweak-row">
+    <span class="tweak-label">Light nav</span>
+    <div class="tweak-toggle" id="t-lnav" onclick="toggleLightNav(this)"></div>
+  </div>
+</div>
+
+<script>
+// ─── TWEAKS ──────────────────────────────────────
+window.addEventListener('message', e => {
+  if(e.data?.type==='__activate_edit_mode') document.getElementById('tweaks-panel').classList.add('on');
+  if(e.data?.type==='__deactivate_edit_mode') document.getElementById('tweaks-panel').classList.remove('on');
+});
+window.parent.postMessage({type:'__edit_mode_available'},'*');
+const TWEAK_DEFAULTS=/*EDITMODE-BEGIN*/{"accent":"286","reducedMotion":false,"lightNav":false}/*EDITMODE-END*/;
+function setAccent(h){document.documentElement.style.setProperty('--accent',`oklch(66% 0.24 ${h})`);window.parent.postMessage({type:'__edit_mode_set_keys',edits:{accent:h}},'*');}
+function toggleMotion(el){el.classList.toggle('on');document.documentElement.style.setProperty('--dur',el.classList.contains('on')?'0s':'0.8s');window.parent.postMessage({type:'__edit_mode_set_keys',edits:{reducedMotion:el.classList.contains('on')}},'*');}
+function toggleLightNav(el){el.classList.toggle('on');document.getElementById('nav').style.background=el.classList.contains('on')?'rgba(244,243,240,0.9)':'';document.getElementById('nav').style.borderColor=el.classList.contains('on')?'rgba(0,0,0,0.08)':'';}
+
+// ─── SCROLL PROGRESS ─────────────────────────────
+const scrollBar=document.getElementById('scroll-bar');
+window.addEventListener('scroll',()=>{
+  const p=window.scrollY/(document.documentElement.scrollHeight-window.innerHeight);
+  scrollBar.style.width=(p*100)+'%';
+},{passive:true});
+
+// ─── NAV ─────────────────────────────────────────
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>{nav.classList.toggle('scrolled',window.scrollY>40);},{passive:true});
+
+// ─── HERO WORD REVEAL ────────────────────────────
+const h1=document.getElementById('hero-h1');
+const words=['One','clear','next','action.'];
+const delays=[0.35,0.5,0.65,0.8];
+h1.innerHTML=words.map((w,i)=>`<span class="word"><span class="word-inner" style="animation-delay:${delays[i]}s">${w}</span></span>${i<words.length-1?' ':''}`).join('');
+
+// ─── TICKER ──────────────────────────────────────
+const quotes=[
+  '"Finally, one thing to focus on."',
+  '"I stop opening five apps to figure out what\'s next."',
+  '"The opposite of another cluttered task list."',
+  '"Simple, focused, and exactly what I needed."',
+  '"It\'s the first tool that actually made me productive."',
+  '"My morning planning went from 20 mins to zero."',
+];
+const t=document.getElementById('ticker-track');
+const qHtml=quotes.map(q=>`<span class="ticker-item"><span class="ticker-sep"></span>${q}</span>`).join('');
+t.innerHTML=qHtml+qHtml;
+
+// ─── INTERSECTION OBSERVER ────────────────────────
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('up');});
+},{threshold:0.1});
+document.querySelectorAll('.reveal,.reveal-scale,.reveal-left,.reveal-right').forEach(el=>io.observe(el));
+
+// ─── STATS COUNTER ───────────────────────────────
+const statNums=document.querySelectorAll('.stat-num[data-count]');
+const statsIO=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting) return;
+    const el=e.target;
+    const target=parseInt(el.dataset.count);
+    const suffix=el.dataset.suffix;
+    if(target===0){el.textContent='0%';return;}
+    let start=0; const dur=1400; const startTime=performance.now();
+    function tick(now){
+      const p=Math.min((now-startTime)/dur,1);
+      const ease=1-Math.pow(1-p,3);
+      el.textContent=Math.round(ease*target)+suffix;
+      if(p<1)requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+    statsIO.unobserve(el);
+  });
+},{threshold:0.5});
+statNums.forEach(el=>statsIO.observe(el));
+
+// ─── STICKY FEATURES ─────────────────────────────
+const featOuter=document.getElementById('feat-outer');
+const featItems=[document.getElementById('fi-0'),document.getElementById('fi-1'),document.getElementById('fi-2')];
+const featScreens=[document.getElementById('fs-0'),document.getElementById('fs-1'),document.getElementById('fs-2')];
+const featProgItems=document.querySelectorAll('.feat-prog-item');
+let currentFeat=-1;
+
+function setFeat(i){
+  if(i===currentFeat)return;
+  currentFeat=i;
+  featItems.forEach((el,j)=>{
+    el.classList.toggle('active',j===i);
+    if(j!==i){el.style.position='absolute';el.style.opacity='0';el.style.transform='translateY(24px)';}
+    else{el.style.position='relative';el.style.opacity='1';el.style.transform='translateY(0)';}
+  });
+  featScreens.forEach((el,j)=>el.classList.toggle('active',j===i));
+  featProgItems.forEach((el,j)=>el.classList.toggle('active',j===i));
+}
+
+window.addEventListener('scroll',()=>{
+  const rect=featOuter.getBoundingClientRect();
+  const scrollable=featOuter.offsetHeight-window.innerHeight;
+  const p=Math.max(0,Math.min(1,-rect.top/scrollable));
+  const i=Math.min(2,Math.floor(p*3));
+  setFeat(i);
+},{passive:true});
+setFeat(0);
+
+// click progress
+featProgItems.forEach(el=>{
+  el.addEventListener('click',()=>{
+    const i=parseInt(el.dataset.f);
+    const targetScroll=featOuter.offsetTop+(i/3)*(featOuter.offsetHeight-window.innerHeight)+window.innerHeight*0.1;
+    window.scrollTo({top:targetScroll,behavior:'smooth'});
+  });
+});
+
+// ─── DEMO ────────────────────────────────────────
+const dInput=document.getElementById('d-input');
+const dAdd=document.getElementById('d-add');
+const dPlan=document.getElementById('d-plan');
+const dList=document.getElementById('task-list');
+const dResults=document.getElementById('d-results');
+const dEmpty=document.getElementById('d-empty');
+let dtasks=[];
+
+const INSIGHTS={
+  high:['Investor-facing — time-sensitive by nature.','Directly impacts revenue. Do this first.','Blocking other work. Clear it now.','High leverage, low friction. Attack this.'],
+  med:['Important but not urgent — schedule a block.','Has dependencies — map them first.','Needs focus time — protect your mornings.','Medium impact; batch with similar tasks.'],
+  low:['Can be delegated or deferred.','Async-friendly — handle in off-peak hours.','Low urgency; keep in backlog.','Informational — queue for end of week.']
+};
+function scoreTask(text){
+  const t=text.toLowerCase();
+  const hi=['investor','launch','urgent','deadline','ship','close','revenue','client','sign','hire','pitch','demo','contract','reply'];
+  const md=['review','prepare','write','design','meeting','call','plan','draft','build','deck'];
+  let s=35+Math.random()*20;
+  if(hi.some(k=>t.includes(k)))s=72+Math.random()*25;
+  else if(md.some(k=>t.includes(k)))s=48+Math.random()*22;
+  return Math.round(s);
+}
+function renderTasks(){
+  dList.innerHTML='';
+  dtasks.forEach((t,i)=>{
+    const el=document.createElement('div');
+    el.className='task-chip';
+    el.style.animationDelay=(i*0.04)+'s';
+    el.innerHTML=`<span class="task-chip-dot"></span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t}</span><span class="task-chip-del" onclick="delTask(${i})">×</span>`;
+    dList.appendChild(el);
+  });
+  dPlan.disabled=dtasks.length===0;
+}
+window.delTask=i=>{dtasks.splice(i,1);renderTasks();if(!dtasks.length)resetOut();};
+function resetOut(){
+  dResults.classList.remove('visible');
+  dEmpty.style.display='flex';
+  while(dResults.children.length>1)dResults.removeChild(dResults.lastChild);
+}
+function addTask(){
+  const v=dInput.value.trim();
+  if(!v||dtasks.length>=7)return;
+  dtasks.push(v);dInput.value='';renderTasks();
+}
+dInput.addEventListener('keydown',e=>{if(e.key==='Enter')addTask();});
+dAdd.addEventListener('click',addTask);
+
+// Seed tasks
+['Reply to investor email','Fix onboarding bug','Prepare Q2 deck'].forEach(t=>dtasks.push(t));
+renderTasks();
+
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+dPlan.addEventListener('click',async()=>{
+  if(!dtasks.length)return;
+  dPlan.classList.add('loading');dPlan.disabled=true;resetOut();
+  await delay(1500);
+  const scored=dtasks.map(t=>({text:t,score:scoreTask(t)})).sort((a,b)=>b.score-a.score);
+  dPlan.classList.remove('loading');
+  dEmpty.style.display='none';
+  dResults.classList.add('visible');
+  for(let i=0;i<scored.length;i++){
+    await delay(i===0?80:200);
+    const{text,score}=scored[i];
+    const tier=score>=70?'high':score>=48?'med':'low';
+    const insight=INSIGHTS[tier][Math.floor(Math.random()*4)];
+    const rankCls=`r${Math.min(i+1,5)}`;
+    const scoreCls=tier==='high'?'s-hi':tier==='med'?'s-md':'s-lo';
+    const times={high:['2h','90min','3h'],med:['1h','45min','2h'],low:['30min','20min','15min']};
+    const time=times[tier][i%3];
+    const card=document.createElement('div');
+    card.className='out-card';
+    card.innerHTML=`<div class="out-rank ${rankCls}">#${i+1}</div><div class="out-body"><div class="out-name">${text}</div><div class="out-insight">${insight}</div></div><div class="out-meta"><span class="out-score ${scoreCls}">${score}</span><span class="out-time">${time}</span></div>`;
+    dResults.appendChild(card);
+    await delay(30);
+    card.classList.add('in');
+  }
+  dPlan.disabled=false;
+});
+
+// ─── CTA FORM ─────────────────────────────────────
+document.getElementById('cta-submit').addEventListener('click',()=>{
+  const email=document.getElementById('cta-email').value.trim();
+  if(!email||!email.includes('@')){document.getElementById('cta-email').style.borderColor='rgba(220,60,60,0.5)';return;}
+  document.getElementById('cta-form-wrap').style.display='none';
+  document.getElementById('cta-success').style.display='block';
+});
+
+// ─── PHONE PARALLAX ──────────────────────────────
+const heroPhoneWrap=document.querySelector('.hero-phone-wrap');
+window.addEventListener('scroll',()=>{
+  const y=window.scrollY;
+  if(y<window.innerHeight&&heroPhoneWrap){
+    heroPhoneWrap.style.transform=`translateY(${y*0.12}px)`;
+  }
+},{passive:true});
+</script>
+</body>
+</html>
