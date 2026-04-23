@@ -69,7 +69,7 @@ function SceneCollapseBody() {
       <HeroFog opacity={1} />
       <Masthead
         leftSub="An instrument for the next move"
-        right="Specimen I"
+        right="Specimen"
         rightSub="Hero"
       />
 
@@ -99,7 +99,7 @@ function SceneCollapseBody() {
             color={COLADO.muteSoft}
             style={{ letterSpacing: "0.18em", textTransform: "uppercase" }}
           >
-            Fig. I
+            Fig.
           </Inst>
           <span style={{ color: COLADO.muteSoft }}>—</span>
           <Inst size={13}>
@@ -191,7 +191,7 @@ function SceneCollapseBody() {
       </div>
 
       <Folio
-        coord="Colado / Landing / Hero · Coordinate I.A"
+        coord="Colado / Landing / Hero · Coordinate"
         idx="01"
         total="06"
       />

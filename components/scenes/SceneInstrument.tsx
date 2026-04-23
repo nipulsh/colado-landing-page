@@ -82,7 +82,7 @@ function SceneInstrumentBody() {
       <HeroFog opacity={0.8} />
       <Masthead
         leftSub="The instrument, reading context"
-        right="Specimen II"
+        right="Specimen"
         rightSub="Prioritize"
       />
 
@@ -140,7 +140,7 @@ function SceneInstrumentBody() {
       </div>
 
       <Folio
-        coord="Colado / Landing / Method · Coordinate II.A"
+        coord="Colado / Landing / Method · Coordinate"
         idx="02"
         total="06"
       />
@@ -265,7 +265,7 @@ function SpecimenCard({
           <Inst size={13}>What&apos;s on your mind</Inst>
         </div>
         <Inst size={12} color={COLADO.muteSoft}>
-          Fig. I.a
+          Fig.
         </Inst>
       </div>
 
@@ -373,9 +373,6 @@ function SpecimenCard({
           <span style={{ fontVariantNumeric: "tabular-nums" }}>
             14:32 IST
           </span>
-        </Inst>
-        <Inst size={12} color={COLADO.muteSoft}>
-          II.a
         </Inst>
       </div>
     </div>

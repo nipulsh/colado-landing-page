@@ -215,7 +215,7 @@ function SceneIntroBody({ beats }: { beats: Beat[] }) {
               color={COLADO.muteSoft}
               style={{ letterSpacing: "0.18em", textTransform: "uppercase" }}
             >
-              Fig. 0
+              Fig.
             </Inst>
             <span style={{ color: COLADO.muteSoft }}>—</span>
             <Inst size={14}>
@@ -322,7 +322,7 @@ function SceneIntroBody({ beats }: { beats: Beat[] }) {
       </div>
 
       <Folio
-        coord="Colado / Landing / Capture · Coordinate 0.A"
+        coord="Colado / Landing / Capture · Coordinate"
         idx="00"
         total="06"
       />
@@ -357,7 +357,7 @@ function MarginNote({ localTime }: { localTime: number }) {
           fontWeight: 600,
         }}
       >
-        § — too much
+        Too much
       </span>
       <div
         style={{

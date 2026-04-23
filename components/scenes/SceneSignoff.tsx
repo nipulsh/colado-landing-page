@@ -65,7 +65,7 @@ function SceneSignoffBody() {
       <HeroFog opacity={0.5} />
       <Masthead
         leftSub="Quiet instruments, field notes"
-        right="Specimen VI"
+        right="Specimen"
         rightSub="Colophon"
       />
 
@@ -216,7 +216,7 @@ function SceneSignoffBody() {
         }}
       >
         <Inst size={12} color={COLADO.muteSoft}>
-          Fig. VI — Colophon
+          Fig. — Colophon
         </Inst>
         <Inst size={12} color={COLADO.muteSoft}>
           Pressed on bone paper
@@ -224,7 +224,7 @@ function SceneSignoffBody() {
       </div>
 
       <Folio
-        coord="Colado / Landing / Colophon · Coordinate VI"
+        coord="Colado / Landing / Colophon · Coordinate"
         idx="06"
         total="06"
       />

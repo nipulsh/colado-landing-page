@@ -112,7 +112,7 @@ function SceneMovementsBody() {
       <PaperGrain opacity={0.28} />
       <Masthead
         leftSub="Three movements, one quiet instrument"
-        right="Specimen III"
+        right="Specimen"
         rightSub="Method Triptych"
       />
 
@@ -184,7 +184,7 @@ function SceneMovementsBody() {
       <BottomQuote localTime={localTime} />
 
       <Folio
-        coord="Colado / Landing / Method Triptych III.A – C"
+        coord="Colado / Landing / Method Triptych"
         idx="03"
         total="06"
       />

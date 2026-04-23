@@ -78,7 +78,7 @@ function SceneOneMoveBody() {
       <HeroFog opacity={0.6} />
       <Masthead
         leftSub="The single next move"
-        right="Specimen IV"
+        right="Specimen"
         rightSub="Act"
       />
 
@@ -128,7 +128,7 @@ function SceneOneMoveBody() {
               <Inst size={13}>The next move</Inst>
             </div>
             <Inst size={12} color={COLADO.muteSoft}>
-              Fig. IV.a
+              Fig.
             </Inst>
           </div>
 
@@ -342,7 +342,7 @@ function SceneOneMoveBody() {
       </div>
 
       <Folio
-        coord="Colado / Landing / Act · Coordinate IV.A"
+        coord="Colado / Landing / Act · Coordinate"
         idx="04"
         total="06"
       />

@@ -281,6 +281,119 @@ textarea:focus-visible,
   border-top: 1px solid var(--hairline);
 }
 
+/* ── QuietInstruments stage — full-bleed → embedded transition ──────────── */
+
+/*
+ * Intro state: truly edge-to-edge. The animation fills the viewport from
+ * left edge to right edge, with no horizontal padding and no 16:9 cap.
+ * Section background matches the animation paper so any minor letterbox
+ * is invisible — the animation becomes *part* of the page, not a framed
+ * inset on top of it.
+ *
+ * Embedded state: settles into a contained 1400px-max 16:9 frame with the
+ * usual side padding.
+ */
+.quiet-instruments-section {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 0 0 0;
+  box-sizing: border-box;
+  min-height: 100vh;
+  background: #f4f0e6;
+  transition:
+    min-height 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    padding 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.quiet-instruments-section[data-embedded="true"] {
+  min-height: 0;
+  padding: 84px 16px 56px 16px;
+  background: transparent;
+}
+
+@media (min-width: 640px) {
+  .quiet-instruments-section {
+    padding: 64px 0 0 0;
+  }
+  .quiet-instruments-section[data-embedded="true"] {
+    padding: 96px 24px 72px 24px;
+  }
+}
+
+@media (min-width: 768px) {
+  .quiet-instruments-section {
+    padding: 72px 0 0 0;
+  }
+  .quiet-instruments-section[data-embedded="true"] {
+    padding: 104px 32px 88px 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .quiet-instruments-section {
+    padding: 76px 0 0 0;
+  }
+  .quiet-instruments-section[data-embedded="true"] {
+    padding: 112px 48px 104px 48px;
+  }
+}
+
+/*
+ * Frame width:
+ *   intro    → 100% of viewport (edge-to-edge, no max cap)
+ *   embedded → 1400px max
+ */
+.quiet-instruments-frame {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin-inline: auto;
+  transition: max-width 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.quiet-instruments-section[data-embedded="true"] .quiet-instruments-frame {
+  max-width: 1400px;
+}
+
+/*
+ * Canvas sizing:
+ *   intro    → fills remaining viewport height below the nav
+ *   embedded → fixed 16:9 aspect ratio inside the 1400px frame
+ */
+.quiet-instruments-canvas {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 56px);
+  transition: height 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (min-width: 640px) {
+  .quiet-instruments-canvas {
+    height: calc(100vh - 64px);
+  }
+}
+
+@media (min-width: 768px) {
+  .quiet-instruments-canvas {
+    height: calc(100vh - 72px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .quiet-instruments-canvas {
+    height: calc(100vh - 76px);
+  }
+}
+
+.quiet-instruments-section[data-embedded="true"] .quiet-instruments-canvas {
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
 /* Priority-label pill (NOW / NEXT / THEN / LATER / ADMIN) */
 .pill-label {
   font-family: var(--mono);

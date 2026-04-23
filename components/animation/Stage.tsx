@@ -1,10 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { TimelineContext } from "@/lib/animation/context";
-import { clamp } from "@/lib/animation/easing";
-import { PlaybackBar } from "./PlaybackBar";
 
 type StageProps = {
   width?: number;
@@ -14,7 +12,9 @@ type StageProps = {
   fps?: number;
   loop?: boolean;
   autoplay?: boolean;
+  /** Accepted for backwards compatibility; no longer persists state. */
   persistKey?: string;
+  onTimeUpdate?: (time: number) => void;
   children: ReactNode;
 };
 
@@ -25,49 +25,32 @@ export function Stage({
   background = "#f6f4ef",
   loop = true,
   autoplay = true,
-  persistKey = "animstage",
+  onTimeUpdate,
   children,
 }: StageProps) {
   const [time, setTime] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [hoverTime, setHoverTime] = useState<number | null>(null);
   const [scale, setScale] = useState(1);
-  const [mounted, setMounted] = useState(false);
 
-  // Hydrate from localStorage after mount to avoid SSR mismatch
   useEffect(() => {
-    try {
-      const v = parseFloat(localStorage.getItem(persistKey + ":t") || "0");
-      if (isFinite(v)) setTime(clamp(v, 0, duration));
-    } catch {
-      /* noop */
-    }
     if (autoplay) setPlaying(true);
-    setMounted(true);
-  }, [persistKey, duration, autoplay]);
+  }, [autoplay]);
 
   const stageRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
   const lastTsRef = useRef<number | null>(null);
 
-  // Persist playhead
   useEffect(() => {
-    try {
-      localStorage.setItem(persistKey + ":t", String(time));
-    } catch {
-      /* noop */
-    }
-  }, [time, persistKey]);
+    onTimeUpdate?.(time);
+  }, [time, onTimeUpdate]);
 
-  // Auto-scale to fit container
   useEffect(() => {
     if (!stageRef.current) return;
     const el = stageRef.current;
     const measure = () => {
-      const barH = 44; // playback bar height
       const s = Math.min(
         el.clientWidth / width,
-        (el.clientHeight - barH) / height,
+        el.clientHeight / height,
       );
       setScale(Math.max(0.05, s));
     };
@@ -81,7 +64,6 @@ export function Stage({
     };
   }, [width, height]);
 
-  // Animation loop
   useEffect(() => {
     if (!playing) {
       lastTsRef.current = null;
@@ -111,43 +93,9 @@ export function Stage({
     };
   }, [playing, duration, loop]);
 
-  // Keyboard: space = play/pause, ← → = seek
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (
-        e.target &&
-        ((e.target as HTMLElement).tagName === "INPUT" ||
-          (e.target as HTMLElement).tagName === "TEXTAREA")
-      )
-        return;
-      if (e.code === "Space") {
-        e.preventDefault();
-        setPlaying((p) => !p);
-      } else if (e.code === "ArrowLeft") {
-        setTime((t) => clamp(t - (e.shiftKey ? 1 : 0.1), 0, duration));
-      } else if (e.code === "ArrowRight") {
-        setTime((t) => clamp(t + (e.shiftKey ? 1 : 0.1), 0, duration));
-      } else if (e.key === "0" || e.code === "Home") {
-        setTime(0);
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [duration]);
-
-  const displayTime = hoverTime != null ? hoverTime : time;
-
-  const handleHover = useCallback((t: number | null) => {
-    setHoverTime(t);
-  }, []);
-
-  const handleSeek = useCallback((t: number) => {
-    setTime(t);
-  }, []);
-
   const ctxValue = useMemo(
-    () => ({ time: displayTime, duration, playing, setTime, setPlaying }),
-    [displayTime, duration, playing],
+    () => ({ time, duration, playing, setTime, setPlaying }),
+    [time, duration, playing],
   );
 
   return (
@@ -156,60 +104,30 @@ export function Stage({
       style={{
         position: "relative",
         width: "100%",
+        height: "100%",
         display: "flex",
-        flexDirection: "column",
         alignItems: "center",
-        background: "#0a0a0a",
-        fontFamily: "Inter, system-ui, sans-serif",
-        // Responsive height: aspect ratio based with some breathing room
-        aspectRatio: `${width} / ${height}`,
-        maxHeight: "80vh",
+        justifyContent: "center",
+        background: "transparent",
         overflow: "hidden",
-        borderRadius: 12,
       }}
     >
-      {/* Canvas area */}
       <div
         style={{
-          flex: 1,
-          width: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          width,
+          height,
+          background,
+          position: "relative",
+          transform: `scale(${scale})`,
+          transformOrigin: "center",
+          flexShrink: 0,
           overflow: "hidden",
-          minHeight: 0,
         }}
       >
-        <div
-          style={{
-            width,
-            height,
-            background,
-            position: "relative",
-            transform: `scale(${scale})`,
-            transformOrigin: "center",
-            flexShrink: 0,
-            boxShadow: "0 20px 60px rgba(0,0,0,0.4)",
-            overflow: "hidden",
-          }}
-        >
-          <TimelineContext.Provider value={ctxValue}>
-            {children}
-          </TimelineContext.Provider>
-        </div>
+        <TimelineContext.Provider value={ctxValue}>
+          {children}
+        </TimelineContext.Provider>
       </div>
-
-      {/* Playback bar */}
-      <PlaybackBar
-        time={displayTime}
-        actualTime={time}
-        duration={duration}
-        playing={playing}
-        onPlayPause={() => setPlaying((p) => !p)}
-        onReset={() => setTime(0)}
-        onSeek={handleSeek}
-        onHover={handleHover}
-      />
     </div>
   );
 }
