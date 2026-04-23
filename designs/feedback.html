@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feedback — Colado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --dk: #06060a;
+  --dk2: #0c0c14;
+  --dk3: #12121e;
+  --lt: #f4f3f0;
+  --text-dk: #eae6dc;
+  --muted-dk: rgba(234,230,220,0.42);
+  --accent: oklch(66% 0.24 286);
+  --warm: oklch(71% 0.17 54);
+  --green: oklch(68% 0.18 150);
+  --border: rgba(255,255,255,0.07);
+  --font-d: 'Sora', sans-serif;
+  --font-b: 'DM Sans', sans-serif;
+  --font-m: 'DM Mono', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--dk);
+  color: var(--text-dk);
+  font-family: var(--font-b);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* noise */
+body::after {
+  content: ''; position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.025; pointer-events: none; z-index: 9000;
+}
+
+/* mesh bg */
+.bg-mesh {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 50% 60% at 15% 20%, rgba(108,63,230,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 85% 75%, rgba(220,140,40,0.06) 0%, transparent 55%);
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 48px;
+  background: rgba(6,6,10,0.75); backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { font-family: var(--font-d); font-size: 18px; font-weight: 700; color: var(--text-dk); text-decoration: none; letter-spacing: -0.04em; }
+.nav-logo span { color: var(--accent); }
+.nav-back { font-size: 13px; color: var(--muted-dk); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.2s; font-family: var(--font-m); letter-spacing: 0.04em; }
+.nav-back:hover { color: var(--text-dk); }
+
+/* ── MAIN LAYOUT ── */
+main {
+  position: relative; z-index: 1;
+  min-height: 100vh;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 110px 24px 80px;
+}
+.form-shell {
+  width: 100%; max-width: 660px;
+}
+
+/* ── HEADER ── */
+.form-header { margin-bottom: 48px; }
+.form-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent);
+  background: rgba(108,63,230,0.1); border: 1px solid rgba(108,63,230,0.22);
+  border-radius: 100px; padding: 6px 14px; margin-bottom: 20px;
+  opacity: 0; animation: fadeUp 0.6s 0.1s forwards;
+}
+.form-eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.form-title {
+  font-family: var(--font-d); font-size: clamp(32px, 4.5vw, 52px);
+  font-weight: 800; letter-spacing: -0.04em; line-height: 1.06;
+  color: var(--text-dk); margin-bottom: 14px;
+  opacity: 0; animation: fadeUp 0.7s 0.2s forwards;
+}
+.form-title em { font-style: italic; color: var(--accent); }
+.form-sub {
+  font-size: 16px; color: var(--muted-dk); line-height: 1.65;
+  opacity: 0; animation: fadeUp 0.7s 0.35s forwards;
+}
+
+/* ── PROGRESS ── */
+.progress-bar-wrap {
+  margin-bottom: 40px;
+  opacity: 0; animation: fadeUp 0.6s 0.5s forwards;
+}
+.progress-steps { display: flex; align-items: center; gap: 0; margin-bottom: 10px; }
+.prog-step { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative; }
+.prog-step::before {
+  content: ''; position: absolute; top: 12px; left: 50%; right: -50%;
+  height: 1px; background: var(--border); z-index: 0;
+}
+.prog-step:last-child::before { display: none; }
+.prog-dot {
+  width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--border);
+  background: var(--dk2); display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-m); font-size: 10px; color: var(--muted-dk);
+  position: relative; z-index: 1; transition: all 0.35s;
+}
+.prog-step.done .prog-dot { background: var(--accent); border-color: var(--accent); color: #fff; }
+.prog-step.active .prog-dot { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 12px rgba(108,63,230,0.35); }
+.prog-step.done::before { background: var(--accent); }
+.prog-label { font-family: var(--font-m); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted-dk); transition: color 0.3s; }
+.prog-step.active .prog-label, .prog-step.done .prog-label { color: var(--text-dk); }
+
+/* ── CARD CONTAINER ── */
+.form-card {
+  background: var(--dk2); border: 1px solid var(--border);
+  border-radius: 24px; padding: 40px 40px;
+  opacity: 0; animation: fadeUp 0.7s 0.5s forwards;
+}
+
+/* ── STEPS ── */
+.step { display: none; }
+.step.active { display: block; }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-family: var(--font-m); font-size: 10px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 28px;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── FIELD ── */
+.field { margin-bottom: 24px; }
+.field-label {
+  font-size: 13px; font-weight: 600; color: var(--text-dk);
+  margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+  font-family: var(--font-d); letter-spacing: -0.01em;
+}
+.field-label .opt { font-family: var(--font-m); font-size: 10px; color: var(--muted-dk); font-weight: 400; letter-spacing: 0.06em; }
+.field-hint { font-size: 12px; color: var(--muted-dk); margin-bottom: 8px; line-height: 1.5; font-family: var(--font-b); }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+input[type="text"], input[type="email"], textarea, select {
+  width: 100%; background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border); border-radius: 14px;
+  padding: 14px 18px; font-family: var(--font-b); font-size: 14px;
+  color: var(--text-dk); outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  -webkit-appearance: none; appearance: none;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: rgba(108,63,230,0.5);
+  background: rgba(108,63,230,0.06);
+}
+input::placeholder, textarea::placeholder { color: var(--muted-dk); }
+textarea { resize: vertical; min-height: 120px; line-height: 1.65; }
+select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='rgba(234,230,220,0.4)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px; }
+select option { background: var(--dk2); }
+
+/* ── RATING ── */
+.rating-wrap { display: flex; gap: 8px; }
+.rating-btn {
+  flex: 1; height: 48px; border-radius: 12px; border: 1px solid var(--border);
+  background: rgba(255,255,255,0.03); color: var(--muted-dk);
+  font-family: var(--font-d); font-size: 16px; cursor: pointer;
+  transition: all 0.2s; display: flex; align-items: center; justify-content: center;
+}
+.rating-btn:hover { border-color: rgba(108,63,230,0.4); color: var(--text-dk); background: rgba(108,63,230,0.08); }
+.rating-btn.selected { border-color: var(--accent); background: rgba(108,63,230,0.18); color: var(--text-dk); box-shadow: 0 0 16px rgba(108,63,230,0.22); }
+.rating-labels { display: flex; justify-content: space-between; margin-top: 6px; }
+.rating-label { font-family: var(--font-m); font-size: 9px; color: var(--muted-dk); letter-spacing: 0.06em; }
+
+/* ── EMOJI MOOD ── */
+.mood-wrap { display: flex; gap: 10px; }
+.mood-btn {
+  flex: 1; padding: 16px 8px; border-radius: 14px; border: 1px solid var(--border);
+  background: rgba(255,255,255,0.03); cursor: pointer; transition: all 0.2s;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  font-size: 24px; text-decoration: none;
+}
+.mood-btn:hover { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); transform: translateY(-2px); }
+.mood-btn.selected { border-color: var(--accent); background: rgba(108,63,230,0.14); box-shadow: 0 0 18px rgba(108,63,230,0.2); }
+.mood-btn span { font-family: var(--font-m); font-size: 9px; color: var(--muted-dk); letter-spacing: 0.06em; text-transform: uppercase; }
+
+/* ── CHECKBOX LIST ── */
+.check-list { display: flex; flex-direction: column; gap: 8px; }
+.check-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 16px; border-radius: 12px; border: 1px solid var(--border);
+  background: rgba(255,255,255,0.03); cursor: pointer; transition: all 0.2s;
+  user-select: none;
+}
+.check-item:hover { border-color: rgba(255,255,255,0.12); background: rgba(255,255,255,0.055); }
+.check-item.checked { border-color: rgba(108,63,230,0.4); background: rgba(108,63,230,0.1); }
+.check-box {
+  width: 18px; height: 18px; border-radius: 6px; border: 1.5px solid var(--border);
+  background: transparent; flex-shrink: 0; display: flex; align-items: center;
+  justify-content: center; transition: all 0.2s;
+}
+.check-item.checked .check-box { background: var(--accent); border-color: var(--accent); }
+.check-box-tick { opacity: 0; font-size: 11px; color: #fff; transition: opacity 0.15s; }
+.check-item.checked .check-box-tick { opacity: 1; }
+.check-text { font-size: 14px; color: var(--text-dk); font-family: var(--font-b); }
+
+/* ── RADIO LIST ── */
+.radio-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.radio-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 13px 16px; border-radius: 12px; border: 1px solid var(--border);
+  background: rgba(255,255,255,0.03); cursor: pointer; transition: all 0.2s;
+  user-select: none;
+}
+.radio-item:hover { border-color: rgba(255,255,255,0.12); background: rgba(255,255,255,0.055); }
+.radio-item.selected { border-color: rgba(108,63,230,0.4); background: rgba(108,63,230,0.1); }
+.radio-dot {
+  width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s;
+}
+.radio-item.selected .radio-dot { border-color: var(--accent); }
+.radio-dot-inner { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); opacity: 0; transform: scale(0); transition: all 0.2s; }
+.radio-item.selected .radio-dot-inner { opacity: 1; transform: scale(1); }
+.radio-text { font-size: 13px; color: var(--text-dk); font-family: var(--font-b); }
+
+/* ── SLIDER ── */
+.slider-wrap { position: relative; padding: 8px 0; }
+input[type="range"] {
+  width: 100%; -webkit-appearance: none; appearance: none;
+  height: 4px; border-radius: 2px; background: var(--border);
+  outline: none; border: none; padding: 0;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-size: 50% 100%; background-repeat: no-repeat;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--text-dk); cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  transition: transform 0.15s;
+}
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+.slider-ticks { display: flex; justify-content: space-between; margin-top: 8px; }
+.slider-tick { font-family: var(--font-m); font-size: 10px; color: var(--muted-dk); }
+.slider-value {
+  text-align: center; font-family: var(--font-d); font-size: 32px; font-weight: 800;
+  color: var(--text-dk); letter-spacing: -0.04em; margin-bottom: 8px;
+}
+
+/* ── CHAR COUNTER ── */
+.field-footer { display: flex; justify-content: flex-end; margin-top: 4px; }
+.char-count { font-family: var(--font-m); font-size: 10px; color: var(--muted-dk); }
+
+/* ── NAV BTNS ── */
+.form-nav { display: flex; align-items: center; justify-content: space-between; margin-top: 32px; }
+.btn-back-step {
+  background: transparent; border: 1px solid var(--border); border-radius: 12px;
+  color: var(--muted-dk); font-family: var(--font-d); font-size: 14px; font-weight: 500;
+  padding: 13px 24px; cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; gap: 8px;
+}
+.btn-back-step:hover { border-color: rgba(255,255,255,0.18); color: var(--text-dk); }
+.btn-next-step {
+  background: var(--accent); color: #fff; border: none; border-radius: 12px;
+  font-family: var(--font-d); font-size: 14px; font-weight: 700; padding: 13px 32px;
+  cursor: pointer; transition: all 0.2s; box-shadow: 0 0 28px rgba(108,63,230,0.3);
+  display: flex; align-items: center; gap: 8px; margin-left: auto;
+}
+.btn-next-step:hover { opacity: 0.88; transform: translateY(-1px); box-shadow: 0 0 44px rgba(108,63,230,0.45); }
+.step-counter { font-family: var(--font-m); font-size: 11px; color: var(--muted-dk); letter-spacing: 0.06em; }
+
+/* ── SUCCESS STATE ── */
+#success-state { display: none; text-align: center; padding: 60px 40px; }
+.success-orb {
+  width: 88px; height: 88px; border-radius: 50%; background: rgba(108,63,230,0.15);
+  border: 1.5px solid rgba(108,63,230,0.3); margin: 0 auto 28px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px; animation: orbPop 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+@keyframes orbPop { from{transform:scale(0.6);opacity:0} to{transform:scale(1);opacity:1} }
+.success-title { font-family: var(--font-d); font-size: 30px; font-weight: 800; letter-spacing: -0.04em; color: var(--text-dk); margin-bottom: 12px; }
+.success-sub { font-size: 16px; color: var(--muted-dk); line-height: 1.65; max-width: 380px; margin: 0 auto 32px; }
+.success-back {
+  background: rgba(255,255,255,0.07); border: 1px solid var(--border); color: var(--text-dk);
+  border-radius: 12px; padding: 13px 28px; font-family: var(--font-d); font-size: 14px;
+  font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block;
+}
+.success-back:hover { background: rgba(255,255,255,0.11); }
+
+/* ── ANIM ── */
+@keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+.slide-in { animation: slideIn 0.4s cubic-bezier(0.16,1,0.3,1) forwards; }
+@keyframes slideIn { from{opacity:0;transform:translateX(24px)} to{opacity:1;transform:translateX(0)} }
+.slide-out { animation: slideOut 0.3s cubic-bezier(0.4,0,1,1) forwards; }
+@keyframes slideOut { to{opacity:0;transform:translateX(-24px)} }
+
+@media(max-width:600px){
+  nav{padding:18px 20px}
+  .form-card{padding:28px 22px}
+  .field-row, .radio-list{grid-template-columns:1fr}
+  .mood-wrap{gap:6px}
+  .mood-btn{font-size:20px}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="colado-landing.html" class="nav-logo">Colado<span>.</span></a>
+  <a href="colado-landing.html" class="nav-back">← Back to home</a>
+</nav>
+
+<main>
+  <div class="form-shell">
+
+    <!-- HEADER -->
+    <div class="form-header">
+      <div class="form-eyebrow"><span class="form-eyebrow-dot"></span>Beta feedback</div>
+      <h1 class="form-title">Help us build<br>something <em>great.</em></h1>
+      <p class="form-sub">3 quick steps. No fluff. Your answers shape what Colado becomes.</p>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-bar-wrap">
+      <div class="progress-steps" id="progress-steps">
+        <div class="prog-step active" data-s="0">
+          <div class="prog-dot">1</div>
+          <span class="prog-label">You</span>
+        </div>
+        <div class="prog-step" data-s="1">
+          <div class="prog-dot">2</div>
+          <span class="prog-label">Experience</span>
+        </div>
+        <div class="prog-step" data-s="2">
+          <div class="prog-dot">3</div>
+          <span class="prog-label">Vision</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="form-card" id="form-card">
+
+      <!-- ── STEP 1: WHO ARE YOU ── -->
+      <div class="step active" id="step-0">
+        <p class="section-label">About you</p>
+
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label">Your name <span class="opt">optional</span></label>
+            <input type="text" id="f-name" placeholder="Alex">
+          </div>
+          <div class="field">
+            <label class="field-label">Email <span class="opt">optional</span></label>
+            <input type="email" id="f-email" placeholder="you@startup.com">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">What best describes you?</label>
+          <div class="radio-list" id="role-list">
+            <div class="radio-item" onclick="selectRadio('role',this,'Founder')"><div class="radio-dot"><div class="radio-dot-inner"></div></div><span class="radio-text">Founder</span></div>
+            <div class="radio-item" onclick="selectRadio('role',this,'Operator')"><div class="radio-dot"><div class="radio-dot-inner"></div></div><span class="radio-text">Operator</span></div>
+            <div class="radio-item" onclick="selectRadio('role',this,'Freelancer')"><div class="radio-dot"><div class="radio-dot-inner"></div></div><span class="radio-text">Freelancer</span></div>
+            <div class="radio-item" onclick="selectRadio('role',this,'Product / Eng')"><div class="radio-dot"><div class="radio-dot-inner"></div></div><span class="radio-text">Product / Eng</span></div>
+            <div class="radio-item" onclick="selectRadio('role',this,'Investor')"><div class="radio-dot"><div class="radio-dot-inner"></div></div><span class="radio-text">Investor</span></div>
+            <div class="radio-item" onclick="selectRadio('role',this,'Other')"><div class="radio-dot"><div class="radio-dot-inner"></div></div><span class="radio-text">Other</span></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">How did you hear about Colado?</label>
+          <select id="f-source">
+            <option value="">Select one…</option>
+            <option>Twitter / X</option>
+            <option>LinkedIn</option>
+            <option>Product Hunt</option>
+            <option>Friend or colleague</option>
+            <option>Newsletter</option>
+            <option>Search</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="form-nav">
+          <span class="step-counter">Step 1 of 3</span>
+          <button class="btn-next-step" onclick="goToStep(1)">Continue →</button>
+        </div>
+      </div>
+
+      <!-- ── STEP 2: EXPERIENCE ── -->
+      <div class="step" id="step-1">
+        <p class="section-label">Your experience</p>
+
+        <div class="field">
+          <label class="field-label">Overall, how would you rate Colado?</label>
+          <div class="rating-wrap" id="rating-overall"></div>
+          <div class="rating-labels">
+            <span class="rating-label">Not useful</span>
+            <span class="rating-label">Amazing</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">How does Colado make you feel?</label>
+          <div class="mood-wrap">
+            <button class="mood-btn" onclick="selectMood(this,'😤','Frustrated')"><span style="line-height:1">😤</span><span>Frustrated</span></button>
+            <button class="mood-btn" onclick="selectMood(this,'😐','Neutral')"><span style="line-height:1">😐</span><span>Neutral</span></button>
+            <button class="mood-btn" onclick="selectMood(this,'🙂','Good')"><span style="line-height:1">🙂</span><span>Good</span></button>
+            <button class="mood-btn" onclick="selectMood(this,'🚀','Focused')"><span style="line-height:1">🚀</span><span>Focused</span></button>
+            <button class="mood-btn" onclick="selectMood(this,'🤩','Thrilled')"><span style="line-height:1">🤩</span><span>Thrilled</span></button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Which features matter most to you?</label>
+          <p class="field-hint">Select all that apply.</p>
+          <div class="check-list" id="features-list">
+            <div class="check-item" onclick="toggleCheck(this,'One clear next action')"><div class="check-box"><span class="check-box-tick">✓</span></div><span class="check-text">One clear next action</span></div>
+            <div class="check-item" onclick="toggleCheck(this,'Smart prioritization')"><div class="check-box"><span class="check-box-tick">✓</span></div><span class="check-text">Smart prioritization</span></div>
+            <div class="check-item" onclick="toggleCheck(this,'Calendar-aware scheduling')"><div class="check-box"><span class="check-box-tick">✓</span></div><span class="check-text">Calendar-aware scheduling</span></div>
+            <div class="check-item" onclick="toggleCheck(this,'Follow-up nudges')"><div class="check-box"><span class="check-box-tick">✓</span></div><span class="check-text">Follow-up nudges</span></div>
+            <div class="check-item" onclick="toggleCheck(this,'Goal tracking')"><div class="check-box"><span class="check-box-tick">✓</span></div><span class="check-text">Goal tracking</span></div>
+            <div class="check-item" onclick="toggleCheck(this,'Team / collaborative use')"><div class="check-box"><span class="check-box-tick">✓</span></div><span class="check-text">Team / collaborative use</span></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">How likely are you to recommend Colado?</label>
+          <div class="slider-value" id="nps-val">7</div>
+          <div class="slider-wrap">
+            <input type="range" id="nps-slider" min="1" max="10" value="7" oninput="updateNPS(this)">
+            <div class="slider-ticks">
+              <span class="slider-tick">1</span>
+              <span class="slider-tick">5</span>
+              <span class="slider-tick">10</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-nav">
+          <button class="btn-back-step" onclick="goToStep(0)">← Back</button>
+          <span class="step-counter">Step 2 of 3</span>
+          <button class="btn-next-step" onclick="goToStep(2)">Continue →</button>
+        </div>
+      </div>
+
+      <!-- ── STEP 3: VISION ── -->
+      <div class="step" id="step-2">
+        <p class="section-label">Your vision</p>
+
+        <div class="field">
+          <label class="field-label">What is Colado's biggest strength right now?</label>
+          <textarea id="f-strength" placeholder="What makes you want to keep using it?" maxlength="500" oninput="countChars(this,'cc-strength')"></textarea>
+          <div class="field-footer"><span class="char-count" id="cc-strength">0 / 500</span></div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">What would make you cancel immediately?</label>
+          <p class="field-hint">Honest answers help us avoid killing what works.</p>
+          <textarea id="f-cancel" placeholder="If Colado did this, I'd leave…" maxlength="500" oninput="countChars(this,'cc-cancel')"></textarea>
+          <div class="field-footer"><span class="char-count" id="cc-cancel">0 / 500</span></div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">One feature you wish Colado had.</label>
+          <textarea id="f-wish" placeholder="Even if it seems crazy…" maxlength="400" style="min-height:90px" oninput="countChars(this,'cc-wish')"></textarea>
+          <div class="field-footer"><span class="char-count" id="cc-wish">0 / 400</span></div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Anything else? <span class="opt">optional</span></label>
+          <textarea id="f-misc" placeholder="Random thoughts, ideas, rants — all welcome." maxlength="600" style="min-height:90px" oninput="countChars(this,'cc-misc')"></textarea>
+          <div class="field-footer"><span class="char-count" id="cc-misc">0 / 600</span></div>
+        </div>
+
+        <div class="form-nav">
+          <button class="btn-back-step" onclick="goToStep(1)">← Back</button>
+          <span class="step-counter">Step 3 of 3</span>
+          <button class="btn-next-step" id="submit-btn" onclick="submitForm()" style="background:linear-gradient(135deg,var(--accent),oklch(60% 0.23 310))">
+            Send feedback ✦
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /form-card -->
+
+    <!-- SUCCESS -->
+    <div id="success-state">
+      <div class="form-card">
+        <div id="success-inner" style="text-align:center;padding:40px 20px">
+          <div class="success-orb">✦</div>
+          <h2 class="success-title">Thank you — seriously.</h2>
+          <p class="success-sub">Your feedback lands directly with the team. Every response shapes what Colado becomes next.</p>
+          <a href="colado-landing.html" class="success-back">← Back to Colado</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+// ── STATE ──────────────────────────────────────
+const answers = {role:'', source:'', rating:0, mood:'', features:[], nps:7};
+let currentStep = 0;
+
+// ── STEP NAV ───────────────────────────────────
+function goToStep(n) {
+  const old = document.getElementById('step-' + currentStep);
+  old.classList.remove('active');
+  void old.offsetWidth;
+
+  currentStep = n;
+  const next = document.getElementById('step-' + n);
+  next.classList.add('active');
+  next.classList.add('slide-in');
+  setTimeout(() => next.classList.remove('slide-in'), 400);
+
+  // update progress
+  document.querySelectorAll('.prog-step').forEach((el, i) => {
+    el.classList.toggle('active', i === n);
+    el.classList.toggle('done', i < n);
+    if (i < n) el.querySelector('.prog-dot').textContent = '✓';
+    else el.querySelector('.prog-dot').textContent = i + 1;
+  });
+
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// ── RATINGS ───────────────────────────────────
+const ratingWrap = document.getElementById('rating-overall');
+[1,2,3,4,5,6,7,8,9,10].forEach(n => {
+  const b = document.createElement('button');
+  b.className = 'rating-btn';
+  b.textContent = n;
+  b.onclick = () => {
+    document.querySelectorAll('#rating-overall .rating-btn').forEach(x => x.classList.remove('selected'));
+    b.classList.add('selected');
+    answers.rating = n;
+    // update slider color
+    const pct = ((n-1)/9)*100;
+    ratingWrap.querySelectorAll('.rating-btn').forEach((x,i) => {
+      x.style.background = i < n ? 'rgba(108,63,230,0.12)' : '';
+      x.style.borderColor = i < n ? 'rgba(108,63,230,0.25)' : '';
+    });
+    b.classList.add('selected');
+  };
+  ratingWrap.appendChild(b);
+});
+
+// ── MOOD ──────────────────────────────────────
+function selectMood(el, emoji, label) {
+  document.querySelectorAll('.mood-btn').forEach(x => x.classList.remove('selected'));
+  el.classList.add('selected');
+  answers.mood = label;
+}
+
+// ── RADIO ─────────────────────────────────────
+function selectRadio(group, el, val) {
+  document.querySelectorAll(`#role-list .radio-item`).forEach(x => x.classList.remove('selected'));
+  el.classList.add('selected');
+  answers[group] = val;
+}
+
+// ── CHECKBOX ──────────────────────────────────
+function toggleCheck(el, val) {
+  el.classList.toggle('checked');
+  if (el.classList.contains('checked')) {
+    if (!answers.features.includes(val)) answers.features.push(val);
+  } else {
+    answers.features = answers.features.filter(v => v !== val);
+  }
+}
+
+// ── NPS SLIDER ────────────────────────────────
+function updateNPS(el) {
+  const v = parseInt(el.value);
+  answers.nps = v;
+  document.getElementById('nps-val').textContent = v;
+  const pct = ((v-1)/9)*100;
+  el.style.backgroundSize = pct + '% 100%';
+}
+// init slider
+document.getElementById('nps-slider').style.backgroundSize = '66.7% 100%';
+
+// ── CHAR COUNTER ──────────────────────────────
+function countChars(el, counterId) {
+  document.getElementById(counterId).textContent = el.value.length + ' / ' + el.maxLength;
+}
+
+// ── SUBMIT ────────────────────────────────────
+function submitForm() {
+  const btn = document.getElementById('submit-btn');
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+  btn.style.opacity = '0.6';
+
+  setTimeout(() => {
+    document.getElementById('form-card').style.display = 'none';
+    document.querySelector('.form-header').style.display = 'none';
+    document.querySelector('.progress-bar-wrap').style.display = 'none';
+    document.getElementById('success-state').style.display = 'block';
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }, 800);
+}
+
+// ── ANIM DELAY ────────────────────────────────
+document.querySelectorAll('.check-item, .radio-item').forEach((el, i) => {
+  el.style.transition = `all 0.2s`;
+});
+</script>
+</body>
+</html>

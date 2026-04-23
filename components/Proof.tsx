@@ -50,13 +50,7 @@ export function Proof() {
   };
 
   return (
-    <SpecimenFrame
-      sectionId="voices"
-      specimen="V"
-      specimenTitle="Field notes from beta"
-      coordinate="Colado / Landing / Voices Editorial V"
-      folio="05 / 06"
-    >
+    <SpecimenFrame sectionId="voices">
       <div className="mx-auto w-full max-w-[1280px] px-5 py-16 sm:px-8 sm:py-20 md:py-28 lg:px-12 lg:py-32">
         <motion.div
           initial="hidden"

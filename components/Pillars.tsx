@@ -56,13 +56,7 @@ export function Pillars() {
   };
 
   return (
-    <SpecimenFrame
-      sectionId="method"
-      specimen="III"
-      specimenTitle="The Three Movements"
-      coordinate="Colado / Landing / Method Triptych III.A – C"
-      folio="03 / 06"
-    >
+    <SpecimenFrame sectionId="method">
       <div className="mx-auto w-full max-w-[1280px] px-5 py-16 sm:px-8 sm:py-20 md:py-28 lg:px-12 lg:py-32">
         <motion.div
           initial="hidden"

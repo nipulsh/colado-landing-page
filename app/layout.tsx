@@ -57,10 +57,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F7F5F0" },
-    { media: "(prefers-color-scheme: dark)", color: "#0E0F0C" },
-  ],
+  /* Matches PDF / design system paper field (light-only site) */
+  themeColor: "#F7F5F0",
   width: "device-width",
   initialScale: 1,
 };

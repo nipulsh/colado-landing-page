@@ -8,49 +8,35 @@
  * Bone-paper white, fountain-pen ink, forest-green punctuation.
  * Colour is earned, never ambient.
  */
+/**
+ * Palette locked to colado-ui-designs.pdf / colado-cursor-prompt.md:
+ * warm off-white field, near-black ink, one forest accent, terracotta for "now".
+ * Light-only — the PDF is not a dark theme; OS dark mode must not invert it.
+ */
 :root {
-  /* Surfaces — warm paper, never clinical white */
-  --paper: #f4f0e6;
-  --paper-soft: #ede8db;
-  --bg: #f4f0e6;
-  --bg-elevated: #fbf8f1;
-  --ink: #14140f;
-  --ink-soft: #2d2e28;
+  /* Surfaces — #F7F5F0 signature off-white, never pure white */
+  --paper: #f7f5f0;
+  --paper-soft: #efece4;
+  --bg: #f7f5f0;
+  --bg-elevated: #ffffff;
+  --ink: #0e0f0c;
+  --ink-soft: #2a2b27;
   --muted: #6b6c66;
-  --mute-soft: #8f8f86;
-  --hairline: #d9d3c2;
-  --hairline-soft: #e5e0d1;
+  --mute-soft: #8a8b84;
+  --hairline: #e5e1d6;
+  --hairline-soft: #efeae0;
 
   /* Punctuation colours — used sparingly */
-  --accent: #2a4d33;
-  --accent-soft: #e8eee7;
-  --signal-priority: #b24a28;
-  --signal-priority-soft: #f1dfd5;
+  --accent: #2d5f3f;
+  --accent-soft: #e8f0ea;
+  --signal-priority: #c9502e;
+  --signal-priority-soft: #f4e6e0;
   --signal-done: #6b8e5a;
 
   /* Type scale */
   --display: "Instrument Serif", ui-serif, Georgia, serif;
   --body: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, "JetBrains Mono", monospace;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #0f100c;
-    --paper-soft: #14140f;
-    --bg: #0f100c;
-    --bg-elevated: #16170f;
-    --ink: #f4f0e6;
-    --ink-soft: #d8d6ce;
-    --muted: #8a8b84;
-    --mute-soft: #6f7068;
-    --hairline: #2a2b24;
-    --hairline-soft: #1c1d17;
-    --accent: #8bb294;
-    --accent-soft: #1b2a21;
-    --signal-priority: #d47e5c;
-    --signal-priority-soft: #2a1e17;
-  }
 }
 
 @theme inline {
@@ -72,6 +58,7 @@
 }
 
 html {
+  color-scheme: light;
   position: relative;
   background: var(--bg);
   color: var(--ink);
