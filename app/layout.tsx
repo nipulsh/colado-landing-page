@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Instrument_Serif } from "next/font/google";
-import { Cursor } from "@/components/Cursor";
 import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
+import { LenisProvider } from "@/components/LenisProvider";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { PaperField } from "@/components/PaperField";
 import { ScrollProgress } from "@/components/ScrollProgress";
@@ -93,11 +93,11 @@ export default function RootLayout({
       </head>
       <body className="min-h-dvh bg-[var(--bg)] text-[var(--ink)] antialiased">
         <LoadingScreen />
+        <LenisProvider />
         <PaperField />
         <ScrollProgress />
         <ViewTransitionsBridge />
         {children}
-        <Cursor />
         <KeyboardShortcuts />
       </body>
     </html>

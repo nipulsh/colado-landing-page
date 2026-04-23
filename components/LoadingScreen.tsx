@@ -55,6 +55,8 @@ export function LoadingScreen() {
     // Lock scroll while loading screen is up
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    // If Lenis is running, stop it too (it drives scroll on its own raf loop)
+    window.__lenis?.stop?.();
 
     startRef.current = performance.now();
 
@@ -122,6 +124,7 @@ export function LoadingScreen() {
 
     return () => {
       document.body.style.overflow = prevOverflow;
+      window.__lenis?.start?.();
       document.removeEventListener("DOMContentLoaded", onDomLoaded);
       window.removeEventListener("load", onLoad);
       window.removeEventListener("load", finish);

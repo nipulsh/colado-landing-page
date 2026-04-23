@@ -248,12 +248,7 @@ textarea:focus-visible,
 }
 
 /* Custom cursor — only on fine pointers */
-@media (pointer: fine) {
-  html.colado-cursor,
-  html.colado-cursor * {
-    cursor: none !important;
-  }
-}
+/* (Custom cursor removed — using the system cursor.) */
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;
