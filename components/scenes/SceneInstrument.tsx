@@ -8,6 +8,7 @@
 import { Sprite } from "@/components/animation/Sprite";
 import { useSprite } from "@/lib/animation/context";
 import { Easing, clamp, interpolate } from "@/lib/animation/easing";
+import { useLocalClock } from "@/lib/hooks/useLocalClock";
 import {
   COLADO,
   FONTS,
@@ -223,6 +224,7 @@ function SpecimenCard({
   localTime: number;
 }) {
   const rowH = 76;
+  const clock = useLocalClock();
 
   const origIdx = Object.fromEntries(
     originalTasks.map((t, i) => [t.id, i]),
@@ -371,7 +373,7 @@ function SpecimenCard({
         <Inst size={12}>
           Prioritized by Colado ·{" "}
           <span style={{ fontVariantNumeric: "tabular-nums" }}>
-            14:32 IST
+            {clock.hhmm} {clock.tz}
           </span>
         </Inst>
       </div>

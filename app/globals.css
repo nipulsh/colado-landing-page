@@ -1,5 +1,25 @@
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=JetBrains+Mono:wght@400;500;600&display=optional");
 @import "tailwindcss";
+
+/*
+ * Opt into the browser View Transitions API. Combined with the JS bridge
+ * below, in-page anchor navigation crossfades cinematically on supported
+ * browsers (Chromium 111+, Safari 18+). Unsupported browsers ignore this.
+ */
+@view-transition {
+  navigation: auto;
+}
+
+/* Tune the default crossfade — keep it subtle, fast, honoring our easing. */
+::view-transition-group(root) {
+  animation-duration: 360ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 360ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
 
 /**
  * Colado — "Quiet Instruments" design tokens.
@@ -259,6 +279,69 @@ textarea:focus-visible,
   color: var(--ink);
 }
 
+/*
+ * Scroll-snap on the audience columns (mobile only). Each card becomes a
+ * "page" you flick between with your thumb. Desktop retains free scrolling.
+ */
+@media (max-width: 767.98px) {
+  .audience-grid {
+    scroll-snap-type: y proximity;
+  }
+  .audience-grid .audience-card {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    scroll-margin-top: 96px;
+  }
+}
+
+/* Magnetic button ripple — ink dot expands & fades from the click point */
+@keyframes colado-ripple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.55;
+  }
+  100% {
+    width: 320px;
+    height: 320px;
+    opacity: 0;
+  }
+}
+
+/*
+ * Optical-italic hover — in display copy, hovering an <em> subtly lifts its
+ * colour to full ink, tightens letter-spacing, and animates a hairline
+ * underline from the left. It feels like the letterpress bites harder where
+ * your eye lingers.
+ */
+.display em,
+.display i,
+h1 em,
+h2 em,
+h3 em {
+  transition:
+    color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    letter-spacing 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  background-image: linear-gradient(var(--ink), var(--ink));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition-property: color, letter-spacing, background-size;
+  transition-duration: 260ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  padding-bottom: 0.08em;
+}
+
+.display em:hover,
+.display i:hover,
+h1 em:hover,
+h2 em:hover,
+h3 em:hover {
+  color: var(--ink);
+  letter-spacing: -0.028em;
+  background-size: 100% 1px;
+}
+
 /* Tabular numerals for numbered indices & coords */
 .tnum {
   font-variant-numeric: tabular-nums;
@@ -392,6 +475,54 @@ textarea:focus-visible,
 .quiet-instruments-section[data-embedded="true"] .quiet-instruments-canvas {
   height: auto;
   aspect-ratio: 16 / 9;
+}
+
+/*
+ * Scroll-scrub container: the section is tall (e.g. 600vh) and a sticky
+ * inner element pins the stage in place while the user scrolls. Scroll
+ * progress maps to the animation timeline.
+ */
+.quiet-instruments-scrub .quiet-instruments-sticky {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  padding: 56px 0 0 0;
+  box-sizing: border-box;
+}
+
+.quiet-instruments-scrub[data-embedded="true"] .quiet-instruments-sticky {
+  padding: 84px 16px 56px 16px;
+}
+
+@media (min-width: 640px) {
+  .quiet-instruments-scrub .quiet-instruments-sticky {
+    padding: 64px 0 0 0;
+  }
+  .quiet-instruments-scrub[data-embedded="true"] .quiet-instruments-sticky {
+    padding: 96px 24px 72px 24px;
+  }
+}
+
+@media (min-width: 768px) {
+  .quiet-instruments-scrub .quiet-instruments-sticky {
+    padding: 72px 0 0 0;
+  }
+  .quiet-instruments-scrub[data-embedded="true"] .quiet-instruments-sticky {
+    padding: 104px 32px 88px 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .quiet-instruments-scrub .quiet-instruments-sticky {
+    padding: 76px 0 0 0;
+  }
+  .quiet-instruments-scrub[data-embedded="true"] .quiet-instruments-sticky {
+    padding: 112px 48px 104px 48px;
+  }
 }
 
 /* Priority-label pill (NOW / NEXT / THEN / LATER / ADMIN) */

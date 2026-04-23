@@ -15,6 +15,12 @@ type StageProps = {
   /** Accepted for backwards compatibility; no longer persists state. */
   persistKey?: string;
   onTimeUpdate?: (time: number) => void;
+  /**
+   * Optional externally-driven time (e.g. scroll-scrub). When provided, the
+   * internal RAF loop is suspended and the stage plays wherever the host
+   * sets `externalTime`. Pass `null` to resume internal playback.
+   */
+  externalTime?: number | null;
   children: ReactNode;
 };
 
@@ -26,15 +32,26 @@ export function Stage({
   loop = true,
   autoplay = true,
   onTimeUpdate,
+  externalTime,
   children,
 }: StageProps) {
-  const [time, setTime] = useState(0);
-  const [playing, setPlaying] = useState(false);
+  const [internalTime, setInternalTime] = useState(0);
+  const [stopped, setStopped] = useState(false);
   const [scale, setScale] = useState(1);
+  const externallyDriven = typeof externalTime === "number";
 
-  useEffect(() => {
-    if (autoplay) setPlaying(true);
-  }, [autoplay]);
+  // When externalTime is given we use it directly; otherwise use the
+  // internal RAF-driven clock. Computing this outside of state avoids
+  // a render cascade for every frame of the parent's scroll.
+  const time = externallyDriven ? (externalTime as number) : internalTime;
+  const setTime = setInternalTime;
+  const playing = autoplay && !externallyDriven && !stopped;
+  const setPlaying = (v: boolean | ((p: boolean) => boolean)) => {
+    setStopped((prev) => {
+      const next = typeof v === "function" ? (v as (p: boolean) => boolean)(!prev) : v;
+      return !next;
+    });
+  };
 
   const stageRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
@@ -65,7 +82,7 @@ export function Stage({
   }, [width, height]);
 
   useEffect(() => {
-    if (!playing) {
+    if (!playing || externallyDriven) {
       lastTsRef.current = null;
       return;
     }
@@ -91,7 +108,7 @@ export function Stage({
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       lastTsRef.current = null;
     };
-  }, [playing, duration, loop]);
+  }, [playing, duration, loop, externallyDriven]);
 
   const ctxValue = useMemo(
     () => ({ time, duration, playing, setTime, setPlaying }),

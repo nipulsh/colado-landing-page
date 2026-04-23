@@ -6,6 +6,7 @@
  * "The whole point is that you stop choosing."
  */
 
+import { useEffect, useRef } from "react";
 import { Sprite } from "@/components/animation/Sprite";
 import { useSprite } from "@/lib/animation/context";
 import { Easing, clamp, interpolate } from "@/lib/animation/easing";
@@ -36,8 +37,33 @@ export function SceneOneMove({
 function SceneOneMoveBody() {
   const { localTime, duration } = useSprite();
 
-  const cardY = interpolate([0, 0.6], [40, 0], Easing.easeOutExpo)(localTime);
-  const cardOp = interpolate([0, 0.33], [0, 1], Easing.easeOutQuart)(localTime);
+  /*
+   * Card entrance: drops from y:-40 with a tiny rotation, lands with a spring
+   * overshoot, and drops a sharp micro-shadow as it lands. The opacity curve
+   * is front-loaded so the drop reads clearly.
+   */
+  const dropT = clamp(localTime / 0.75, 0, 1);
+  const dropEased = Easing.easeOutExpo(dropT);
+  const settleT = clamp((localTime - 0.75) / 0.35, 0, 1);
+  // Simple overshoot approximation: decaying sine
+  const settle = (1 - settleT) * Math.sin(settleT * Math.PI * 2.2) * 2.4;
+  const cardY = (1 - dropEased) * -48 + settle;
+  const cardRot = (1 - dropEased) * -0.7;
+  const cardOp = interpolate([0, 0.27], [0, 1], Easing.easeOutQuart)(localTime);
+  const shadowIntensity = dropEased * (1 - Math.abs(settle) / 3);
+
+  const hapticFired = useRef(false);
+  useEffect(() => {
+    if (!hapticFired.current && dropT >= 1) {
+      hapticFired.current = true;
+      if (
+        typeof navigator !== "undefined" &&
+        typeof navigator.vibrate === "function"
+      ) {
+        navigator.vibrate(8);
+      }
+    }
+  }, [dropT]);
 
   const ghostOp = interpolate(
     [0, 0.27, 1.2, 1.73],
@@ -97,13 +123,16 @@ function SceneOneMoveBody() {
         <div
           style={{
             opacity: cardOp,
-            transform: `translateY(${cardY}px)`,
+            transform: `translateY(${cardY}px) rotate(${cardRot}deg)`,
             background: COLADO.paperElev,
             border: `1px solid ${COLADO.hairline}`,
             borderRadius: 18,
-            boxShadow:
-              "0 1px 1px rgba(20,20,15,0.04), 0 40px 100px -36px rgba(20,20,15,0.24)",
+            boxShadow: `
+              0 ${1 + shadowIntensity * 1}px ${1 + shadowIntensity * 2}px rgba(20,20,15,${0.02 + shadowIntensity * 0.04}),
+              0 ${16 + shadowIntensity * 36}px ${40 + shadowIntensity * 80}px -${12 + shadowIntensity * 28}px rgba(20,20,15,${0.08 + shadowIntensity * 0.2})
+            `,
             overflow: "hidden",
+            willChange: "transform, box-shadow",
           }}
         >
           {/* Card masthead */}

@@ -3,6 +3,10 @@
 import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
+import { MagneticButton } from "@/components/MagneticButton";
+import { Marginalia } from "@/components/Marginalia";
+import { RevealHeading } from "@/components/RevealHeading";
+import { SectionMark } from "@/components/SectionMark";
 import { SpecimenFrame } from "@/components/SpecimenFrame";
 
 type Role = "founder" | "student" | "other";
@@ -72,12 +76,22 @@ export function EarlyAccess() {
             whileInView="show"
             viewport={{ once: true, margin: "-15%" }}
             variants={fadeIn}
-            className="flex flex-col gap-4 sm:gap-6"
+            className="relative flex flex-col gap-4 sm:gap-6"
           >
-            <p className="section-mark">Fin.</p>
-            <h2 className="display text-[48px] leading-[1.03] sm:text-[68px] md:text-[84px] lg:text-[112px]">
+            <SectionMark>Fin.</SectionMark>
+            <RevealHeading
+              as="h2"
+              className="display text-[48px] leading-[1.03] sm:text-[68px] md:text-[84px] lg:text-[112px]"
+            >
               Get the <em>app.</em>
-            </h2>
+            </RevealHeading>
+            <Marginalia
+              note={<>don&apos;t think. request.</>}
+              side="right"
+              top={30}
+              rotate={2}
+              decoration="underline"
+            />
             <p className="max-w-[460px] text-[16px] leading-relaxed text-[var(--ink-soft)] sm:text-[18px]">
               Colado is in private beta. We add founders and students every
               week.
@@ -228,14 +242,15 @@ export function EarlyAccess() {
                     ) : null}
 
                     <div className="pt-2">
-                      <button
+                      <MagneticButton
                         type="submit"
                         disabled={loading}
+                        wrapperClassName="block sm:inline-block w-full sm:w-auto"
                         className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--ink)] px-6 text-[14.5px] font-medium text-[var(--bg)] transition-opacity hover:opacity-90 disabled:opacity-60 sm:w-auto sm:text-[15px]"
                       >
                         {loading ? "Sending…" : "Request access"}
                         {!loading && <ArrowRight size={16} />}
-                      </button>
+                      </MagneticButton>
                     </div>
                   </motion.form>
                 )}

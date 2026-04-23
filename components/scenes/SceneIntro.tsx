@@ -8,6 +8,7 @@
 import { Sprite } from "@/components/animation/Sprite";
 import { useSprite } from "@/lib/animation/context";
 import { Easing, clamp, interpolate } from "@/lib/animation/easing";
+import { useLocalClock } from "@/lib/hooks/useLocalClock";
 import {
   COLADO,
   FONTS,
@@ -148,6 +149,7 @@ export function SceneIntro({
 
 function SceneIntroBody({ beats }: { beats: Beat[] }) {
   const { localTime, duration } = useSprite();
+  const clock = useLocalClock();
 
   const zoom = interpolate(
     [0, duration],
@@ -180,7 +182,7 @@ function SceneIntroBody({ beats }: { beats: Beat[] }) {
       <PaperGrain opacity={0.3} />
       <HeroFog opacity={0.6} />
       <Masthead
-        leftSub="What is on your mind — Tuesday, 14:32"
+        leftSub={`What is on your mind — ${clock.hhmm} ${clock.tz}`}
         rightSub="Capture"
       />
 
@@ -228,7 +230,7 @@ function SceneIntroBody({ beats }: { beats: Beat[] }) {
             color={COLADO.muteSoft}
             style={{ fontVariantNumeric: "tabular-nums" }}
           >
-            14:32 IST
+            {clock.hhmm} {clock.tz}
           </Inst>
         </div>
         <Hairline />

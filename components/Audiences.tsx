@@ -1,7 +1,11 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { SpecimenFrame } from "@/components/SpecimenFrame";
+import { RevealHeading } from "@/components/RevealHeading";
+import { SectionMark } from "@/components/SectionMark";
+import { Marginalia } from "@/components/Marginalia";
 
 type UseCase = { title: string; body: string };
 
@@ -84,39 +88,118 @@ export function Audiences() {
           variants={fadeIn}
           className="flex flex-col gap-4 sm:gap-6"
         >
-          <p className="section-mark">Audience</p>
-          <h2 className="display max-w-[960px] text-[40px] leading-[1.03] sm:text-[56px] md:text-[68px] lg:text-[88px]">
+          <SectionMark index={1}>Audience</SectionMark>
+          <RevealHeading
+            as="h2"
+            className="display max-w-[960px] text-[40px] leading-[1.03] sm:text-[56px] md:text-[68px] lg:text-[88px]"
+          >
             For people
             <br />
             <em>who make things.</em>
-          </h2>
+          </RevealHeading>
         </motion.div>
 
-        <div className="mt-14 grid grid-cols-1 gap-12 sm:mt-20 md:mt-24 md:grid-cols-2 md:gap-10 lg:gap-16">
-          {AUDIENCES.map((a, i) => (
-            <AudienceColumn key={a.letter} block={a} index={i} reduce={reduce} />
-          ))}
-        </div>
+        <AudienceGrid blocks={AUDIENCES} reduce={reduce} />
 
         <motion.div
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-5%" }}
           variants={fadeIn}
-          className="mt-16 flex flex-col gap-3 border-t border-[var(--hairline)] pt-10 sm:mt-20 sm:pt-12 md:mt-24"
+          className="relative mt-16 flex flex-col gap-3 border-t border-[var(--hairline)] pt-10 sm:mt-20 sm:pt-12 md:mt-24"
         >
           <p className="flex flex-wrap items-center gap-2">
             <span className="inst inst-ink">Two audiences</span>
             <span className="text-[var(--mute-soft)]">·</span>
             <span className="inst">One instrument</span>
           </p>
-          <p className="display max-w-[900px] text-[28px] leading-[1.22] text-[var(--ink-soft)] sm:text-[36px] md:text-[44px] lg:text-[52px]">
+          <RevealHeading
+            as="p"
+            className="display max-w-[900px] text-[28px] leading-[1.22] text-[var(--ink-soft)] sm:text-[36px] md:text-[44px] lg:text-[52px]"
+          >
             The rhythms differ. The answer — <em>one clear next move</em> —
             does not.
-          </p>
+          </RevealHeading>
+          <Marginalia
+            note={<>← this is the product</>}
+            side="right"
+            top={100}
+            rotate={-3}
+            decoration="arrow"
+          />
         </motion.div>
       </div>
     </SpecimenFrame>
+  );
+}
+
+/**
+ * AudienceGrid — layout wrapper that tracks which column is "in gaze":
+ *   - Desktop: IntersectionObserver measures which column is most in view.
+ *   - Mobile:  scroll-snap-y pins whichever card is closest to centre.
+ *
+ * The non-focused column dims to brightness(0.96) to create a reading focus.
+ */
+function AudienceGrid({
+  blocks,
+  reduce,
+}: {
+  blocks: AudienceBlock[];
+  reduce: boolean;
+}) {
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+  const [focusedIdx, setFocusedIdx] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (reduce) return;
+    const root = wrapRef.current;
+    if (!root) return;
+    const cards = Array.from(
+      root.querySelectorAll<HTMLElement>("[data-audience-card]"),
+    );
+
+    const measure = () => {
+      const vpCenterY = window.innerHeight / 2;
+      let bestIdx: number | null = null;
+      let bestDist = Infinity;
+      cards.forEach((el, i) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+        const cardCenter = rect.top + rect.height / 2;
+        const dist = Math.abs(cardCenter - vpCenterY);
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestIdx = i;
+        }
+      });
+      setFocusedIdx(bestIdx);
+    };
+
+    measure();
+    const onScroll = () => measure();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", measure);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", measure);
+    };
+  }, [reduce]);
+
+  return (
+    <div
+      ref={wrapRef}
+      className="audience-grid mt-14 grid grid-cols-1 gap-12 sm:mt-20 md:mt-24 md:grid-cols-2 md:gap-10 lg:gap-16"
+    >
+      {blocks.map((a, i) => (
+        <AudienceColumn
+          key={a.letter}
+          block={a}
+          index={i}
+          reduce={reduce}
+          focused={focusedIdx === null ? true : focusedIdx === i}
+        />
+      ))}
+    </div>
   );
 }
 
@@ -124,10 +207,12 @@ function AudienceColumn({
   block,
   index,
   reduce,
+  focused,
 }: {
   block: AudienceBlock;
   index: number;
   reduce: boolean;
+  focused: boolean;
 }) {
   const variants = {
     hidden: reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 22 },
@@ -150,7 +235,13 @@ function AudienceColumn({
       whileInView="show"
       viewport={{ once: true, margin: "-10%" }}
       variants={variants}
-      className="flex flex-col gap-6 border-t border-[var(--hairline)] pt-6 sm:gap-8 sm:pt-8"
+      data-audience-card
+      data-focused={focused ? "true" : "false"}
+      className="audience-card flex flex-col gap-6 border-t border-[var(--hairline)] pt-6 sm:gap-8 sm:pt-8"
+      style={{
+        filter: focused ? "none" : "brightness(0.96)",
+        transition: "filter 360ms cubic-bezier(0.22,1,0.36,1)",
+      }}
     >
       <header className="flex flex-col gap-2">
         <p className="flex items-baseline gap-4">

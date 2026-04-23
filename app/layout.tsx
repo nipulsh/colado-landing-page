@@ -1,21 +1,32 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Instrument_Serif } from "next/font/google";
 import { Cursor } from "@/components/Cursor";
+import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
+import { PaperField } from "@/components/PaperField";
 import { ScrollProgress } from "@/components/ScrollProgress";
+import { ViewTransitionsBridge } from "@/components/ViewTransitionsBridge";
 import "./globals.css";
 
 const geist = Geist({
   variable: "--font-geist",
   subsets: ["latin"],
   display: "swap",
+  preload: true,
 });
 
+/**
+ * Instrument Serif is load-bearing for the aesthetic — we prefer a brief flash
+ * of Georgia fallback over a mid-read font swap. `optional` tells the browser
+ * to use the fallback if the serif isn't cached in ~100ms, then use the real
+ * serif on the next navigation.
+ */
 const instrumentSerif = Instrument_Serif({
   variable: "--font-instrument-serif",
   weight: "400",
   subsets: ["latin"],
   style: ["normal", "italic"],
-  display: "swap",
+  display: "optional",
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -71,10 +82,21 @@ export default function RootLayout({
       lang="en"
       className={`${geist.variable} ${instrumentSerif.variable}`}
     >
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className="min-h-dvh bg-[var(--bg)] text-[var(--ink)] antialiased">
+        <PaperField />
         <ScrollProgress />
+        <ViewTransitionsBridge />
         {children}
         <Cursor />
+        <KeyboardShortcuts />
       </body>
     </html>
   );

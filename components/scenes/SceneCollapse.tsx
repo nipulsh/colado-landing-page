@@ -107,7 +107,7 @@ function SceneCollapseBody() {
           </Inst>
         </div>
 
-        {/* Headline */}
+        {/* Headline — per-glyph typesetting blur-in */}
         <div
           style={{
             fontFamily: FONTS.display,
@@ -123,8 +123,7 @@ function SceneCollapseBody() {
             style={{
               display: "block",
               position: "relative",
-              opacity: stopT,
-              willChange: "opacity",
+              opacity: Math.max(0.001, stopT),
             }}
           >
             <span
@@ -135,7 +134,13 @@ function SceneCollapseBody() {
                 position: "relative",
               }}
             >
-              Stop planning.
+              <TypesetLine
+                text="Stop planning."
+                localTime={localTime}
+                start={0.08}
+                perChar={0.028}
+              />
+              {/* Strikethrough sweep */}
               <span
                 style={{
                   position: "absolute",
@@ -149,14 +154,20 @@ function SceneCollapseBody() {
                 }}
               />
             </span>
+            {/* Blinking caret at end of line 1 while typing */}
+            <Caret
+              visibleFrom={0.08}
+              visibleUntil={1.0}
+              localTime={localTime}
+              color={COLADO.signal}
+            />
           </div>
           {/* Line 2 */}
           <div
             style={{
               display: "block",
               fontStyle: "italic",
-              opacity: startT,
-              willChange: "opacity",
+              opacity: Math.max(0.001, startT),
             }}
           >
             <span
@@ -166,7 +177,12 @@ function SceneCollapseBody() {
                 willChange: "transform",
               }}
             >
-              Start doing.
+              <TypesetLine
+                text="Start doing."
+                localTime={localTime}
+                start={1.0}
+                perChar={0.034}
+              />
             </span>
           </div>
         </div>
@@ -196,5 +212,81 @@ function SceneCollapseBody() {
         total="06"
       />
     </div>
+  );
+}
+
+/**
+ * TypesetLine — renders each glyph individually, fading + unblurring in with
+ * a per-character stagger. Spaces are rendered as non-breaking so layout is
+ * stable. Completed glyphs are sharp; in-flight glyphs are blurred.
+ */
+function TypesetLine({
+  text,
+  localTime,
+  start,
+  perChar,
+}: {
+  text: string;
+  localTime: number;
+  start: number;
+  perChar: number;
+}) {
+  const chars = Array.from(text);
+  return (
+    <>
+      {chars.map((ch, i) => {
+        const tStart = start + i * perChar;
+        const t = clamp((localTime - tStart) / 0.18, 0, 1);
+        const eased = Easing.easeOutCubic(t);
+        const blur = (1 - eased) * 8;
+        const opacity = eased;
+        const ty = (1 - eased) * 0.18;
+        const display = ch === " " ? "\u00A0" : ch;
+        return (
+          <span
+            key={i}
+            style={{
+              display: "inline-block",
+              opacity,
+              filter: blur > 0.04 ? `blur(${blur.toFixed(2)}px)` : "none",
+              transform: `translateY(${ty.toFixed(3)}em)`,
+              willChange: "filter, opacity, transform",
+            }}
+          >
+            {display}
+          </span>
+        );
+      })}
+    </>
+  );
+}
+
+/** Blinking caret that sits at the end of the typesetting line. */
+function Caret({
+  visibleFrom,
+  visibleUntil,
+  localTime,
+  color,
+}: {
+  visibleFrom: number;
+  visibleUntil: number;
+  localTime: number;
+  color: string;
+}) {
+  const visible = localTime >= visibleFrom && localTime <= visibleUntil;
+  if (!visible) return null;
+  const blink = Math.floor(localTime * 2.3) % 2 === 0;
+  return (
+    <span
+      style={{
+        display: "inline-block",
+        width: 4,
+        height: "0.9em",
+        background: color,
+        marginLeft: 10,
+        verticalAlign: "-0.08em",
+        opacity: blink ? 1 : 0.15,
+      }}
+    />
   );
 }
