@@ -157,7 +157,7 @@ function AudienceColumn({
           <span className="display text-[52px] leading-none text-[var(--ink)] sm:text-[64px] md:text-[72px]">
             {block.letter}.
           </span>
-          <span className="inst inst-ink text-[24px] sm:text-[28px] md:text-[32px]">{block.title}</span>
+          <span className="inst inst-ink text-[36px] sm:text-[42px] md:text-[48px]">{block.title}</span>
         </p>
         <p className="inst-sm normal-case tracking-[0.04em] text-[var(--muted)]">
           {block.byline}
