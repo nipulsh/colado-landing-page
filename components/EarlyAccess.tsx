@@ -74,7 +74,7 @@ export function EarlyAccess() {
             variants={fadeIn}
             className="flex flex-col gap-4 sm:gap-6"
           >
-            <p className="section-mark">§ 06 — Fin.</p>
+            <p className="section-mark">Fin.</p>
             <h2 className="display text-[48px] leading-[1.03] sm:text-[68px] md:text-[84px] lg:text-[112px]">
               Get the <em>app.</em>
             </h2>

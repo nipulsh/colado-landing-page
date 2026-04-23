@@ -52,20 +52,16 @@ export function Footer() {
           <h4 className="inst">Contents</h4>
           <ul className="mt-5 flex flex-col gap-3 text-[14px] sm:text-[15px]">
             {[
-              { href: "#live", label: "Try it", ix: "§ 02" },
-              { href: "#method", label: "Method", ix: "§ 03" },
-              { href: "#audience", label: "Audience", ix: "§ 04" },
-              { href: "#voices", label: "Voices", ix: "§ 05" },
-              { href: "#fin", label: "Request access", ix: "§ 06" },
+              { href: "#live", label: "Try it" },
+              { href: "#method", label: "Method" },
+              { href: "#audience", label: "Audience" },
+              { href: "#fin", label: "Request access" },
             ].map((l) => (
               <li key={l.href}>
                 <a
                   href={l.href}
                   className="group flex items-baseline gap-3 text-[var(--ink-soft)] transition-colors hover:text-[var(--ink)]"
                 >
-                  <span className="folio tnum w-10 shrink-0 opacity-80">
-                    {l.ix}
-                  </span>
                   <span>{l.label}</span>
                 </a>
               </li>
@@ -128,7 +124,7 @@ export function Footer() {
               className="inst-sm hover:text-[var(--ink)]"
               aria-label="Return to top"
             >
-              Return to § 01
+              Return to top
             </a>
           </div>
         </div>

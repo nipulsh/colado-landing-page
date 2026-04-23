@@ -274,7 +274,7 @@ function SceneOneMoveBody() {
           transform: `translateY(${headY}px)`,
         }}
       >
-        <Inst size={13}>§ 04 — Outcome</Inst>
+        <Inst size={13}>Outcome</Inst>
         <div
           style={{
             height: 1,

@@ -87,7 +87,7 @@ export function ScrollDemo() {
           variants={fadeIn}
           className="flex flex-col gap-4 sm:gap-6"
         >
-          <p className="section-mark">§ 02 — Try the instrument</p>
+          <p className="section-mark">Try the instrument</p>
           <h2 className="display max-w-[900px] text-[40px] leading-[1.05] sm:text-[56px] md:text-[68px] lg:text-[84px]">
             Try it. <em>Right here.</em>
           </h2>

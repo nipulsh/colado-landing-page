@@ -84,7 +84,7 @@ export function Audiences() {
           variants={fadeIn}
           className="flex flex-col gap-4 sm:gap-6"
         >
-          <p className="section-mark">§ 04 — Audience</p>
+          <p className="section-mark">Audience</p>
           <h2 className="display max-w-[960px] text-[40px] leading-[1.03] sm:text-[56px] md:text-[68px] lg:text-[88px]">
             For people
             <br />
@@ -110,7 +110,7 @@ export function Audiences() {
             <span className="text-[var(--mute-soft)]">·</span>
             <span className="inst">One instrument</span>
           </p>
-          <p className="display max-w-[780px] text-[22px] leading-[1.28] text-[var(--ink-soft)] sm:text-[28px] md:text-[32px]">
+          <p className="display max-w-[900px] text-[28px] leading-[1.22] text-[var(--ink-soft)] sm:text-[36px] md:text-[44px] lg:text-[52px]">
             The rhythms differ. The answer — <em>one clear next move</em> —
             does not.
           </p>
@@ -153,11 +153,11 @@ function AudienceColumn({
       className="flex flex-col gap-6 border-t border-[var(--hairline)] pt-6 sm:gap-8 sm:pt-8"
     >
       <header className="flex flex-col gap-2">
-        <p className="flex items-baseline gap-3">
-          <span className="display text-[40px] leading-none text-[var(--ink)] sm:text-[48px]">
+        <p className="flex items-baseline gap-4">
+          <span className="display text-[52px] leading-none text-[var(--ink)] sm:text-[64px] md:text-[72px]">
             {block.letter}.
           </span>
-          <span className="inst inst-ink">{block.title}</span>
+          <span className="inst inst-ink text-[16px] sm:text-[18px] md:text-[20px]">{block.title}</span>
         </p>
         <p className="inst-sm normal-case tracking-[0.04em] text-[var(--muted)]">
           {block.byline}

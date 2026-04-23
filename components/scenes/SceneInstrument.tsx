@@ -98,7 +98,7 @@ function SceneInstrumentBody() {
           gap: 22,
         }}
       >
-        <Inst size={13}>§ 02 — Reasoning</Inst>
+        <Inst size={13}>Reasoning</Inst>
         <div
           style={{
             fontFamily: FONTS.display,

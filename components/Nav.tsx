@@ -6,9 +6,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
 const LINKS = [
-  { href: "#hero", label: "Experience", section: "§ 01" },
-  { href: "#audience", label: "Audience", section: "§ 02" },
-  { href: "#voices", label: "Voices", section: "§ 03" },
+  { href: "#hero", label: "Experience" },
+  { href: "#audience", label: "Audience" },
 ];
 
 export function Nav() {
@@ -54,9 +53,6 @@ export function Nav() {
                   href={l.href}
                   className="group flex items-baseline gap-1.5 text-[13.5px] text-[var(--muted)] transition-colors hover:text-[var(--ink)]"
                 >
-                  <span className="folio tnum opacity-70 group-hover:opacity-100">
-                    {l.section}
-                  </span>
                   <span>{l.label}</span>
                 </a>
               </li>
@@ -95,7 +91,7 @@ export function Nav() {
             className="fixed inset-0 z-40 bg-[var(--bg)] md:hidden"
           >
             <div className="flex h-full flex-col px-6 pt-20 sm:px-8">
-              <p className="inst-sm mb-8">§ Contents</p>
+              <p className="inst-sm mb-8">Contents</p>
               <ul className="flex flex-col gap-5">
                 {LINKS.map((l, i) => (
                   <motion.li
@@ -109,9 +105,6 @@ export function Nav() {
                       onClick={close}
                       className="flex items-baseline gap-3"
                     >
-                      <span className="folio tnum w-10 shrink-0">
-                        {l.section}
-                      </span>
                       <span className="display text-[36px] leading-tight text-[var(--ink)] sm:text-[44px]">
                         {l.label}
                       </span>

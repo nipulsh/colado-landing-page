@@ -2,7 +2,6 @@ import { Audiences } from "@/components/Audiences";
 import { EarlyAccess } from "@/components/EarlyAccess";
 import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
-import { Proof } from "@/components/Proof";
 import { QuietInstruments } from "@/components/QuietInstruments";
 
 export default function Home() {
@@ -12,7 +11,6 @@ export default function Home() {
       <main>
         <QuietInstruments />
         <Audiences />
-        <Proof />
         <EarlyAccess />
       </main>
       <Footer />

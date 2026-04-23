@@ -65,7 +65,7 @@ export function Pillars() {
           variants={fadeIn}
           className="flex flex-col gap-4 sm:gap-6"
         >
-          <p className="section-mark">§ 03 — Method</p>
+          <p className="section-mark">Method</p>
           <h2 className="display max-w-[960px] text-[40px] leading-[1.03] sm:text-[56px] md:text-[68px] lg:text-[88px]">
             Three movements,
             <br />

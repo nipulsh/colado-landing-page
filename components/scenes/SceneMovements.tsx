@@ -126,7 +126,7 @@ function SceneMovementsBody() {
           zIndex: 6,
         }}
       >
-        <Inst size={13}>§ 03 — Method</Inst>
+        <Inst size={13}>Method</Inst>
         <h2
           style={{
             margin: "16px 0 0 0",
