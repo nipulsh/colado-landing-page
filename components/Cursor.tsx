@@ -4,8 +4,8 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
 /**
- * Custom cursor — small 8px dot that grows to 28px with mix-blend-mode: difference
- * when hovering interactive elements. Pointer: fine only; gracefully off on touch.
+ * Custom cursor — accent-colored dot (visible on paper and ink) that grows on
+ * interactive targets. Pointer: fine only; gracefully off on touch.
  */
 function subscribePointerFine(onChange: () => void) {
   if (typeof window === "undefined") return () => {};
@@ -76,11 +76,10 @@ export function Cursor() {
     <motion.div
       ref={nodeRef}
       aria-hidden
-      className="pointer-events-none fixed left-0 top-0 z-[70] rounded-full bg-[var(--ink)]"
-      style={{ mixBlendMode: "difference" }}
+      className="pointer-events-none fixed left-0 top-0 z-[70] rounded-full border-2 border-[var(--bg)] bg-[var(--accent)] shadow-[0_0_0_1px_color-mix(in_srgb,var(--ink)_12%,transparent)]"
       animate={{
-        width: hovering ? 28 : 8,
-        height: hovering ? 28 : 8,
+        width: hovering ? 40 : 14,
+        height: hovering ? 40 : 14,
       }}
       transition={{ type: "spring", stiffness: 320, damping: 30, mass: 0.4 }}
     />
