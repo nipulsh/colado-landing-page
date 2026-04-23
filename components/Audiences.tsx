@@ -137,10 +137,10 @@ function AudienceColumn({
       transition: reduce
         ? { duration: 0 }
         : {
-            duration: 0.7,
-            ease: [0.22, 1, 0.36, 1] as const,
-            delay: 0.1 * index,
-          },
+          duration: 0.7,
+          ease: [0.22, 1, 0.36, 1] as const,
+          delay: 0.1 * index,
+        },
     },
   };
 
@@ -154,7 +154,7 @@ function AudienceColumn({
     >
       <header className="flex flex-col gap-2">
         <p className="flex items-baseline gap-4">
-          <span className="display text-[52px] leading-none text-[var(--ink)] sm:text-[64px] md:text-[72px]">
+          <span className="display text-[48px] leading-none text-[var(--ink)] sm:text-[64px] md:text-[72px]">
             {block.letter}.
           </span>
           <span className="inst inst-ink text-[36px] sm:text-[42px] md:text-[48px]">{block.title}</span>
