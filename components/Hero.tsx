@@ -40,22 +40,6 @@ export function Hero() {
         className="hero-fog pointer-events-none absolute inset-0"
       />
 
-      {/* Specimen masthead — always visible at the top of the hero */}
-      <div className="relative border-b border-[var(--hairline-soft)] bg-[var(--bg)]/60">
-        <div className="mx-auto flex w-full max-w-[1280px] flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 py-3 sm:px-8 sm:py-4 lg:px-12">
-          <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px]">
-            <span className="inst-sm inst-ink">Colado</span>
-            <span className="text-[var(--mute-soft)]">·</span>
-            <span className="inst-sm">An instrument for the next move</span>
-          </p>
-          <p className="flex items-center gap-2 text-[11px]">
-            <span className="inst-sm inst-ink">Specimen I</span>
-            <span className="text-[var(--mute-soft)]">·</span>
-            <span className="inst-sm">Hero</span>
-          </p>
-        </div>
-      </div>
-
       <motion.div
         variants={container}
         initial="hidden"
@@ -135,16 +119,6 @@ export function Hero() {
           <LiveDemo caption="The instrument at rest" />
         </motion.div>
       </motion.div>
-
-      {/* Hero folio */}
-      <div className="relative border-t border-[var(--hairline-soft)] bg-[var(--bg)]/60">
-        <div className="mx-auto flex w-full max-w-[1280px] items-center justify-between gap-4 px-5 py-3 sm:px-8 sm:py-4 lg:px-12">
-          <p className="folio truncate">
-            Colado / Landing / Hero · Coordinate I.A
-          </p>
-          <p className="folio tnum shrink-0">01 / 06</p>
-        </div>
-      </div>
     </section>
   );
 }

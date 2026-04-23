@@ -75,13 +75,7 @@ export function Audiences() {
   };
 
   return (
-    <SpecimenFrame
-      sectionId="audience"
-      specimen="IV"
-      specimenTitle="Built for makers"
-      coordinate="Colado / Landing / Audiences Spread IV.A – B"
-      folio="04 / 06"
-    >
+    <SpecimenFrame sectionId="audience">
       <div className="mx-auto w-full max-w-[1280px] px-5 py-16 sm:px-8 sm:py-20 md:py-28 lg:px-12 lg:py-32">
         <motion.div
           initial="hidden"

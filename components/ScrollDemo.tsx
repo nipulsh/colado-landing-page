@@ -78,13 +78,7 @@ export function ScrollDemo() {
   };
 
   return (
-    <SpecimenFrame
-      sectionId="live"
-      specimen="II"
-      specimenTitle="The Live Instrument"
-      coordinate="Colado / Landing / Demo Run II.A · Prioritize"
-      folio="02 / 06"
-    >
+    <SpecimenFrame sectionId="live">
       <div className="mx-auto w-full max-w-[1280px] px-5 py-16 sm:px-8 sm:py-20 md:py-28 lg:px-12 lg:py-32">
         <motion.div
           initial="hidden"

@@ -64,13 +64,7 @@ export function EarlyAccess() {
   };
 
   return (
-    <SpecimenFrame
-      sectionId="fin"
-      specimen="VI"
-      specimenTitle="The instrument, upon request"
-      coordinate="Colado / Landing / Access End · Return to § 01"
-      folio="06 / 06"
-    >
+    <SpecimenFrame sectionId="fin">
       <div className="mx-auto w-full max-w-[1280px] px-5 py-16 sm:px-8 sm:py-20 md:py-28 lg:px-12 lg:py-32">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-[1.1fr_1fr] md:gap-12 lg:gap-20">
           <motion.div
