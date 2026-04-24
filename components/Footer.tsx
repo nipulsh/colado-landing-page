@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { brandMastheadSub } from "@/lib/brand";
 
 function TwitterIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -32,8 +33,13 @@ function LinkedinIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export function Footer() {
   return (
-    <footer className="border-t border-[var(--hairline)] bg-[var(--bg)]">
-      <div className="mx-auto grid w-full max-w-[1280px] grid-cols-1 gap-10 px-5 py-14 sm:grid-cols-2 sm:gap-12 sm:px-8 sm:py-16 md:grid-cols-[1.3fr_1fr_1fr] md:py-20 lg:px-12">
+    <footer
+      className="border-t border-[var(--hairline)] bg-[var(--bg)]"
+      style={{
+        paddingBottom: "max(0px, env(safe-area-inset-bottom, 0px))",
+      }}
+    >
+      <div className="mx-auto grid w-full min-w-0 max-w-[1280px] grid-cols-1 gap-10 px-[max(1.25rem,env(safe-area-inset-left,0px))] py-14 pr-[max(1.25rem,env(safe-area-inset-right,0px))] sm:grid-cols-2 sm:gap-12 sm:px-8 sm:py-16 md:grid-cols-[1.3fr_1fr_1fr] md:py-20 lg:px-12">
         <div className="sm:col-span-2 md:col-span-1">
           <Link
             href="/"
@@ -41,10 +47,10 @@ export function Footer() {
           >
             Colado
           </Link>
-          <p className="mt-3 inst-sm">An instrument for the next move.</p>
+          <p className="mt-3 inst-sm">{brandMastheadSub}</p>
           <p className="mt-6 max-w-[360px] text-[14px] leading-relaxed text-[var(--ink-soft)] sm:text-[15px]">
-            The quiet second brain for founders and students. Built with care,
-            released to the quiet few.
+            The quiet second brain for founders and students: composed under
+            load, one move at a time. Built with care, released in small waves.
           </p>
         </div>
 
@@ -105,7 +111,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-[var(--hairline)]">
-        <div className="mx-auto flex w-full max-w-[1280px] flex-col items-start justify-between gap-3 px-5 py-5 sm:flex-row sm:items-center sm:px-8 sm:py-6 lg:px-12">
+        <div className="mx-auto flex w-full min-w-0 max-w-[1280px] flex-col items-start justify-between gap-3 px-[max(1.25rem,env(safe-area-inset-left,0px))] py-5 pr-[max(1.25rem,env(safe-area-inset-right,0px))] sm:flex-row sm:items-center sm:px-8 sm:py-6 lg:px-12">
           <p className="folio tnum">
             MMXXVI · Made with care · colado.in
           </p>

@@ -121,6 +121,7 @@ export function Stage({
       style={{
         position: "relative",
         width: "100%",
+        minHeight: 0,
         height: "100%",
         display: "flex",
         alignItems: "center",

@@ -24,6 +24,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { brandMastheadSub } from "@/lib/brand";
 
 const SESSION_KEY = "colado:loaded";
 const MIN_VISIBLE_MS = 1200;
@@ -152,16 +153,16 @@ export function LoadingScreen() {
                 }
           }
           transition={reduce ? { duration: 0.001 } : { duration: 0.9, ease: [0.77, 0, 0.175, 1] }}
-          className="fixed inset-0 z-[100] flex flex-col items-stretch justify-between"
+          className="fixed inset-0 z-[100] flex min-h-0 flex-col items-stretch justify-between"
           style={{
             background: "#f4f0e6",
             color: "var(--ink)",
-            padding: "32px",
+            padding: "max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(20px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px))",
             willChange: "clip-path, opacity",
           }}
         >
           {/* Top-left wordmark / label */}
-          <div className="flex items-baseline justify-between">
+          <div className="flex min-w-0 flex-col items-start justify-between gap-2 min-[420px]:flex-row min-[420px]:items-baseline">
             <div style={{ display: "flex", gap: 12, alignItems: "baseline" }}>
               <span
                 className="display"
@@ -187,9 +188,9 @@ export function LoadingScreen() {
               </span>
             </div>
             <span
+              className="max-w-full shrink-0 text-right text-[0.6rem] min-[420px]:text-[10.5px]"
               style={{
                 fontFamily: "var(--mono)",
-                fontSize: 10.5,
                 letterSpacing: "0.28em",
                 textTransform: "uppercase",
                 color: "var(--muted)",
@@ -272,22 +273,22 @@ export function LoadingScreen() {
                 }}
               />
             </div>
-            <div className="flex items-baseline justify-between">
+            <div className="flex min-w-0 flex-col items-start justify-between gap-1 min-[500px]:flex-row min-[500px]:items-baseline">
               <span
+                className="max-w-full min-w-0 [word-break:break-word] text-[0.58rem] min-[500px]:text-[10.5px]"
                 style={{
                   fontFamily: "var(--mono)",
-                  fontSize: 10.5,
-                  letterSpacing: "0.22em",
+                  letterSpacing: "0.12em",
                   textTransform: "uppercase",
                   color: "var(--muted)",
                 }}
               >
-                An instrument for the next move
+                {brandMastheadSub}
               </span>
               <span
+                className="shrink-0 self-end text-[0.58rem] min-[500px]:text-[10.5px]"
                 style={{
                   fontFamily: "var(--mono)",
-                  fontSize: 10.5,
                   letterSpacing: "0.22em",
                   textTransform: "uppercase",
                   color: "var(--muted)",

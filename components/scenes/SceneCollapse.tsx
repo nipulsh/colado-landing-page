@@ -17,6 +17,7 @@ import {
   Folio,
   Inst,
 } from "./shared";
+import { brandHeroSubline } from "@/lib/brand";
 
 export function SceneCollapse({
   start = 5,
@@ -67,11 +68,7 @@ function SceneCollapseBody() {
     >
       <PaperGrain opacity={0.28} />
       <HeroFog opacity={1} />
-      <Masthead
-        leftSub="An instrument for the next move"
-        right="Specimen"
-        rightSub="Hero"
-      />
+      <Masthead right="Specimen" rightSub="Hero" />
 
       <div
         style={{
@@ -200,9 +197,7 @@ function SceneCollapseBody() {
             marginTop: 8,
           }}
         >
-          Dump everything on your mind. Colado reads the context — deadlines,
-          energy, what you actually have to finish — and hands back the single
-          next move.
+          {brandHeroSubline}
         </div>
       </div>
 

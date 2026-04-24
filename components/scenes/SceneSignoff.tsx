@@ -17,6 +17,7 @@ import {
   Folio,
   Inst,
 } from "./shared";
+import { brandTagline } from "@/lib/brand";
 
 export function SceneSignoff({
   start = 36,
@@ -141,7 +142,7 @@ function SceneSignoffBody() {
             fontWeight: 500,
           }}
         >
-          An instrument for the next move.
+          {brandTagline}
         </div>
 
         {/* CTA row */}

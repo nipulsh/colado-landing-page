@@ -69,8 +69,8 @@ export function EarlyAccess() {
 
   return (
     <SpecimenFrame sectionId="fin">
-      <div className="mx-auto w-full max-w-[1280px] px-5 py-16 sm:px-8 sm:py-20 md:py-28 lg:px-12 lg:py-32">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-[1.1fr_1fr] md:gap-12 lg:gap-20">
+      <div className="mx-auto w-full min-w-0 max-w-[1280px] px-5 py-16 sm:px-8 sm:py-20 md:py-28 lg:px-12 lg:py-32">
+        <div className="grid min-w-0 grid-cols-1 gap-10 md:grid-cols-[1.1fr_1fr] md:gap-12 lg:gap-20">
           <motion.div
             initial="hidden"
             whileInView="show"
@@ -86,15 +86,15 @@ export function EarlyAccess() {
               Get the <em>app.</em>
             </RevealHeading>
             <Marginalia
-              note={<>don&apos;t think. request.</>}
+              note={<>no pitch theatre. you&apos;re in line.</>}
               side="right"
               top={30}
               rotate={2}
               decoration="underline"
             />
             <p className="max-w-[460px] text-[16px] leading-relaxed text-[var(--ink-soft)] sm:text-[18px]">
-              Colado is in private beta. We add founders and students every
-              week.
+              Private beta — we bring people on weekly, in order, with no
+              performance.
             </p>
             <p className="inst-sm mt-4 normal-case tracking-[0.04em] text-[var(--muted)]">
               We&apos;ll write when a spot opens. No drip campaigns. No hustle

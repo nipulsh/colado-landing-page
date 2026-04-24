@@ -80,7 +80,7 @@ export function Audiences() {
 
   return (
     <SpecimenFrame sectionId="audience">
-      <div className="mx-auto w-full max-w-[1280px] px-5 py-16 sm:px-8 sm:py-20 md:py-28 lg:px-12 lg:py-32">
+      <div className="mx-auto w-full min-w-0 max-w-[1280px] px-5 py-16 sm:px-8 sm:py-20 md:py-28 lg:px-12 lg:py-32">
         <motion.div
           initial="hidden"
           whileInView="show"
@@ -117,8 +117,8 @@ export function Audiences() {
             as="p"
             className="display max-w-[900px] text-[28px] leading-[1.22] text-[var(--ink-soft)] sm:text-[36px] md:text-[44px] lg:text-[52px]"
           >
-            The rhythms differ. The answer — <em>one clear next move</em> —
-            does not.
+            The rhythms differ. The through-line —{" "}
+            <em>one clear next move</em> — holds steady.
           </RevealHeading>
           <Marginalia
             note={<>← this is the product</>}

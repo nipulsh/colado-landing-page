@@ -139,6 +139,7 @@ export function QuietInstruments() {
         id="hero"
         aria-label="Colado — Quiet Instruments"
         data-embedded="true"
+        data-poster="true"
         className="quiet-instruments-section"
       >
         <div className="quiet-instruments-frame">
@@ -209,7 +210,7 @@ function ScrubIndicator({ t }: { t: number }) {
         position: "absolute",
         left: 0,
         right: 0,
-        bottom: 0,
+        bottom: "max(0px, env(safe-area-inset-bottom, 0px))",
         height: 2,
         background: "color-mix(in srgb, var(--ink) 8%, transparent)",
         pointerEvents: "none",

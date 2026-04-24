@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <>
       <Nav />
-      <main>
+      <main className="min-w-0">
         <QuietInstruments />
         <Audiences />
         <EarlyAccess />

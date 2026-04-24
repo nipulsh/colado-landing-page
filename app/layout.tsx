@@ -6,6 +6,7 @@ import { LoadingScreen } from "@/components/LoadingScreen";
 import { PaperField } from "@/components/PaperField";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { ViewTransitionsBridge } from "@/components/ViewTransitionsBridge";
+import { siteDescription, siteTitleDefault } from "@/lib/brand";
 import "./globals.css";
 
 const geist = Geist({
@@ -33,23 +34,22 @@ const instrumentSerif = Instrument_Serif({
 export const metadata: Metadata = {
   metadataBase: new URL("https://colado.in"),
   title: {
-    default: "Colado — Stop planning. Start doing.",
+    default: siteTitleDefault,
     template: "%s · Colado",
   },
-  description:
-    "Colado is the quiet AI assistant for founders and students. Dump everything on your mind; get one clear next move.",
+  description: siteDescription,
   keywords: [
     "AI assistant",
     "task prioritization",
     "founders",
     "students",
     "focus",
+    "composure",
     "productivity",
   ],
   openGraph: {
-    title: "Colado — Stop planning. Start doing.",
-    description:
-      "Dump everything on your mind. Colado decides what matters right now.",
+    title: siteTitleDefault,
+    description: siteDescription,
     url: "https://colado.in",
     siteName: "Colado",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
@@ -58,9 +58,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Colado — Stop planning. Start doing.",
-    description:
-      "Dump everything on your mind. Colado decides what matters right now.",
+    title: siteTitleDefault,
+    description: siteDescription,
     images: ["/og-image.png"],
   },
   icons: {
@@ -73,6 +72,7 @@ export const viewport: Viewport = {
   themeColor: "#F7F5F0",
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

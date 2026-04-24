@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { LiveDemo } from "@/components/LiveDemo";
+import { brandHeroSubline } from "@/lib/brand";
 
 const staggerContainer = (reduce: boolean) => ({
   hidden: { opacity: reduce ? 1 : 0 },
@@ -68,9 +69,7 @@ export function Hero() {
             variants={child}
             className="max-w-[520px] text-[16px] leading-relaxed text-[var(--ink-soft)] sm:text-[18px] md:text-[19px]"
           >
-            Dump everything on your mind. Colado reads the context — deadlines,
-            energy, what you actually have to finish — and hands back the single
-            next move.
+            {brandHeroSubline}
           </motion.p>
 
           <motion.div

@@ -33,9 +33,10 @@ export function LenisProvider() {
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const lenis = new Lenis({
-      lerp: reduce ? 1 : 0.1,
-      wheelMultiplier: reduce ? 1 : 0.75,
-      touchMultiplier: reduce ? 1 : 0.95,
+      /* Slightly higher lerp + touch weight = silkier, more “unhurried” scroll */
+      lerp: reduce ? 1 : 0.12,
+      wheelMultiplier: reduce ? 1 : 0.76,
+      touchMultiplier: reduce ? 1 : 0.92,
       smoothWheel: !reduce,
     });
 

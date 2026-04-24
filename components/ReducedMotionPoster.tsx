@@ -6,8 +6,7 @@
  * page: a single, still, art-directed frame that communicates everything
  * the animation does — but in print. No animation. No JS. No surprises.
  *
- * The same typography, palette, and layout logic as the animated scenes,
- * frozen into a bookplate.
+ * Laid out for real viewports: fluid type, triptych stacks on narrow screens.
  */
 
 import {
@@ -19,163 +18,144 @@ import {
   Folio,
   Inst,
 } from "@/components/scenes/shared";
+import { brandHeroSubline, siteDescription } from "@/lib/brand";
 
 export function ReducedMotionPoster() {
   return (
     <div
       role="img"
-      aria-label="Colado — Stop planning. Start doing. An intelligent assistant for founders and students."
-      style={{
-        position: "absolute",
-        inset: 0,
-        background: COLADO.paper,
-        overflow: "hidden",
-      }}
+      aria-label={`Colado — ${siteDescription}`}
+      className="poster-min-h flex min-h-0 w-full max-w-full flex-1 flex-col"
+      style={{ background: COLADO.paper }}
     >
       <PaperGrain opacity={0.32} />
       <HeroFog opacity={0.9} />
 
       <Masthead
-        leftSub="An instrument for the next move"
+        variant="fluid"
         right="Specimen"
         rightSub="Colado · Edition 01"
       />
 
-      <div
-        style={{
-          position: "absolute",
-          left: "50%",
-          top: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 1440,
-          display: "flex",
-          flexDirection: "column",
-          gap: 40,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 14,
-          }}
-        >
-          <Inst
-            size={13}
-            color={COLADO.muteSoft}
-            style={{ letterSpacing: "0.18em" }}
-          >
-            Fig.
-          </Inst>
-          <span style={{ color: COLADO.muteSoft }}>—</span>
-          <Inst size={13}>
-            An intelligent assistant for founders &amp; students
-          </Inst>
-        </div>
-
-        <div
-          style={{
-            fontFamily: FONTS.display,
-            fontSize: 148,
-            lineHeight: 1.08,
-            color: COLADO.ink,
-            letterSpacing: "-0.018em",
-            fontWeight: 400,
-          }}
-        >
-          <div style={{ position: "relative", display: "inline-block" }}>
-            Stop planning.
-            <span
-              style={{
-                position: "absolute",
-                left: 6,
-                top: "54%",
-                width: "100%",
-                height: 4,
-                background: COLADO.signal,
-              }}
-            />
-          </div>
-          <br />
-          <span style={{ fontStyle: "italic" }}>Start doing.</span>
-        </div>
-
-        <div
-          style={{
-            fontFamily: FONTS.body,
-            fontSize: 24,
-            lineHeight: 1.5,
-            color: COLADO.inkSoft,
-            maxWidth: 820,
-            fontWeight: 400,
-          }}
-        >
-          Dump everything on your mind. Colado reads the context — deadlines,
-          energy, what you actually have to finish — and hands back the single
-          next move.
-        </div>
-
-        {/* Three movements summary — the animated triptych, frozen. */}
-        <div
-          style={{
-            marginTop: 40,
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
-            gap: 40,
-            borderTop: `1px solid ${COLADO.hairline}`,
-            paddingTop: 32,
-          }}
-        >
-          {[
-            { roman: "I", label: "Capture", line: "Say it. Like a friend." },
-            { roman: "II", label: "Prioritize", line: "We read. You trust." },
-            { roman: "III", label: "Act", line: "One move. Then the next." },
-          ].map((m) => (
-            <div
-              key={m.roman}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 10,
-              }}
+      <div className="relative z-[1] flex w-full min-w-0 flex-1 flex-col justify-center px-4 py-5 sm:px-6 sm:py-7 md:px-8 md:py-8 lg:px-10">
+        <div className="mx-auto flex w-full max-w-[min(100%,90rem)] min-w-0 flex-col gap-6 sm:gap-8 md:gap-9 lg:gap-10">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.6rem] sm:text-[0.65rem]">
+            <Inst
+              size={13}
+              color={COLADO.muteSoft}
+              style={{ letterSpacing: "0.18em" }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "baseline",
-                }}
-              >
+              Fig.
+            </Inst>
+            <span style={{ color: COLADO.muteSoft }}>—</span>
+            <Inst
+              size={13}
+              caps={false}
+              style={{ letterSpacing: "0.06em", maxWidth: "100%" }}
+            >
+              An intelligent assistant for founders &amp; students
+            </Inst>
+          </div>
+
+          <div
+            className="w-full min-w-0"
+            style={{
+              fontFamily: FONTS.display,
+              color: COLADO.ink,
+              letterSpacing: "-0.018em",
+              fontWeight: 400,
+            }}
+          >
+            <div
+              className="w-full min-w-0 leading-[1.02]"
+              style={{ fontSize: "clamp(2.1rem, 7.2vw, 9.25rem)" }}
+            >
+              <div style={{ position: "relative", display: "inline-block" }}>
+                Stop planning.
                 <span
                   style={{
+                    position: "absolute",
+                    left: 6,
+                    top: "54%",
+                    width: "100%",
+                    height: 4,
+                    maxWidth: "100%",
+                    background: COLADO.signal,
+                  }}
+                />
+              </div>
+              <br />
+              <span style={{ fontStyle: "italic" }}>Start doing.</span>
+            </div>
+
+            <p
+              className="mt-3 max-w-[40rem] min-w-0 sm:mt-4"
+              style={{
+                fontFamily: FONTS.body,
+                fontSize: "clamp(0.9rem, 1.1vw + 0.6rem, 1.1rem)",
+                lineHeight: 1.5,
+                color: COLADO.inkSoft,
+                fontWeight: 400,
+              }}
+            >
+              {brandHeroSubline}
+            </p>
+          </div>
+
+          <div
+            className="mt-1 grid w-full min-w-0 grid-cols-1 gap-8 sm:mt-0 sm:gap-9 sm:pt-6 md:grid-cols-2 md:gap-8 md:pt-7 lg:grid-cols-3 lg:gap-10"
+            style={{
+              borderTop: `1px solid ${COLADO.hairline}`,
+              paddingTop: 24,
+            }}
+          >
+            {[
+              { roman: "I", label: "Capture", line: "Say it. No performance." },
+              {
+                roman: "II",
+                label: "Prioritize",
+                line: "We cut noise. You stay composed.",
+              },
+              { roman: "III", label: "Act", line: "One move. Clean exit." },
+            ].map((m) => (
+              <div
+                key={m.roman}
+                className="flex min-w-0 flex-col gap-2.5 sm:gap-2.5"
+              >
+                <div className="flex items-baseline justify-between gap-2">
+                  <span
+                    className="leading-none"
+                    style={{
+                      fontFamily: FONTS.display,
+                      fontSize: "clamp(2.1rem, 5.5vw, 3.5rem)",
+                      color: COLADO.ink,
+                    }}
+                  >
+                    {m.roman}
+                  </span>
+                  <Inst size={12} color={COLADO.inkSoft}>
+                    {m.label}
+                  </Inst>
+                </div>
+                <p
+                  className="min-w-0"
+                  style={{
                     fontFamily: FONTS.display,
-                    fontSize: 56,
+                    fontSize: "clamp(1.1rem, 1.1vw + 0.5rem, 1.75rem)",
                     color: COLADO.ink,
-                    lineHeight: 1,
+                    lineHeight: 1.2,
                   }}
                 >
-                  {m.roman}
-                </span>
-                <Inst size={12} color={COLADO.inkSoft}>
-                  {m.label}
-                </Inst>
+                  {m.line}
+                </p>
               </div>
-              <div
-                style={{
-                  fontFamily: FONTS.display,
-                  fontSize: 28,
-                  color: COLADO.ink,
-                  lineHeight: 1.2,
-                }}
-              >
-                {m.line}
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 
       <Folio
+        variant="fluid"
         coord="Colado / Landing / Specimen · Poster Frame"
         idx="01"
         total="01"

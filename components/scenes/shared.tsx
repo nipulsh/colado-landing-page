@@ -7,6 +7,7 @@
 
 import { Easing, clamp } from "@/lib/animation/easing";
 import { useSprite } from "@/lib/animation/context";
+import { brandMastheadSub } from "@/lib/brand";
 
 // ── Palette ─────────────────────────────────────────────────────────────────
 
@@ -40,40 +41,70 @@ type MastheadProps = {
   leftSub?: string;
   right?: string;
   rightSub?: string;
+  /**
+   * `stage` = design pixels inside the 1920×1080 canvas (scales with Stage).
+   * `fluid` = real viewport; clamped padding for reduced-motion / screen-sized layouts.
+   */
+  variant?: "stage" | "fluid";
 };
 
 export function Masthead({
   left = "Colado",
-  leftSub = "An instrument for the next move",
+  leftSub = brandMastheadSub,
   right = "Specimen",
   rightSub = "",
+  variant = "stage",
 }: MastheadProps) {
+  const fluid = variant === "fluid";
   return (
     <div
       style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        padding: "28px 72px",
+        position: fluid ? "relative" : "absolute",
+        top: fluid ? undefined : 0,
+        left: fluid ? undefined : 0,
+        right: fluid ? undefined : 0,
+        padding: fluid
+          ? "max(8px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) 10px max(12px, env(safe-area-inset-left, 0px))"
+          : "28px 72px",
         display: "flex",
+        flexWrap: fluid ? "wrap" : "nowrap",
+        rowGap: fluid ? 8 : 0,
+        columnGap: 16,
         justifyContent: "space-between",
-        alignItems: "center",
+        alignItems: fluid ? "flex-start" : "center",
         borderBottom: `1px solid ${COLADO.hairlineSoft}`,
         fontFamily: FONTS.mono,
-        fontSize: 13,
-        letterSpacing: "0.22em",
+        fontSize: fluid ? "clamp(8px, 2.1vw, 13px)" : 13,
+        letterSpacing: fluid ? "0.16em" : "0.22em",
         textTransform: "uppercase",
         color: COLADO.muted,
         zIndex: 10,
       }}
     >
-      <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: fluid ? 8 : 16,
+          alignItems: "center",
+          flexWrap: "wrap",
+          minWidth: 0,
+        }}
+      >
         <span style={{ color: COLADO.inkSoft, fontWeight: 500 }}>{left}</span>
         <span style={{ color: COLADO.muteSoft, letterSpacing: 0 }}>·</span>
-        <span>{leftSub}</span>
+        <span style={{ minWidth: 0 }}>{leftSub}</span>
       </div>
-      <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: fluid ? 8 : 16,
+          alignItems: "center",
+          marginLeft: fluid ? "auto" : undefined,
+          flexWrap: "wrap",
+          justifyContent: "flex-end",
+          textAlign: "right" as const,
+        }}
+      >
         <span style={{ color: COLADO.inkSoft, fontWeight: 500 }}>{right}</span>
         {rightSub && (
           <>
@@ -92,27 +123,37 @@ type FolioProps = {
   coord?: string;
   idx?: string;
   total?: string;
+  variant?: "stage" | "fluid";
 };
 
 export function Folio({
   coord = "Colado / Landing / Fig.",
   idx = "01",
   total = "06",
+  variant = "stage",
 }: FolioProps) {
+  const fluid = variant === "fluid";
   return (
     <div
       style={{
-        position: "absolute",
-        bottom: 0,
-        left: 0,
-        right: 0,
-        padding: "24px 72px",
+        position: fluid ? "relative" : "absolute",
+        bottom: fluid ? undefined : 0,
+        left: fluid ? undefined : 0,
+        right: fluid ? undefined : 0,
+        marginTop: fluid ? "auto" : undefined,
+        padding: fluid
+          ? "10px max(12px, env(safe-area-inset-right, 0px)) max(10px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px))"
+          : "24px 72px",
         display: "flex",
+        flexDirection: fluid ? "column" : "row",
+        flexWrap: "wrap",
+        gap: fluid ? 6 : 0,
         justifyContent: "space-between",
-        alignItems: "center",
+        alignItems: fluid ? "stretch" : "center",
+        rowGap: fluid ? 4 : 0,
         borderTop: `1px solid ${COLADO.hairlineSoft}`,
         fontFamily: FONTS.mono,
-        fontSize: 12,
+        fontSize: fluid ? "clamp(8px, 1.8vw, 12px)" : 12,
         letterSpacing: "0.18em",
         textTransform: "uppercase",
         color: COLADO.muteSoft,
@@ -120,8 +161,8 @@ export function Folio({
         zIndex: 10,
       }}
     >
-      <span>{coord}</span>
-      <span>
+      <span style={{ minWidth: 0, lineHeight: 1.35 }}>{coord}</span>
+      <span style={{ alignSelf: fluid ? "flex-end" : "auto" }}>
         {idx} / {total}
       </span>
     </div>
