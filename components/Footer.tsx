@@ -39,7 +39,7 @@ export function Footer() {
         paddingBottom: "max(0px, env(safe-area-inset-bottom, 0px))",
       }}
     >
-      <div className="mx-auto grid w-full min-w-0 max-w-[1280px] grid-cols-1 gap-10 px-[max(1.25rem,env(safe-area-inset-left,0px))] py-14 pr-[max(1.25rem,env(safe-area-inset-right,0px))] sm:grid-cols-2 sm:gap-12 sm:px-8 sm:py-16 md:grid-cols-[1.3fr_1fr_1fr] md:py-20 lg:px-12">
+      <div className="mx-auto grid w-full min-w-0 max-w-[1280px] grid-cols-1 gap-10 px-[max(1.25rem,env(safe-area-inset-left,0px))] py-14 pr-[max(1.25rem,env(safe-area-inset-right,0px))] sm:grid-cols-2 sm:gap-c7 sm:px-c6 sm:py-16 md:grid-cols-[1.3fr_1fr_1fr] md:py-20 lg:px-c7">
         <div className="sm:col-span-2 md:col-span-1">
           <Link
             href="/"
@@ -56,7 +56,7 @@ export function Footer() {
 
         <div>
           <h4 className="inst">Contents</h4>
-          <ul className="mt-5 flex flex-col gap-3 text-[14px] sm:text-[15px]">
+          <ul className="mt-5 flex flex-col gap-c3 text-[14px] sm:text-[15px]">
             {[
               { href: "#live", label: "Try it" },
               { href: "#method", label: "Method" },
@@ -77,7 +77,7 @@ export function Footer() {
 
         <div>
           <h4 className="inst">Correspondence</h4>
-          <ul className="mt-5 flex flex-col gap-3 text-[14px] sm:text-[15px]">
+          <ul className="mt-5 flex flex-col gap-c3 text-[14px] sm:text-[15px]">
             <li>
               <a
                 href="mailto:hello@colado.in"
@@ -86,7 +86,7 @@ export function Footer() {
                 hello@colado.in
               </a>
             </li>
-            <li className="flex items-center gap-3 pt-2">
+            <li className="flex items-center gap-c3 pt-2">
               <a
                 href="https://twitter.com/coladoapp"
                 target="_blank"
@@ -111,11 +111,11 @@ export function Footer() {
       </div>
 
       <div className="border-t border-[var(--hairline)]">
-        <div className="mx-auto flex w-full min-w-0 max-w-[1280px] flex-col items-start justify-between gap-3 px-[max(1.25rem,env(safe-area-inset-left,0px))] py-5 pr-[max(1.25rem,env(safe-area-inset-right,0px))] sm:flex-row sm:items-center sm:px-8 sm:py-6 lg:px-12">
+        <div className="mx-auto flex w-full min-w-0 max-w-[1280px] flex-col items-start justify-between gap-c3 px-[max(1.25rem,env(safe-area-inset-left,0px))] py-5 pr-[max(1.25rem,env(safe-area-inset-right,0px))] sm:flex-row sm:items-center sm:px-c6 sm:py-6 lg:px-c7">
           <p className="folio tnum">
             MMXXVI · Made with care · colado.in
           </p>
-          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+          <div className="flex flex-wrap items-center gap-c4 sm:gap-c5">
             <Link
               href="/privacy"
               className="inst-sm hover:text-[var(--ink)]"

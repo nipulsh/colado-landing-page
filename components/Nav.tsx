@@ -38,7 +38,7 @@ export function Nav() {
           paddingTop: "max(0px, env(safe-area-inset-top, 0px))",
         }}
       >
-        <nav className="mx-auto flex h-14 w-full min-w-0 max-w-[1280px] items-center justify-between gap-3 px-[max(1.25rem,env(safe-area-inset-left,0px))] pr-[max(1.25rem,env(safe-area-inset-right,0px))] sm:h-[60px] sm:gap-6 sm:px-8 lg:px-12">
+        <nav className="mx-auto flex h-14 w-full min-w-0 max-w-[1280px] items-center justify-between gap-c3 px-[max(1.25rem,env(safe-area-inset-left,0px))] pr-[max(1.25rem,env(safe-area-inset-right,0px))] sm:h-[60px] sm:gap-c5 sm:px-c6 lg:px-c7">
           <Link
             href="/"
             className="flex min-w-0 max-w-[min(100%,18rem)] flex-wrap items-baseline gap-x-2 gap-y-0.5 sm:max-w-none"
@@ -65,10 +65,10 @@ export function Nav() {
             ))}
           </ul>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-c2">
             <a
               href="#fin"
-              className="hidden h-9 items-center rounded-full bg-[var(--ink)] px-4 text-[12.5px] font-medium tracking-wide text-[var(--bg)] transition-opacity hover:opacity-90 md:inline-flex"
+              className="hidden h-9 items-center rounded-full bg-[var(--ink)] px-c4 text-[12.5px] font-medium tracking-wide text-[var(--bg)] transition-opacity hover:opacity-90 md:inline-flex"
             >
               Request access
             </a>
@@ -99,7 +99,7 @@ export function Nav() {
               paddingTop: "max(5rem, env(safe-area-inset-top, 0px))",
             }}
           >
-            <div className="flex h-full min-w-0 flex-col px-6 sm:px-8">
+            <div className="flex h-full min-w-0 flex-col px-c5 sm:px-c6">
               <p className="inst-sm mb-8">Contents</p>
               <ul className="flex flex-col gap-5">
                 {LINKS.map((l, i) => (
@@ -129,7 +129,7 @@ export function Nav() {
                   <a
                     href="#fin"
                     onClick={close}
-                    className="inline-flex h-12 items-center rounded-full bg-[var(--ink)] px-6 text-[14px] font-medium text-[var(--bg)]"
+                    className="inline-flex h-12 items-center rounded-full bg-[var(--ink)] px-c5 text-[14px] font-medium text-[var(--bg)]"
                   >
                     Request access →
                   </a>

@@ -57,13 +57,13 @@ export function Pillars() {
 
   return (
     <SpecimenFrame sectionId="method">
-      <div className="mx-auto w-full max-w-[1280px] px-5 py-16 sm:px-8 sm:py-20 md:py-28 lg:px-12 lg:py-32">
+      <div className="mx-auto w-full max-w-[1280px] px-c5 py-c8 sm:px-c6 sm:py-20 md:py-28 lg:px-c7 lg:py-c10">
         <motion.div
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-15%" }}
           variants={fadeIn}
-          className="flex flex-col gap-4 sm:gap-6"
+          className="flex flex-col gap-c4 sm:gap-c5"
         >
           <p className="section-mark">Method</p>
           <h2 className="display max-w-[960px] text-[40px] leading-[1.03] sm:text-[56px] md:text-[68px] lg:text-[88px]">
@@ -73,7 +73,7 @@ export function Pillars() {
           </h2>
         </motion.div>
 
-        <div className="mt-14 grid grid-cols-1 gap-10 sm:mt-20 md:mt-24 md:grid-cols-3 md:gap-8 lg:gap-12">
+        <div className="mt-14 grid grid-cols-1 gap-10 sm:mt-20 md:mt-24 md:grid-cols-3 md:gap-c6 lg:gap-c7">
           {MOVEMENTS.map((m, i) => (
             <MovementCard key={m.roman} movement={m} index={i} reduce={reduce} />
           ))}
@@ -84,7 +84,7 @@ export function Pillars() {
           whileInView="show"
           viewport={{ once: true, margin: "-5%" }}
           variants={fadeIn}
-          className="mt-16 flex flex-col gap-3 border-t border-[var(--hairline)] pt-10 sm:mt-20 sm:pt-12 md:mt-24"
+          className="mt-16 flex flex-col gap-c3 border-t border-[var(--hairline)] pt-10 sm:mt-20 sm:pt-12 md:mt-24"
         >
           <p className="display max-w-[820px] text-[22px] leading-[1.28] text-[var(--ink-soft)] sm:text-[28px] md:text-[34px]">
             The whole point is that you <em>stop choosing.</em>
@@ -128,9 +128,9 @@ function MovementCard({
       whileInView="show"
       viewport={{ once: true, margin: "-10%" }}
       variants={variants}
-      className="relative flex flex-col gap-5 border-t border-[var(--hairline)] pt-6 sm:gap-6 sm:pt-8"
+      className="relative flex flex-col gap-5 border-t border-[var(--hairline)] pt-6 sm:gap-c5 sm:pt-8"
     >
-      <header className="flex items-baseline justify-between gap-4">
+      <header className="flex items-baseline justify-between gap-c4">
         <span className="display text-[40px] leading-none text-[var(--ink)] sm:text-[52px]">
           {movement.roman}
         </span>

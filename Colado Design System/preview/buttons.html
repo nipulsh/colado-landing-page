@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Buttons</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;background:var(--paper);height:100%;font-family:var(--body)}
+  .wrap{padding:22px 26px;display:flex;flex-direction:column;gap:14px}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);min-width:72px}
+  .ink{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 22px;border-radius:9999px;background:var(--ink);color:var(--paper);font-size:14.5px;font-weight:500;border:0;cursor:pointer}
+  .accent{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-radius:9999px;background:var(--accent);color:#fff;font-size:13px;font-weight:500;border:0}
+  .ghost{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:9999px;border:1px solid var(--hairline);background:transparent;font-family:var(--mono);font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--muted)}
+  .link{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--ink-soft);text-decoration:none}
+  .link span{border-bottom:1px solid rgba(42,43,39,.3);padding-bottom:1px}
+</style></head><body><div class="wrap">
+  <div class="row"><span class="lbl">Primary</span><button class="ink">Request access →</button><button class="ink">Get the app →</button></div>
+  <div class="row"><span class="lbl">Accent</span><button class="accent">Prioritize →</button></div>
+  <div class="row"><span class="lbl">Ghost</span><button class="ghost">✎ Rewrite</button><button class="ghost">↺ Reset</button></div>
+  <div class="row"><span class="lbl">Text</span><a class="link"><span>or try it below</span>↓</a></div>
+</div></body></html>

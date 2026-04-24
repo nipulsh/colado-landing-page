@@ -1,13 +1,9 @@
 "use client";
 
 /**
- * Marginalia — a small handwritten annotation that draws itself into the
- * margin of a section when it scrolls into view. Uses SVG stroke-dashoffset
- * for the draw-in, and a slightly rotated caveat-style font for the note.
- *
- * We ship without a custom web font to keep first-paint lean; we fall back
- * through a stack of handwriting-ish system fonts. If none are installed,
- * cursive italic renders acceptably.
+ * Marginalia — a small display-serif note in the margin when a section
+ * scrolls into view. Uses SVG stroke-dashoffset for the draw-in. Typography
+ * matches the Colado Design System: Instrument Serif italic (not handwriting).
  *
  * Place as a child of a `position: relative` parent; absolutely positioned.
  */
@@ -86,12 +82,11 @@ export function Marginalia({
     >
       <span
         style={{
-          fontFamily:
-            '"Caveat", "Homemade Apple", "Bradley Hand", "Segoe Print", cursive',
-          fontSize: 22,
+          fontFamily: "var(--font-instrument-serif), ui-serif, Georgia, serif",
+          fontSize: 20,
           lineHeight: 1.2,
-          fontStyle: "normal",
-          letterSpacing: "0.01em",
+          fontStyle: "italic",
+          letterSpacing: "-0.01em",
           display: "block",
         }}
       >

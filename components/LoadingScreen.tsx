@@ -1,71 +1,73 @@
 "use client";
 
 /**
- * LoadingScreen — editorial percentage counter, shown once on first paint.
+ * LoadingScreen — preloader inspired by activetheory.net’s “init” layer
+ * (full-viewport #000, technical mono chrome, large tabular 000–100%,
+ * single horizontal load bar, crossfade out).
  *
- * Visual grammar matches the rest of the page:
- *   - Huge Instrument Serif number (0 → 100), tabular nums for stable layout
- *   - JetBrains Mono labels ("Loading · Colado") above, scene hint below
- *   - A single 1px hairline progress bar (dark ink on paper)
- *   - Exits with a clip-path reveal upward + subtle opacity fade
+ * How close this is to the real site (critical read):
+ * - Similar: dark full-screen, minimal top chrome, big percentage with
+ *   leading zeros, bottom progress track, all-caps mono system labels,
+ *   fade transition into the app (industrial / WebGL-landing look).
+ * - Different: Active Theory’s loader hands off into a custom Hydra/WebGL
+ *   scene, often with neon, glass, and 3D; we don’t run their engine,
+ *   shaders, or real asset load ratios—progress is still inferred from
+ *   document + fonts as before. The film-grain/scan is a **light** CSS
+ *   stand-in, not a GPU compositor. Brand is Colado, not “Active Theory.”
+ * - The Colado *site* is paper-ink; this is intentionally a **separate
+ *   dark** layer for ~1.2s so the first paint reads as “boot,” then
+ *   resolves to the paper field (same hand-off idea as AT → WebGL, but
+ *   we crossfade to the landing page, not 3D).
  *
- * Progress signal (real, not fake):
- *   - document.readyState → 25% / 55% / 85%
- *   - document.fonts.ready → +15%
- *   - window 'load' event → 100%
- *   - rAF ticker drives a smooth counter toward the latest target
+ * Real progress:
+ *   document.readyState, document.fonts.ready, window load, rAF lerp, min
+ *   visible time, sessionStorage skip for repeat views.
  *
- * UX:
- *   - Minimum visible time of ~1.2s so the screen always reads intentional
- *   - Respects `prefers-reduced-motion` (instant in, instant out)
- *   - Disables body scroll while visible
- *   - Mounts once per session (sessionStorage), so returning visitors skip
+ * a11y: `aria-hidden` on overlay, respects reduced motion, restores scroll
+ * and Lenis on exit.
  */
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { brandMastheadSub } from "@/lib/brand";
 
 const SESSION_KEY = "colado:loaded";
 const MIN_VISIBLE_MS = 1200;
 
+const bg = "#000000";
+const ink = "#fafaf9";
+const dim = "rgba(255,255,255,0.4)";
+const track = "rgba(255,255,255,0.12)";
+
 export function LoadingScreen() {
   const reduce = useReducedMotion() ?? false;
 
-  // Visible starts true on both server & client (no hydration mismatch);
-  // we read sessionStorage after mount to decide whether to skip.
   const [visible, setVisible] = useState<boolean>(true);
   const [progress, setProgress] = useState(0);
   const targetRef = useRef(0);
   const startRef = useRef<number | null>(null);
 
-  // Read the "already loaded this session" flag post-hydration.
   useEffect(() => {
     try {
       if (sessionStorage.getItem(SESSION_KEY) === "1") {
         setVisible(false);
       }
     } catch {
-      // sessionStorage blocked → keep visible
+      // sessionStorage blocked
     }
   }, []);
 
   useEffect(() => {
     if (!visible) return;
 
-    // Lock scroll while loading screen is up
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    // If Lenis is running, stop it too (it drives scroll on its own raf loop)
     window.__lenis?.stop?.();
-
     startRef.current = performance.now();
 
     const bumpTarget = (v: number) => {
       targetRef.current = Math.max(targetRef.current, Math.min(100, v));
     };
 
-    // Initial bump based on readyState
     if (document.readyState === "interactive") bumpTarget(55);
     else if (document.readyState === "complete") bumpTarget(85);
     else bumpTarget(25);
@@ -75,15 +77,12 @@ export function LoadingScreen() {
     document.addEventListener("DOMContentLoaded", onDomLoaded);
     window.addEventListener("load", onLoad);
 
-    // Fonts
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(() => bumpTarget(85)).catch(() => {});
     }
 
-    // Simulated tail so we never stall — tops out at 96 before actual load
     const tailInterval = window.setInterval(() => {
       const t = (performance.now() - (startRef.current ?? 0)) / 1000;
-      // Logistic-ish curve approaching 96
       const tail = 96 * (1 - Math.exp(-t * 0.9));
       bumpTarget(tail);
     }, 60);
@@ -92,7 +91,6 @@ export function LoadingScreen() {
     const step = () => {
       setProgress((p) => {
         const target = targetRef.current;
-        // Ease toward target; bigger distance -> bigger step, capped
         const delta = target - p;
         if (Math.abs(delta) < 0.05) return target;
         return p + delta * 0.08;
@@ -101,19 +99,19 @@ export function LoadingScreen() {
     };
     raf = requestAnimationFrame(step);
 
-    // When window fully loaded + min time elapsed, jump to 100 & unmount
     const finish = () => {
       const elapsed = performance.now() - (startRef.current ?? 0);
       const wait = Math.max(0, MIN_VISIBLE_MS - elapsed);
       window.setTimeout(() => {
         targetRef.current = 100;
-        // Allow a beat for the counter to hit 100 before exit
         window.setTimeout(() => {
           setVisible(false);
           try {
             sessionStorage.setItem(SESSION_KEY, "1");
-          } catch {}
-        }, 320);
+          } catch {
+            // ignore
+          }
+        }, 280);
       }, wait);
     };
 
@@ -134,7 +132,7 @@ export function LoadingScreen() {
     };
   }, [visible]);
 
-  const pct = Math.floor(progress);
+  const pct = Math.min(100, Math.max(0, Math.floor(progress)));
   const pctStr = String(pct).padStart(3, "0");
 
   return (
@@ -143,160 +141,161 @@ export function LoadingScreen() {
         <motion.div
           key="loading"
           aria-hidden
-          initial={reduce ? { opacity: 1 } : { opacity: 1 }}
+          initial={{ opacity: reduce ? 1 : 0 }}
+          animate={{ opacity: 1, filter: reduce ? "none" : "blur(0px)" }}
           exit={
             reduce
-              ? { opacity: 0 }
+              ? { opacity: 0, filter: "none" }
+              : { opacity: 0, filter: "blur(7px)" }
+          }
+          transition={
+            reduce
+              ? { duration: 0.1 }
               : {
-                  clipPath: "inset(0 0 100% 0)",
-                  opacity: 1,
+                  opacity: { duration: 0.58, ease: [0.22, 0.61, 0.36, 1] as const },
+                  filter: { duration: 0.58, ease: [0.22, 0.61, 0.36, 1] as const },
                 }
           }
-          transition={reduce ? { duration: 0.001 } : { duration: 0.9, ease: [0.77, 0, 0.175, 1] }}
-          className="fixed inset-0 z-[100] flex min-h-0 flex-col items-stretch justify-between"
+          className="fixed inset-0 z-[100] flex min-h-0 flex-col"
           style={{
-            background: "#f4f0e6",
-            color: "var(--ink)",
-            padding: "max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(20px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px))",
-            willChange: "clip-path, opacity",
+            background: bg,
+            color: ink,
+            padding:
+              "max(18px, env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) max(22px, env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px))",
+            willChange: "opacity, filter",
+            fontFamily: "var(--body)",
           }}
         >
-          {/* Top-left wordmark / label */}
-          <div className="flex min-w-0 flex-col items-start justify-between gap-2 min-[420px]:flex-row min-[420px]:items-baseline">
-            <div style={{ display: "flex", gap: 12, alignItems: "baseline" }}>
-              <span
-                className="display"
-                style={{
-                  fontSize: 28,
-                  lineHeight: 1,
-                  letterSpacing: "-0.02em",
-                  fontWeight: 400,
-                }}
-              >
-                Colado
-              </span>
-              <span
-                style={{
-                  fontFamily: "var(--mono)",
-                  fontSize: 10.5,
-                  letterSpacing: "0.28em",
-                  textTransform: "uppercase",
-                  color: "var(--muted)",
-                }}
-              >
-                Loading
-              </span>
-            </div>
-            <span
-              className="max-w-full shrink-0 text-right text-[0.6rem] min-[420px]:text-[10.5px]"
-              style={{
-                fontFamily: "var(--mono)",
-                letterSpacing: "0.28em",
-                textTransform: "uppercase",
-                color: "var(--muted)",
-                fontVariantNumeric: "tabular-nums",
-              }}
-            >
-              Edition 01 · Winter 2026
-            </span>
-          </div>
-
-          {/* Centered giant percentage */}
           <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 24,
-              paddingTop: 32,
-              paddingBottom: 32,
-            }}
-          >
-            <span
-              className="display"
-              style={{
-                fontSize: "clamp(140px, 26vw, 360px)",
-                lineHeight: 1,
-                letterSpacing: "-0.02em",
-                color: "var(--ink)",
-                fontWeight: 400,
-                fontVariantNumeric: "tabular-nums",
-              }}
-            >
-              {pctStr}
-              <span
-                style={{
-                  fontSize: "0.28em",
-                  verticalAlign: "super",
-                  marginLeft: "0.08em",
-                  color: "var(--muted)",
-                  fontFamily: "var(--mono)",
-                  letterSpacing: "0.1em",
-                }}
-              >
-                %
-              </span>
-            </span>
-            <span
-              style={{
-                fontFamily: "var(--mono)",
-                fontSize: 11.5,
-                letterSpacing: "0.32em",
-                textTransform: "uppercase",
-                color: "var(--muted)",
-              }}
-            >
-              {stageLabel(pct)}
-            </span>
-          </div>
-
-          {/* Bottom: hairline progress + meta */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            className="at-loader-vignette pointer-events-none absolute inset-0"
+            aria-hidden
+          />
+          <div
+            className="at-loader-grain pointer-events-none absolute inset-0"
+            aria-hidden
+          />
+          {!reduce && (
             <div
-              style={{
-                position: "relative",
-                width: "100%",
-                height: 1,
-                background: "var(--hairline)",
-                overflow: "hidden",
-              }}
-            >
-              <div
+              className="at-loader-scan absolute inset-0 opacity-[0.12]"
+              aria-hidden
+            />
+          )}
+
+          <div className="relative z-[1] flex min-h-0 w-full min-w-0 flex-1 flex-col font-sans">
+            {/* Top rail — small caps studio / system (AT-style) */}
+            <div className="flex min-w-0 items-end justify-between gap-4 text-[9px] font-medium uppercase sm:text-[10px]">
+              <div className="flex min-w-0 items-baseline gap-3 sm:gap-4">
+                <span
+                  className="shrink-0 tracking-[0.32em] text-white/50"
+                  style={{ fontFamily: "var(--mono)" }}
+                >
+                  Colado
+                </span>
+                <span
+                  className="hidden min-w-0 truncate sm:inline"
+                  style={{
+                    fontFamily: "var(--mono)",
+                    letterSpacing: "0.2em",
+                    color: dim,
+                  }}
+                >
+                  Composed. One next move.
+                </span>
+              </div>
+              <span
+                className="shrink-0 tabular-nums"
                 style={{
-                  position: "absolute",
-                  inset: 0,
-                  width: `${pct}%`,
-                  background: "var(--ink)",
-                  transition: "width 120ms linear",
-                  willChange: "width",
+                  fontFamily: "var(--mono)",
+                  letterSpacing: "0.2em",
+                  color: dim,
                 }}
-              />
+              >
+                {pctStr} · INIT
+              </span>
             </div>
-            <div className="flex min-w-0 flex-col items-start justify-between gap-1 min-[500px]:flex-row min-[500px]:items-baseline">
-              <span
-                className="max-w-full min-w-0 [word-break:break-word] text-[0.58rem] min-[500px]:text-[10.5px]"
-                style={{
-                  fontFamily: "var(--mono)",
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  color: "var(--muted)",
-                }}
+
+            {/* Center: dominant percentage */}
+            <div className="flex min-h-0 w-full flex-1 flex-col items-center justify-center gap-1 px-1 py-4">
+              <div
+                className="relative flex w-full min-w-0 max-w-[min(100%,28rem)] items-baseline justify-center sm:max-w-[min(100%,40rem)]"
+                style={{ fontVariantNumeric: "tabular-nums" }}
               >
-                {brandMastheadSub}
-              </span>
-              <span
-                className="shrink-0 self-end text-[0.58rem] min-[500px]:text-[10.5px]"
-                style={{
-                  fontFamily: "var(--mono)",
-                  letterSpacing: "0.22em",
-                  textTransform: "uppercase",
-                  color: "var(--muted)",
-                  fontVariantNumeric: "tabular-nums",
-                }}
+                <span
+                  className="select-none"
+                  style={{
+                    fontSize: "clamp(5.5rem, 30vw, 12.5rem)",
+                    lineHeight: 0.88,
+                    fontWeight: 200,
+                    letterSpacing: "-0.04em",
+                    color: ink,
+                    fontFeatureSettings: '"tnum" 1',
+                  }}
+                >
+                  {pctStr}
+                </span>
+                <span
+                  className="self-start pt-[0.2em] sm:pt-2"
+                  style={{
+                    fontFamily: "var(--mono)",
+                    fontSize: "clamp(0.65rem, 2.2vw, 0.85rem)",
+                    fontWeight: 500,
+                    letterSpacing: "0.16em",
+                    color: "rgba(255,255,255,0.35)",
+                    marginLeft: "0.12em",
+                  }}
+                >
+                  %
+                </span>
+              </div>
+              <p
+                className="mt-2 text-center text-[0.5rem] font-medium uppercase tracking-[0.4em] sm:text-[10px] sm:tracking-[0.36em]"
+                style={{ fontFamily: "var(--mono)", color: dim }}
               >
-                Specimen · {pctStr} / 100
-              </span>
+                {stageLabel(pct)}
+              </p>
+            </div>
+
+            {/* Bottom: single bar + meta */}
+            <div className="flex w-full min-w-0 flex-col gap-3">
+              <div
+                className="relative w-full overflow-hidden"
+                style={{ height: 2, background: track, borderRadius: 1 }}
+              >
+                <div
+                  className="absolute left-0 top-0 h-full transition-[width] duration-100 ease-linear"
+                  style={{
+                    width: `${pct}%`,
+                    background: ink,
+                    borderRadius: 1,
+                    boxShadow: "0 0 20px color-mix(in srgb, #fff 18%, transparent)",
+                  }}
+                />
+              </div>
+              <div className="flex min-w-0 items-start justify-between gap-4 text-[0.5rem] sm:text-[9px]">
+                <span
+                  className="min-w-0 [word-break:break-word]"
+                  style={{
+                    fontFamily: "var(--mono)",
+                    letterSpacing: "0.18em",
+                    textTransform: "uppercase",
+                    color: "rgba(255,255,255,0.28)",
+                    maxWidth: "65%",
+                  }}
+                >
+                  System · loader · {pctStr} / 100
+                </span>
+                <span
+                  className="shrink-0 tabular-nums"
+                  style={{
+                    fontFamily: "var(--mono)",
+                    letterSpacing: "0.2em",
+                    textTransform: "uppercase",
+                    color: "rgba(255,255,255,0.28)",
+                  }}
+                >
+                  ED. 01
+                </span>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -306,10 +305,10 @@ export function LoadingScreen() {
 }
 
 function stageLabel(pct: number): string {
-  if (pct < 20) return "Pressing paper";
-  if (pct < 45) return "Setting type";
-  if (pct < 70) return "Composing plates";
-  if (pct < 92) return "Warming the press";
-  if (pct < 100) return "Final pass";
-  return "Ready";
+  if (pct < 18) return "allocating";
+  if (pct < 42) return "resolving";
+  if (pct < 68) return "mounting";
+  if (pct < 94) return "syncing";
+  if (pct < 100) return "sealing";
+  return "enter";
 }

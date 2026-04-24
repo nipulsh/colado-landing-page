@@ -2,19 +2,19 @@
 // Quiet Instruments palette, reusable specimen chrome, typing helper.
 
 const COLADO = {
-  paper: '#f4f0e6',
-  paperSoft: '#ede8db',
-  paperElev: '#fbf8f1',
-  ink: '#14140f',
-  inkSoft: '#2d2e28',
+  paper: '#f7f5f0',
+  paperSoft: '#efece4',
+  paperElev: '#ffffff',
+  ink: '#0e0f0c',
+  inkSoft: '#2a2b27',
   muted: '#6b6c66',
-  muteSoft: '#8f8f86',
-  hairline: '#d9d3c2',
-  hairlineSoft: '#e5e0d1',
-  accent: '#2a4d33',
-  accentSoft: '#e8eee7',
-  signal: '#b24a28',
-  signalSoft: '#f1dfd5',
+  muteSoft: '#8a8b84',
+  hairline: '#e5e1d6',
+  hairlineSoft: '#efeae0',
+  accent: '#2d5f3f',
+  accentSoft: '#e8f0ea',
+  signal: '#c9502e',
+  signalSoft: '#f4e6e0',
   signalDone: '#6b8e5a',
 };
 

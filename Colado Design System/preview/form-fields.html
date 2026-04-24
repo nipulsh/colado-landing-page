@@ -1,0 +1,19 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Form Fields</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;background:var(--paper);height:100%}
+  .wrap{padding:22px 28px;display:flex;flex-direction:column;gap:16px;max-width:520px}
+  .fld{display:flex;flex-direction:column;gap:8px}
+  label{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+  input,textarea{font-family:var(--body);font-size:16px;color:var(--ink);background:transparent;border:0;border-bottom:1px solid var(--hairline);padding:8px 0;outline:0}
+  input:focus{border-bottom-color:var(--ink-soft)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;padding-top:2px}
+  .chip{display:inline-flex;align-items:center;height:34px;padding:0 14px;border-radius:9999px;border:1px solid var(--hairline);background:var(--bg-elevated);font-size:13.5px;color:var(--ink-soft);cursor:pointer}
+  .chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+</style></head><body><div class="wrap">
+  <div class="fld"><label>Name</label><input placeholder="Your name" value="Priya Sharma"></div>
+  <div class="fld"><label>Email</label><input placeholder="you@somewhere.com"></div>
+  <div class="fld"><label>I am</label>
+    <div class="chips"><span class="chip on">A founder</span><span class="chip">A student</span><span class="chip">Other</span></div>
+  </div>
+</div></body></html>

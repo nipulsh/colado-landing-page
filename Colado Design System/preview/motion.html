@@ -1,0 +1,86 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Motion — Scene</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;background:var(--paper);height:100%;overflow:hidden;font-family:var(--body)}
+  .frame{position:relative;height:100%;width:100%;display:grid;grid-template-columns:1.2fr 1fr;gap:0}
+
+  /* Left: the scene */
+  .stage{position:relative;border-right:1px solid var(--hairline);overflow:hidden}
+  .grain{position:absolute;inset:0;pointer-events:none}
+  .mark{position:absolute;left:18px;top:16px;font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+  .folio{position:absolute;right:18px;top:16px;font-family:var(--mono);font-size:10px;letter-spacing:.22em;color:var(--mute-soft);font-variant-numeric:tabular-nums}
+  .crosshair{position:absolute;left:18px;bottom:16px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--mute-soft);font-variant-numeric:tabular-nums}
+
+  .reveal{position:absolute;left:36px;right:36px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:6px}
+  .reveal .eyebrow{font-family:var(--mono);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);opacity:0;transform:translateY(16px);animation:rise 900ms cubic-bezier(.22,1,.36,1) forwards}
+  .reveal h2{font-family:"Instrument Serif",serif;font-size:46px;line-height:.98;letter-spacing:-.018em;color:var(--ink);margin:0;opacity:0;transform:translateY(18px);animation:rise 900ms cubic-bezier(.22,1,.36,1) 80ms forwards}
+  .reveal h2 em{font-style:italic}
+  .reveal .sub{font-size:13.5px;color:var(--ink-soft);opacity:0;transform:translateY(18px);animation:rise 900ms cubic-bezier(.22,1,.36,1) 160ms forwards;max-width:340px}
+
+  .wipe{position:absolute;inset:0;background:var(--paper);transform-origin:top;animation:lift 900ms cubic-bezier(.22,1,.36,1) forwards}
+
+  .loop{animation-iteration-count:infinite;animation-duration:3600ms}
+
+  @keyframes rise{to{opacity:1;transform:translateY(0)}}
+  @keyframes lift{0%{transform:scaleY(1)}45%{transform:scaleY(1)}100%{transform:scaleY(0)}}
+
+  /* Right: the instruments */
+  .panel{padding:20px 24px;display:flex;flex-direction:column;gap:18px}
+  .sec{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin:0}
+  .row{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  .big{font-family:"Instrument Serif",serif;font-size:38px;line-height:1;color:var(--ink)}
+  .meta{font-family:var(--mono);font-size:10.5px;color:var(--ink);letter-spacing:.04em}
+  .mute{color:var(--mute-soft)}
+  hr{border:0;border-top:1px solid var(--hairline);margin:2px 0}
+  .curve{display:flex;align-items:center;gap:14px}
+  .curve svg{display:block}
+  .labels{display:grid;grid-template-columns:auto 1fr auto;gap:6px 12px;font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--ink-soft);align-items:center}
+  .labels .k{color:var(--muted);letter-spacing:.18em;text-transform:uppercase;font-size:9.5px}
+</style></head><body>
+
+<div class="frame">
+  <!-- Stage -->
+  <div class="stage hero-fog">
+    <div class="grain paper-grain"></div>
+    <span class="mark">Scene · full-bleed reveal</span>
+    <span class="folio">900 ms</span>
+    <div class="reveal">
+      <span class="eyebrow loop">§ 02 — Method</span>
+      <h2 class="loop">Three movements, <em>one instrument.</em></h2>
+      <p class="sub loop">Capture. Rank. Move. A single curve carries the gesture.</p>
+    </div>
+    <div class="wipe loop"></div>
+    <span class="crosshair">t 0.00 → 0.90 s · 60 fps</span>
+  </div>
+
+  <!-- Instruments -->
+  <div class="panel">
+    <p class="sec">Scene transition</p>
+    <div class="row">
+      <span class="big">900<span class="mute" style="font-size:22px"> ms</span></span>
+      <span class="meta mute">one curve · one duration</span>
+    </div>
+    <hr>
+
+    <p class="sec">Easing</p>
+    <div class="curve">
+      <svg width="96" height="64" viewBox="0 0 96 64" aria-hidden>
+        <rect x="0.5" y="0.5" width="95" height="63" fill="none" stroke="#E5E1D6"/>
+        <path d="M4 60 C22 60, 32 6, 92 4" fill="none" stroke="#0E0F0C" stroke-width="1.5"/>
+        <circle cx="4" cy="60" r="2" fill="#0E0F0C"/><circle cx="92" cy="4" r="2" fill="#0E0F0C"/>
+      </svg>
+      <div class="meta" style="line-height:1.5">cubic-bezier(<br><span class="mute">&nbsp;&nbsp;</span>0.22, 1, 0.36, 1<br>)</div>
+    </div>
+    <hr>
+
+    <p class="sec">Choreography</p>
+    <div class="labels">
+      <span class="k">000</span><span>wipe begins · paper lifts from top</span><span>0.00 s</span>
+      <span class="k">080</span><span>display headline rises 18 → 0 px</span><span>0.08 s</span>
+      <span class="k">160</span><span>subline follows · opacity 0 → 1</span><span>0.16 s</span>
+      <span class="k">900</span><span>scene settles</span><span>0.90 s</span>
+    </div>
+  </div>
+</div>
+
+</body></html>

@@ -79,7 +79,7 @@ export function SceneTransition({ boundaries, duration = 0.45 }: Props) {
           top: -240,
           width: 2,
           height: 1560,
-          background: "#14140f",
+          background: "#0e0f0c",
           transform: "rotate(-12deg)",
           transformOrigin: "top left",
           boxShadow: "0 0 0 0.5px rgba(20,20,15,0.25)",

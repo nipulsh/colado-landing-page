@@ -1,0 +1,20 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Radii & Shadow</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;background:var(--paper);height:100%}
+  .wrap{padding:22px 28px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:end}
+  .cell{text-align:center}
+  .box{background:var(--bg-elevated);border:1px solid var(--hairline);height:72px;margin:0 auto 8px}
+  .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+  .val{font-family:var(--mono);font-size:10px;color:var(--mute-soft);margin-top:2px}
+  .shadow{box-shadow:var(--shadow-demo)}
+</style></head><body><div class="wrap">
+  <div class="cell"><div class="box" style="width:72px;border-radius:6px"></div><div class="lbl">sm</div><div class="val">6 px</div></div>
+  <div class="cell"><div class="box" style="width:72px;border-radius:10px"></div><div class="lbl">md</div><div class="val">10 px</div></div>
+  <div class="cell"><div class="box" style="width:72px;border-radius:14px"></div><div class="lbl">lg · card</div><div class="val">14 px</div></div>
+  <div class="cell"><div class="box" style="width:108px;height:44px;border-radius:9999px;border:1px solid var(--hairline)"></div><div class="lbl">pill</div><div class="val">9999 px</div></div>
+  <div class="cell" style="grid-column:1/-1;padding-top:12px">
+    <div class="box shadow" style="width:240px;height:90px;border-radius:14px"></div>
+    <div class="lbl">shadow-demo · only shadow used on the site</div>
+  </div>
+</div></body></html>

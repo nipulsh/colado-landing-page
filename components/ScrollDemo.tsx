@@ -79,13 +79,13 @@ export function ScrollDemo() {
 
   return (
     <SpecimenFrame sectionId="live">
-      <div className="mx-auto w-full max-w-[1280px] px-5 py-16 sm:px-8 sm:py-20 md:py-28 lg:px-12 lg:py-32">
+      <div className="mx-auto w-full max-w-[1280px] px-c5 py-c8 sm:px-c6 sm:py-20 md:py-28 lg:px-c7 lg:py-c10">
         <motion.div
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-15%" }}
           variants={fadeIn}
-          className="flex flex-col gap-4 sm:gap-6"
+          className="flex flex-col gap-c4 sm:gap-c5"
         >
           <p className="section-mark">Try the instrument</p>
           <h2 className="display max-w-[900px] text-[40px] leading-[1.05] sm:text-[56px] md:text-[68px] lg:text-[84px]">
@@ -102,7 +102,7 @@ export function ScrollDemo() {
           whileInView="show"
           viewport={{ once: true, margin: "-10%" }}
           transition={reduce ? { duration: 0 } : { staggerChildren: 0.12 }}
-          className="mt-12 grid grid-cols-1 gap-8 sm:mt-16 md:mt-20 md:grid-cols-[1fr_auto_1.3fr] md:gap-10 lg:gap-14"
+          className="mt-12 grid grid-cols-1 gap-c6 sm:mt-16 md:mt-20 md:grid-cols-[1fr_auto_1.3fr] md:gap-10 lg:gap-14"
         >
           {/* BEFORE column */}
           <motion.div variants={fadeIn} className="flex flex-col">
@@ -110,11 +110,11 @@ export function ScrollDemo() {
               <span className="inst">Before</span>
               <span className="folio tnum">what you dumped</span>
             </div>
-            <ul className="mt-4 flex flex-col gap-3">
+            <ul className="mt-4 flex flex-col gap-c3">
               {BEFORE_ITEMS.map((t, i) => (
                 <li
                   key={t}
-                  className="flex items-baseline gap-3 text-[15px] text-[var(--ink-soft)] sm:text-[16px]"
+                  className="flex items-baseline gap-c3 text-[15px] text-[var(--ink-soft)] sm:text-[16px]"
                 >
                   <span aria-hidden className="text-[var(--mute-soft)]">
                     —
@@ -131,9 +131,9 @@ export function ScrollDemo() {
           {/* Center pivot */}
           <motion.div
             variants={fadeIn}
-            className="flex flex-row items-center justify-between gap-4 md:flex-col md:justify-center md:gap-6"
+            className="flex flex-row items-center justify-between gap-c4 md:flex-col md:justify-center md:gap-c5"
           >
-            <div className="flex flex-row items-center gap-2 md:flex-col md:gap-3">
+            <div className="flex flex-row items-center gap-c2 md:flex-col md:gap-c3">
               <span className="inst">Reads</span>
               <span aria-hidden className="text-[var(--mute-soft)]">
                 ·
@@ -144,7 +144,7 @@ export function ScrollDemo() {
               </span>
               <span className="inst">Returns</span>
             </div>
-            <div className="flex items-center gap-2 md:flex-col md:gap-3">
+            <div className="flex items-center gap-c2 md:flex-col md:gap-c3">
               <span
                 aria-hidden
                 className="display text-[28px] leading-none text-[var(--accent)] sm:text-[36px] md:text-[48px]"
@@ -167,7 +167,7 @@ export function ScrollDemo() {
                 <li
                   key={i}
                   className={[
-                    "grid grid-cols-[56px_1fr] items-start gap-3 border-b border-[var(--hairline-soft)] py-3 last:border-b-0 sm:grid-cols-[72px_1fr] sm:gap-4",
+                    "grid grid-cols-[56px_1fr] items-start gap-c3 border-b border-[var(--hairline-soft)] py-3 last:border-b-0 sm:grid-cols-[72px_1fr] sm:gap-c4",
                     item.label === "NOW"
                       ? "bg-[color-mix(in_srgb,var(--signal-priority-soft)_60%,transparent)] px-2 sm:px-3"
                       : "",
@@ -208,9 +208,9 @@ export function ScrollDemo() {
           whileInView="show"
           viewport={{ once: true, margin: "-5%" }}
           variants={fadeIn}
-          className="mt-16 flex flex-col gap-4 border-t border-[var(--hairline)] pt-10 sm:mt-20 sm:pt-12 md:mt-24"
+          className="mt-16 flex flex-col gap-c4 border-t border-[var(--hairline)] pt-10 sm:mt-20 sm:pt-12 md:mt-24"
         >
-          <p className="flex flex-wrap items-center gap-2">
+          <p className="flex flex-wrap items-center gap-c2">
             <span className="folio tnum">Fig. II</span>
             <span className="text-[var(--mute-soft)]">—</span>
             <span className="inst">The mechanism</span>

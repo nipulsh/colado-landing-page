@@ -69,14 +69,14 @@ export function EarlyAccess() {
 
   return (
     <SpecimenFrame sectionId="fin">
-      <div className="mx-auto w-full min-w-0 max-w-[1280px] px-5 py-16 sm:px-8 sm:py-20 md:py-28 lg:px-12 lg:py-32">
-        <div className="grid min-w-0 grid-cols-1 gap-10 md:grid-cols-[1.1fr_1fr] md:gap-12 lg:gap-20">
+      <div className="mx-auto w-full min-w-0 max-w-[1280px] px-c5 py-c8 sm:px-c6 sm:py-20 md:py-28 lg:px-c7 lg:py-c10">
+        <div className="grid min-w-0 grid-cols-1 gap-10 md:grid-cols-[1.1fr_1fr] md:gap-c7 lg:gap-20">
           <motion.div
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, margin: "-15%" }}
             variants={fadeIn}
-            className="relative flex flex-col gap-4 sm:gap-6"
+            className="relative flex flex-col gap-c4 sm:gap-c5"
           >
             <SectionMark>Fin.</SectionMark>
             <RevealHeading
@@ -118,7 +118,7 @@ export function EarlyAccess() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.35 }}
-                    className="flex items-start gap-3 rounded-lg border border-[var(--hairline)] bg-[var(--bg-elevated)] px-5 py-5"
+                    className="flex items-start gap-c3 rounded-lg border border-[var(--hairline)] bg-[var(--bg-elevated)] px-c5 py-c5"
                   >
                     <span className="mt-0.5 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[var(--accent-soft)] text-[var(--accent)]">
                       <Check size={14} />
@@ -140,7 +140,7 @@ export function EarlyAccess() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.35 }}
-                    className="flex flex-col gap-6"
+                    className="flex flex-col gap-c5"
                     noValidate
                   >
                     <Field
@@ -173,19 +173,19 @@ export function EarlyAccess() {
                       placeholder="+91 98765 43210"
                     />
 
-                    <fieldset className="flex flex-col gap-3 border-t border-[var(--hairline-soft)] pt-5">
+                    <fieldset className="flex flex-col gap-c3 border-t border-[var(--hairline-soft)] pt-5">
                       <legend className="inst-sm float-left mb-2 normal-case tracking-[0.22em] text-[var(--muted)]">
                         <span className="uppercase tracking-[0.22em]">
                           I am
                         </span>
                       </legend>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-c2">
                         {(["founder", "student", "other"] as Role[]).map(
                           (r) => (
                             <label
                               key={r}
                               className={[
-                                "inline-flex cursor-pointer items-center gap-2 rounded-full border px-3.5 py-2 text-[13.5px] transition-colors sm:px-4 sm:text-[14px]",
+                                "inline-flex cursor-pointer items-center gap-c2 rounded-full border px-3.5 py-2 text-[13.5px] transition-colors sm:px-4 sm:text-[14px]",
                                 role === r
                                   ? "border-[var(--ink)] bg-[var(--ink)] text-[var(--bg)]"
                                   : "border-[var(--hairline)] bg-[var(--bg-elevated)] text-[var(--ink-soft)] hover:border-[var(--ink-soft)]",
@@ -212,7 +212,7 @@ export function EarlyAccess() {
                       </div>
                     </fieldset>
 
-                    <div className="flex flex-col gap-2 border-t border-[var(--hairline-soft)] pt-5">
+                    <div className="flex flex-col gap-c2 border-t border-[var(--hairline-soft)] pt-5">
                       <label
                         htmlFor="ea-note"
                         className="inst-sm tracking-[0.22em] text-[var(--muted)]"
@@ -246,7 +246,7 @@ export function EarlyAccess() {
                         type="submit"
                         disabled={loading}
                         wrapperClassName="block sm:inline-block w-full sm:w-auto"
-                        className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--ink)] px-6 text-[14.5px] font-medium text-[var(--bg)] transition-opacity hover:opacity-90 disabled:opacity-60 sm:w-auto sm:text-[15px]"
+                        className="inline-flex h-12 w-full items-center justify-center gap-c2 rounded-full bg-[var(--ink)] px-c5 text-[14.5px] font-medium text-[var(--bg)] transition-opacity hover:opacity-90 disabled:opacity-60 sm:w-auto sm:text-[15px]"
                       >
                         {loading ? "Sending…" : "Request access"}
                         {!loading && <ArrowRight size={16} />}
@@ -283,7 +283,7 @@ function Field({
   placeholder?: string;
 }) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-c2">
       <label
         htmlFor={id}
         className="inst-sm tracking-[0.22em] text-[var(--muted)]"

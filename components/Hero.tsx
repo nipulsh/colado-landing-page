@@ -45,10 +45,10 @@ export function Hero() {
         variants={container}
         initial="hidden"
         animate="show"
-        className="relative mx-auto grid w-full max-w-[1280px] grid-cols-1 items-start gap-12 px-5 pt-10 pb-14 sm:gap-14 sm:px-8 sm:pt-14 sm:pb-20 md:grid-cols-[1.1fr_1fr] md:items-center md:gap-10 md:pt-20 md:pb-24 lg:gap-16 lg:px-12 lg:pt-24 lg:pb-28"
+        className="relative mx-auto grid w-full max-w-[1280px] grid-cols-1 items-start gap-c7 px-c5 pt-10 pb-14 sm:gap-14 sm:px-c6 sm:pt-14 sm:pb-20 md:grid-cols-[1.1fr_1fr] md:items-center md:gap-10 md:pt-20 md:pb-24 lg:gap-c8 lg:px-c7 lg:pt-24 lg:pb-28"
       >
-        <div className="flex flex-col gap-6 sm:gap-7 md:gap-8">
-          <motion.p variants={child} className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-col gap-c5 sm:gap-7 md:gap-c6">
+          <motion.p variants={child} className="flex flex-wrap items-center gap-c2">
             <span className="folio tnum">Fig. I</span>
             <span className="text-[var(--mute-soft)]">—</span>
             <span className="inst-sm">
@@ -74,11 +74,11 @@ export function Hero() {
 
           <motion.div
             variants={child}
-            className="flex flex-wrap items-center gap-x-5 gap-y-3"
+            className="flex flex-wrap items-center gap-x-c5 gap-y-3"
           >
             <a
               href="#fin"
-              className="inline-flex h-11 items-center gap-2 rounded-full bg-[var(--ink)] px-5 text-[14px] font-medium text-[var(--bg)] transition-opacity hover:opacity-90 sm:h-12 sm:px-6 sm:text-[15px]"
+              className="inline-flex h-11 items-center gap-c2 rounded-full bg-[var(--ink)] px-c5 text-[14px] font-medium text-[var(--bg)] transition-opacity hover:opacity-90 sm:h-12 sm:px-c5 sm:text-[15px]"
             >
               Get the app <span aria-hidden>→</span>
             </a>
@@ -95,7 +95,7 @@ export function Hero() {
 
           <motion.div
             variants={child}
-            className="mt-2 flex flex-col gap-2 pt-2 sm:flex-row sm:items-center sm:gap-4"
+            className="mt-2 flex flex-col gap-c2 pt-2 sm:flex-row sm:items-center sm:gap-c4"
           >
             <span className="inst-sm">Used by</span>
             <span className="text-[13.5px] text-[var(--ink-soft)] sm:text-[14px]">

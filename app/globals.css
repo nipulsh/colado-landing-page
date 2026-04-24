@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=JetBrains+Mono:wght@400;500;600&display=optional");
 @import "tailwindcss";
 
 /*
@@ -53,10 +52,37 @@
   --signal-priority-soft: #f4e6e0;
   --signal-done: #6b8e5a;
 
-  /* Type scale */
+  /* Type scale (Geist + Instrument via next/font; mono via JetBrains) */
   --display: "Instrument Serif", ui-serif, Georgia, serif;
   --body: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
-  --mono: ui-monospace, "SF Mono", Menlo, "JetBrains Mono", monospace;
+  --mono: var(--font-jetbrains-mono), "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Radii & spacing — Colado Design System */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 9999px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+
+  /* Single allowed shadow (demo / specimen card) */
+  --shadow-demo:
+    0 1px 1px color-mix(in srgb, var(--ink) 4%, transparent),
+    0 22px 60px -24px color-mix(in srgb, var(--ink) 18%, transparent);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 220ms;
+  --dur-med: 360ms;
+  --dur-slow: 700ms;
+  --dur-scene: 900ms;
 }
 
 @theme inline {
@@ -74,7 +100,31 @@
   --color-signal-done: var(--signal-done);
   --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
   --font-display: "Instrument Serif", ui-serif, Georgia, serif;
-  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+  --font-mono: var(--font-jetbrains-mono), "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Colado scale → utilities: p-c5, gap-c4, max-h-c8, rounded-c-lg, etc. */
+  --spacing-c0: 0;
+  --spacing-c1: var(--space-1);
+  --spacing-c2: var(--space-2);
+  --spacing-c3: var(--space-3);
+  --spacing-c4: var(--space-4);
+  --spacing-c5: var(--space-5);
+  --spacing-c6: var(--space-6);
+  --spacing-c7: var(--space-7);
+  --spacing-c8: var(--space-8);
+  --spacing-c9: var(--space-9);
+  --spacing-c10: var(--space-10);
+
+  /* Tailwind `rounded-*` — values match :root --radius-* (avoid self-referential var) */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  /* Aliases: explicit `rounded-c-*` where code prefers the Colado name */
+  --radius-c-sm: var(--radius-sm);
+  --radius-c-md: var(--radius-md);
+  --radius-c-lg: var(--radius-lg);
+  --radius-c-pill: var(--radius-pill);
 }
 
 html {
@@ -125,6 +175,15 @@ li {
 .display em,
 .display i {
   font-style: italic;
+}
+
+/* Display italic blockquote / pull line — Colado Design System */
+.pull-quote {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: clamp(26px, 3.4vw, 44px);
+  line-height: 1.15;
+  color: var(--ink);
 }
 
 .mono {
@@ -228,16 +287,14 @@ textarea:focus-visible,
 
 /* Demo-card shadow — only shadow allowed on the page */
 .demo-shadow {
-  box-shadow:
-    0 1px 1px color-mix(in srgb, var(--ink) 4%, transparent),
-    0 22px 60px -24px color-mix(in srgb, var(--ink) 18%, transparent);
+  box-shadow: var(--shadow-demo);
 }
 
 /* Specimen card — for the hero / demo cards */
 .specimen-card {
   background: var(--bg-elevated);
   border: 1px solid var(--hairline);
-  border-radius: 14px;
+  border-radius: var(--radius-lg);
 }
 
 /* Cross-bar spacer used inside mastheads: " · " in mono */
@@ -380,7 +437,8 @@ h3 em:hover {
   padding: 56px 0 0 0;
   box-sizing: border-box;
   min-height: 100vh;
-  background: #f4f0e6;
+  /* Paper field: canonical #F7F5F0 (Colado Design System) */
+  background: var(--bg);
   transition:
     min-height 900ms cubic-bezier(0.22, 1, 0.36, 1),
     padding 900ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -517,61 +575,6 @@ h3 em:hover {
   min-height: 100dvh;
 }
 
-/*
- * Scroll-scrub container: the section is tall (e.g. 600vh) and a sticky
- * inner element pins the stage in place while the user scrolls. Scroll
- * progress maps to the animation timeline.
- */
-.quiet-instruments-scrub .quiet-instruments-sticky {
-  position: sticky;
-  top: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 0;
-  height: 100dvh;
-  padding: 56px 0 0 0;
-  box-sizing: border-box;
-}
-
-@supports not (height: 100dvh) {
-  .quiet-instruments-scrub .quiet-instruments-sticky {
-    height: 100vh;
-  }
-}
-
-.quiet-instruments-scrub[data-embedded="true"] .quiet-instruments-sticky {
-  padding: 84px 16px 56px 16px;
-}
-
-@media (min-width: 640px) {
-  .quiet-instruments-scrub .quiet-instruments-sticky {
-    padding: 64px 0 0 0;
-  }
-  .quiet-instruments-scrub[data-embedded="true"] .quiet-instruments-sticky {
-    padding: 96px 24px 72px 24px;
-  }
-}
-
-@media (min-width: 768px) {
-  .quiet-instruments-scrub .quiet-instruments-sticky {
-    padding: 72px 0 0 0;
-  }
-  .quiet-instruments-scrub[data-embedded="true"] .quiet-instruments-sticky {
-    padding: 104px 32px 88px 32px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .quiet-instruments-scrub .quiet-instruments-sticky {
-    padding: 76px 0 0 0;
-  }
-  .quiet-instruments-scrub[data-embedded="true"] .quiet-instruments-sticky {
-    padding: 112px 48px 104px 48px;
-  }
-}
-
 /* Priority-label pill (NOW / NEXT / THEN / LATER / ADMIN) */
 .pill-label {
   font-family: var(--mono);
@@ -579,4 +582,42 @@ h3 em:hover {
   letter-spacing: 0.22em;
   text-transform: uppercase;
   font-weight: 600;
+}
+
+/* —— Active-Theory–style preloader: dark canvas, film grain, scanline drift —— */
+.at-loader-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.12;
+  mix-blend-mode: overlay;
+}
+
+.at-loader-vignette {
+  background: radial-gradient(
+    ellipse 90% 70% at 50% 50%,
+    transparent 0%,
+    color-mix(in srgb, #000 55%, transparent) 100%
+  );
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes at-loader-line-drift {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(4px);
+    }
+  }
+  .at-loader-scan {
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      color-mix(in srgb, #fff 3%, transparent) 2px,
+      color-mix(in srgb, #fff 3%, transparent) 3px
+    );
+    animation: at-loader-line-drift 2.2s linear infinite;
+    pointer-events: none;
+    mix-blend-mode: soft-light;
+  }
 }

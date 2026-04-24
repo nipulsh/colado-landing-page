@@ -80,13 +80,13 @@ export function Audiences() {
 
   return (
     <SpecimenFrame sectionId="audience">
-      <div className="mx-auto w-full min-w-0 max-w-[1280px] px-5 py-16 sm:px-8 sm:py-20 md:py-28 lg:px-12 lg:py-32">
+      <div className="mx-auto w-full min-w-0 max-w-[1280px] px-c5 py-c8 sm:px-c6 sm:py-20 md:py-28 lg:px-c7 lg:py-c10">
         <motion.div
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-15%" }}
           variants={fadeIn}
-          className="flex flex-col gap-4 sm:gap-6"
+          className="flex flex-col gap-c4 sm:gap-c5"
         >
           <SectionMark index={1}>Audience</SectionMark>
           <RevealHeading
@@ -106,9 +106,9 @@ export function Audiences() {
           whileInView="show"
           viewport={{ once: true, margin: "-5%" }}
           variants={fadeIn}
-          className="relative mt-16 flex flex-col gap-3 border-t border-[var(--hairline)] pt-10 sm:mt-20 sm:pt-12 md:mt-24"
+          className="relative mt-16 flex flex-col gap-c3 border-t border-[var(--hairline)] pt-10 sm:mt-20 sm:pt-12 md:mt-24"
         >
-          <p className="flex flex-wrap items-center gap-2">
+          <p className="flex flex-wrap items-center gap-c2">
             <span className="inst inst-ink">Two audiences</span>
             <span className="text-[var(--mute-soft)]">·</span>
             <span className="inst">One instrument</span>
@@ -188,7 +188,7 @@ function AudienceGrid({
   return (
     <div
       ref={wrapRef}
-      className="audience-grid mt-14 grid grid-cols-1 gap-12 sm:mt-20 md:mt-24 md:grid-cols-2 md:gap-10 lg:gap-16"
+      className="audience-grid mt-14 grid grid-cols-1 gap-c7 sm:mt-20 md:mt-24 md:grid-cols-2 md:gap-10 lg:gap-c8"
     >
       {blocks.map((a, i) => (
         <AudienceColumn
@@ -237,14 +237,14 @@ function AudienceColumn({
       variants={variants}
       data-audience-card
       data-focused={focused ? "true" : "false"}
-      className="audience-card flex flex-col gap-6 border-t border-[var(--hairline)] pt-6 sm:gap-8 sm:pt-8"
+      className="audience-card flex flex-col gap-c5 border-t border-[var(--hairline)] pt-6 sm:gap-c6 sm:pt-8"
       style={{
         filter: focused ? "none" : "brightness(0.96)",
         transition: "filter 360ms cubic-bezier(0.22,1,0.36,1)",
       }}
     >
       <header className="flex flex-col gap-2">
-        <p className="flex items-baseline gap-4">
+        <p className="flex items-baseline gap-c4">
           <span className="display text-[48px] leading-none text-[var(--ink)] sm:text-[64px] md:text-[72px]">
             {block.letter}.
           </span>
@@ -260,7 +260,7 @@ function AudienceColumn({
           <li
             key={c.title}
             className={[
-              "grid grid-cols-[28px_1fr] items-start gap-3 border-b border-[var(--hairline-soft)] py-4 last:border-b-0 sm:gap-4 sm:py-5",
+              "grid grid-cols-[28px_1fr] items-start gap-c3 border-b border-[var(--hairline-soft)] py-4 last:border-b-0 sm:gap-c4 sm:py-5",
             ].join(" ")}
           >
             <span className="folio tnum pt-1">

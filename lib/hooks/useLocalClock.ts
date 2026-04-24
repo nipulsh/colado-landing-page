@@ -13,15 +13,16 @@ export function useLocalClock(): { hhmm: string; tz: string; full: string } {
     const tick = () => setNow(new Date());
     tick();
     const msToNextMinute = 60_000 - (Date.now() % 60_000);
-    const timeout = setTimeout(() => {
+    let intervalId: ReturnType<typeof setInterval> | null = null;
+    const timeoutId = setTimeout(() => {
       tick();
-      const id = setInterval(tick, 60_000);
-      (timeout as unknown as { _id?: number })._id = id as unknown as number;
+      intervalId = setInterval(tick, 60_000);
     }, msToNextMinute);
     return () => {
-      clearTimeout(timeout);
-      const id = (timeout as unknown as { _id?: number })._id;
-      if (id) clearInterval(id as unknown as number);
+      clearTimeout(timeoutId);
+      if (intervalId != null) {
+        clearInterval(intervalId);
+      }
     };
   }, []);
 

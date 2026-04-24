@@ -37,8 +37,8 @@ export function ReducedMotionPoster() {
         rightSub="Colado · Edition 01"
       />
 
-      <div className="relative z-[1] flex w-full min-w-0 flex-1 flex-col justify-center px-4 py-5 sm:px-6 sm:py-7 md:px-8 md:py-8 lg:px-10">
-        <div className="mx-auto flex w-full max-w-[min(100%,90rem)] min-w-0 flex-col gap-6 sm:gap-8 md:gap-9 lg:gap-10">
+      <div className="relative z-[1] flex w-full min-w-0 flex-1 flex-col justify-center px-c4 py-5 sm:px-c5 sm:py-7 md:px-c6 md:py-8 lg:px-10">
+        <div className="mx-auto flex w-full max-w-[min(100%,90rem)] min-w-0 flex-col gap-c5 sm:gap-c6 md:gap-9 lg:gap-10">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.6rem] sm:text-[0.65rem]">
             <Inst
               size={13}
@@ -103,7 +103,7 @@ export function ReducedMotionPoster() {
           </div>
 
           <div
-            className="mt-1 grid w-full min-w-0 grid-cols-1 gap-8 sm:mt-0 sm:gap-9 sm:pt-6 md:grid-cols-2 md:gap-8 md:pt-7 lg:grid-cols-3 lg:gap-10"
+            className="mt-1 grid w-full min-w-0 grid-cols-1 gap-c6 sm:mt-0 sm:gap-9 sm:pt-6 md:grid-cols-2 md:gap-c6 md:pt-7 lg:grid-cols-3 lg:gap-10"
             style={{
               borderTop: `1px solid ${COLADO.hairline}`,
               paddingTop: 24,

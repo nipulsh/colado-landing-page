@@ -3,21 +3,12 @@
 /**
  * KeyboardShortcuts — press `?` to reveal a small overlay listing hotkeys.
  * Auto-fades after 4s of inactivity. Press `Esc` or `?` again to dismiss.
- *
- * Also wires up:
- *   J / K  — jump to the next / previous scene in the hero timeline
- *   Space  — pause / resume the hero timeline
- *   Esc    — close overlay
- *
- * The J/K/Space handlers dispatch custom events consumed by QuietInstruments.
  */
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 const SHORTCUTS: Array<{ keys: string[]; label: string }> = [
-  { keys: ["J", "K"], label: "Scene back / forward" },
-  { keys: ["Space"], label: "Pause · resume" },
   { keys: ["?"], label: "This panel" },
   { keys: ["Esc"], label: "Close" },
 ];
@@ -57,15 +48,6 @@ export function KeyboardShortcuts() {
       }
 
       if (isEditable) return;
-
-      if (e.key === "j" || e.key === "J") {
-        window.dispatchEvent(new CustomEvent("colado:scene-step", { detail: 1 }));
-      } else if (e.key === "k" || e.key === "K") {
-        window.dispatchEvent(new CustomEvent("colado:scene-step", { detail: -1 }));
-      } else if (e.key === " ") {
-        e.preventDefault();
-        window.dispatchEvent(new CustomEvent("colado:toggle-play"));
-      }
     };
 
     window.addEventListener("keydown", onKey);
